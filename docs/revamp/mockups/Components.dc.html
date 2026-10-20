@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Components</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Geist:wght@400..700&family=Geist+Mono:wght@400..700&display=swap">
+<style>
+body{margin:0}
+a{color:#1e6fa3}a:hover{color:#1b5e3b}
+.day{--bg:#f6f4ec;--surface:#ffffff;--surface2:#eef2e8;--fg:#0b3d2e;--fg2:#5b7060;--line:rgba(11,61,46,.14);--primary:#1b5e3b;--on-primary:#ffffff;--accent:#1e6fa3;--hi:#f7e017;--on-hi:#0b3d2e;--ok:#1b5e3b;--ok-bg:rgba(57,181,74,.14);--ok-dot:#39b54a;--warn:#6b4f00;--warn-bg:rgba(247,224,23,.26);--warn-dot:#d4b800;--info:#1e6fa3;--info-bg:rgba(60,197,232,.18);--bad:#b4321f;--bad-bg:rgba(180,50,31,.1);--focus:#39b54a;--muted:#dfe6d8}
+.night{--bg:#0e1c20;--surface:#1c2f34;--surface2:#27404a;--fg:#e8f0e6;--fg2:#a9bfae;--line:rgba(232,240,230,.16);--primary:#8cc63e;--on-primary:#0b3d2e;--accent:#7fd8f0;--hi:#f5f0a0;--on-hi:#0b3d2e;--ok:#a6d85a;--ok-bg:rgba(140,198,62,.16);--ok-dot:#8cc63e;--warn:#f5f0a0;--warn-bg:rgba(245,240,160,.14);--warn-dot:#f5f0a0;--info:#7fd8f0;--info-bg:rgba(127,216,240,.14);--bad:#ff9a88;--bad-bg:rgba(255,138,118,.14);--focus:#8cc63e;--muted:#27404a}
+.display{font-family:'Bricolage Grotesque',Geist,system-ui,sans-serif;letter-spacing:-.02em}
+.mono{font-family:'Geist Mono',ui-monospace,monospace}
+.eyebrow{font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase}
+.btn{font:inherit;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid transparent;font-weight:600;font-size:15px;line-height:1}
+.btn:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.seg{font:inherit;cursor:pointer;flex:1;min-height:44px;display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:10px;background:transparent;color:var(--fg2);font-size:14px;font-weight:600}
+.seg.on{background:var(--surface);color:var(--fg);box-shadow:0 1px 2px rgba(0,0,0,.18)}
+.stamp{display:inline-flex;align-items:center;justify-content:center;border:3px double currentColor;border-radius:999px;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;letter-spacing:.14em;text-transform:uppercase;transform:rotate(-10deg)}
+.shimmer{background:linear-gradient(90deg,var(--muted) 0%,var(--surface2) 50%,var(--muted) 100%);background-size:200% 100%;animation:sh 1.6s linear infinite}
+@keyframes sh{from{background-position:200% 0}to{background-position:-200% 0}}
+@media (prefers-reduced-motion:reduce){.shimmer{animation:none}}
+.row{display:grid;grid-template-columns:150px repeat(2,minmax(0,1fr));gap:20px;align-items:start;padding:16px 0;border-top:1px solid rgba(11,61,46,.1)}
+.meta{display:flex;flex-direction:column;gap:3px;font-size:12px;color:#5b7060;line-height:1.4;padding-top:6px}
+.meta b{font-size:14px;color:#0b3d2e}
+.cell{border-radius:16px;padding:18px;color:var(--fg);background:var(--bg);border:1px solid var(--line);display:flex;flex-direction:column;gap:12px;font-family:Geist,system-ui,sans-serif}
+</style>
+</helmet>
+<div style="width: 1280px; height: 1900px; box-sizing: border-box; background: #f6f4ec; color: #0b3d2e; font-family: Geist, system-ui, sans-serif; padding: 48px 64px; display: flex; flex-direction: column; gap: 8px; overflow: hidden">
+
+  <div style="display: grid; grid-template-columns: 150px repeat(2, minmax(0, 1fr)); gap: 20px; align-items: end; padding-bottom: 14px">
+    <div style="display: flex; flex-direction: column; gap: 8px"><div class="eyebrow" style="color: #1b5e3b">Components</div><h1 class="display" style="margin: 0; font-size: 30px; line-height: 1; font-weight: 800">One kit, two skies</h1></div>
+    <div class="display" style="font-size: 16px; font-weight: 700; color: #5b7060">Alpine Day</div>
+    <div class="display" style="font-size: 16px; font-weight: 700; color: #5b7060">Starlit Night</div>
+  </div>
+
+  <div class="row">
+    <div class="meta"><b>Buttons</b><span>Big CTAs are pills. Sun is for the one action that pays or confirms. Glass sits on imagery.</span></div>
+    <div class="day cell">
+      <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center">
+        <button class="btn" type="button" style="height: 44px; padding: 0 22px; border-radius: 999px; background: var(--primary); color: var(--on-primary)">Book tickets</button>
+        <button class="btn" type="button" style="height: 44px; padding: 0 22px; border-radius: 999px; background: var(--hi); color: var(--on-hi)">Pay ₱700 now</button>
+        <button class="btn" type="button" style="height: 44px; padding: 0 20px; border-radius: 999px; background: transparent; color: var(--fg); border-color: var(--line)">View tickets</button>
+        <button class="btn" type="button" aria-label="Copy code" style="width: 44px; height: 44px; border-radius: 999px; background: transparent; color: var(--fg); border-color: var(--line)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center">
+        <button class="btn" type="button" style="height: 36px; padding: 0 14px; border-radius: 12px; background: var(--primary); color: var(--on-primary); font-size: 14px">Save changes</button>
+        <button class="btn" type="button" style="height: 36px; padding: 0 14px; border-radius: 12px; background: transparent; color: var(--fg); border-color: var(--line); font-size: 14px">Resend link</button>
+        <button class="btn" type="button" style="height: 36px; padding: 0 14px; border-radius: 12px; background: transparent; color: var(--fg2); font-size: 14px">Cancel</button>
+        <button class="btn" type="button" style="height: 36px; padding: 0 14px; border-radius: 12px; background: var(--bad-bg); color: var(--bad); font-size: 14px">Reject</button>
+        <span style="display: inline-flex; align-items: center; height: 36px; padding: 0 6px 0 12px; border-radius: 12px; background: linear-gradient(135deg, #3cc5e8, #1e6fa3)"><button class="btn" type="button" style="height: 28px; padding: 0 12px; border-radius: 999px; background: rgba(255,255,255,.22); color: #ffffff; border-color: rgba(255,255,255,.35); font-size: 13px; backdrop-filter: blur(6px)">Glass</button></span>
+      </div>
+    </div>
+    <div class="night cell">
+      <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center">
+        <button class="btn" type="button" style="height: 44px; padding: 0 22px; border-radius: 999px; background: var(--primary); color: var(--on-primary)">Book tickets</button>
+        <button class="btn" type="button" style="height: 44px; padding: 0 22px; border-radius: 999px; background: var(--hi); color: var(--on-hi)">Pay ₱700 now</button>
+        <button class="btn" type="button" style="height: 44px; padding: 0 20px; border-radius: 999px; background: transparent; color: var(--fg); border-color: var(--line)">View tickets</button>
+        <button class="btn" type="button" aria-label="Copy code" style="width: 44px; height: 44px; border-radius: 999px; background: transparent; color: var(--fg); border-color: var(--line)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center">
+        <button class="btn" type="button" style="height: 36px; padding: 0 14px; border-radius: 12px; background: var(--primary); color: var(--on-primary); font-size: 14px">Save changes</button>
+        <button class="btn" type="button" style="height: 36px; padding: 0 14px; border-radius: 12px; background: transparent; color: var(--fg); border-color: var(--line); font-size: 14px">Resend link</button>
+        <button class="btn" type="button" style="height: 36px; padding: 0 14px; border-radius: 12px; background: transparent; color: var(--fg2); font-size: 14px">Cancel</button>
+        <button class="btn" type="button" style="height: 36px; padding: 0 14px; border-radius: 12px; background: var(--bad-bg); color: var(--bad); font-size: 14px">Reject</button>
+        <span style="display: inline-flex; align-items: center; height: 36px; padding: 0 6px 0 12px; border-radius: 12px; background: linear-gradient(135deg, #1f4a5c, #0b161a)"><button class="btn" type="button" style="height: 28px; padding: 0 12px; border-radius: 999px; background: rgba(255,255,255,.14); color: #ffffff; border-color: rgba(255,255,255,.3); font-size: 13px; backdrop-filter: blur(6px)">Glass</button></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="meta"><b>Status badges</b><span>A dot carries the colour so the label still reads when colour is lost.</span></div>
+    <div class="day cell"><div style="display: flex; flex-wrap: wrap; gap: 8px">
+      <span style="display: inline-flex; align-items: center; gap: 6px; padding: 5px 11px; border-radius: 999px; background: var(--ok-bg); color: var(--ok); font-size: 13px; font-weight: 600"><span style="width: 7px; height: 7px; border-radius: 50%; background: var(--ok-dot)"></span>Published</span>
+      <span style="display: inline-flex; align-items: center; gap: 6px; padding: 5px 11px; border-radius: 999px; background: var(--surface2); color: var(--fg2); font-size: 13px; font-weight: 600"><span style="width: 7px; height: 7px; border-radius: 50%; background: var(--fg2)"></span>Draft</span>
+      <span style="display: inline-flex; align-items: center; gap: 6px; padding: 5px 11px; border-radius: 999px; background: var(--ok-bg); color: var(--ok); font-size: 13px; font-weight: 600"><span style="width: 7px; height: 7px; border-radius: 50%; background: var(--ok-dot)"></span>Confirmed</span>
+      <span style="display: inline-flex; align-items: center; gap: 6px; padding: 5px 11px; border-radius: 999px; background: var(--warn-bg); color: var(--warn); font-size: 13px; font-weight: 600"><span style="width: 7px; height: 7px; border-radius: 50%; background: var(--warn-dot)"></span>Awaiting payment</span>
+      <span style="display: inline-flex; align-items: center; gap: 6px; padding: 5px 11px; border-radius: 999px; background: var(--info-bg); color: var(--info); font-size: 13px; font-weight: 600"><span style="width: 7px; height: 7px; border-radius: 50%; background: var(--info)"></span>Being reviewed</span>
+      <span style="display: inline-flex; align-items: center; gap: 6px; padding: 5px 11px; border-radius: 999px; background: var(--bad-bg); color: var(--bad); font-size: 13px; font-weight: 600"><span style="width: 7px; height: 7px; border-radius: 50%; background: var(--bad)"></span>Not accepted</span>
+      <span style="display: inline-flex; align-items: center; gap: 6px; padding: 5px 11px; border-radius: 999px; background: var(--surface2); color: var(--fg2); font-size: 13px; font-weight: 600"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" width="12" height="12" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Checked in</span>
+      <span style="display: inline-flex; align-items: center; gap: 6px; padding: 5px 11px; border-radius: 999px; background: var(--bad-bg); color: var(--bad); font-size: 13px; font-weight: 600"><span style="width: 7px; height: 7px; border-radius: 50%; background: var(--bad)"></span>Voided</span>
+      <span style="display: inline-flex; align-items: center; gap: 6px; padding: 5px 11px; border-radius: 999px; background: var(--fg); color: var(--bg); font-size: 13px; font-weight: 600">Sold out</span>
+      <span style="display: inline-flex; align-items: center; gap: 6px; padding: 5px 11px; border-radius: 999px; background: var(--hi); color: var(--on-hi); font-size: 13px; font-weight: 600">Few left</span>
+    </div></div>
+    <div class="night cell"><div style="display: flex; flex-wrap: wrap; gap: 8px">
+      <span style="display: inline-flex; align-items: center; gap: 6px; padding: 5px 11px; border-radius: 999px; background: var(--ok-bg); color: var(--ok); font-size: 13px; font-weight: 600"><span style="width: 7px; height: 7px; border-radius: 50%; background: var(--ok-dot)"></span>Published</span>
+      <span style="display: inline-flex; align-items: center; gap: 6px; padding: 5px 11px; border-radius: 999px; background: var(--surface2); color: var(--fg2); font-size: 13px; font-weight: 600"><span style="width: 7px; height: 7px; border-radius: 50%; background: var(--fg2)"></span>Draft</span>
+      <span style="display: inline-flex; align-items: center; gap: 6px; padding: 5px 11px; border-radius: 999px; background: var(--ok-bg); color: var(--ok); font-size: 13px; font-weight: 600"><span style="width: 7px; height: 7px; border-radius: 50%; background: var(--ok-dot)"></span>Confirmed</span>
+      <span style="display: inline-flex; align-items: center; gap: 6px; padding: 5px 11px; border-radius: 999px; background: var(--warn-bg); color: var(--warn); font-size: 13px; font-weight: 600"><span style="width: 7px; height: 7px; border-radius: 50%; background: var(--warn-dot)"></span>Awaiting payment</span>
+      <span style="display: inline-flex; align-items: center; gap: 6px; padding: 5px 11px; border-radius: 999px; background: var(--info-bg); color: var(--info); font-size: 13px; font-weight: 600"><span style="width: 7px; height: 7px; border-radius: 50%; background: var(--info)"></span>Being reviewed</span>
+      <span style="display: inline-flex; align-items: center; gap: 6px; padding: 5px 11px; border-radius: 999px; background: var(--bad-bg); color: var(--bad); font-size: 13px; font-weight: 600"><span style="width: 7px; height: 7px; border-radius: 50%; background: var(--bad)"></span>Not accepted</span>
+      <span style="display: inline-flex; align-items: center; gap: 6px; padding: 5px 11px; border-radius: 999px; background: var(--surface2); color: var(--fg2); font-size: 13px; font-weight: 600"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" width="12" height="12" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Checked in</span>
+      <span style="display: inline-flex; align-items: center; gap: 6px; padding: 5px 11px; border-radius: 999px; background: var(--bad-bg); color: var(--bad); font-size: 13px; font-weight: 600"><span style="width: 7px; height: 7px; border-radius: 50%; background: var(--bad)"></span>Voided</span>
+      <span style="display: inline-flex; align-items: center; gap: 6px; padding: 5px 11px; border-radius: 999px; background: var(--fg); color: var(--bg); font-size: 13px; font-weight: 600">Sold out</span>
+      <span style="display: inline-flex; align-items: center; gap: 6px; padding: 5px 11px; border-radius: 999px; background: var(--hi); color: var(--on-hi); font-size: 13px; font-weight: 600">Few left</span>
+    </div></div>
+  </div>
+
+  <div class="row">
+    <div class="meta"><b>Notices</b><span>Accent bar + icon + title. Body in muted text, actions underneath. Danger is announced assertively.</span></div>
+    <div class="day cell">
+      <div style="display: flex; gap: 12px; padding: 14px 16px; border-radius: 14px; background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--ok-dot)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--ok)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" aria-hidden="true" style="flex-shrink: 0; margin-top: 1px"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg><div style="display: flex; flex-direction: column; gap: 3px"><div style="font-weight: 600; font-size: 15px">You&#39;re in!</div><div style="font-size: 14px; color: var(--fg2)">Your 2 tickets are below and in your email. Each one scans once.</div></div></div>
+      <div style="display: flex; gap: 12px; padding: 14px 16px; border-radius: 14px; background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--info)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--info)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" aria-hidden="true" style="flex-shrink: 0; margin-top: 1px"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg><div style="display: flex; flex-direction: column; gap: 3px"><div style="font-weight: 600; font-size: 15px">Receipt received, waiting for an organiser</div><div style="font-size: 14px; color: var(--fg2)">Usually within a day. Your seats are held until then.</div></div></div>
+      <div style="display: flex; gap: 12px; padding: 14px 16px; border-radius: 14px; background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--warn-dot)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--warn)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" aria-hidden="true" style="flex-shrink: 0; margin-top: 1px"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4M12 17h.01"/></svg><div style="display: flex; flex-direction: column; gap: 8px"><div><div style="font-weight: 600; font-size: 15px">We couldn&#39;t confirm your payment</div><div style="font-size: 14px; color: var(--fg2)">Organiser note: the amount received was ₱500, not ₱700.</div></div><div><button class="btn" type="button" style="height: 34px; padding: 0 14px; border-radius: 10px; background: var(--primary); color: var(--on-primary); font-size: 13px">Fix payment</button></div></div></div>
+      <div style="display: flex; gap: 12px; padding: 14px 16px; border-radius: 14px; background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--bad)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--bad)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" aria-hidden="true" style="flex-shrink: 0; margin-top: 1px"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6M9 9l6 6"/></svg><div style="display: flex; flex-direction: column; gap: 3px"><div style="font-weight: 600; font-size: 15px">This event has been cancelled</div><div style="font-size: 14px; color: var(--fg2)">Tickets no longer scan. If you paid, the organisers will contact you about a refund.</div></div></div>
+    </div>
+    <div class="night cell">
+      <div style="display: flex; gap: 12px; padding: 14px 16px; border-radius: 14px; background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--ok-dot)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--ok)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" aria-hidden="true" style="flex-shrink: 0; margin-top: 1px"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg><div style="display: flex; flex-direction: column; gap: 3px"><div style="font-weight: 600; font-size: 15px">You&#39;re in!</div><div style="font-size: 14px; color: var(--fg2)">Your 2 tickets are below and in your email. Each one scans once.</div></div></div>
+      <div style="display: flex; gap: 12px; padding: 14px 16px; border-radius: 14px; background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--info)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--info)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" aria-hidden="true" style="flex-shrink: 0; margin-top: 1px"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg><div style="display: flex; flex-direction: column; gap: 3px"><div style="font-weight: 600; font-size: 15px">Receipt received, waiting for an organiser</div><div style="font-size: 14px; color: var(--fg2)">Usually within a day. Your seats are held until then.</div></div></div>
+      <div style="display: flex; gap: 12px; padding: 14px 16px; border-radius: 14px; background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--warn-dot)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--warn)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" aria-hidden="true" style="flex-shrink: 0; margin-top: 1px"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4M12 17h.01"/></svg><div style="display: flex; flex-direction: column; gap: 8px"><div><div style="font-weight: 600; font-size: 15px">We couldn&#39;t confirm your payment</div><div style="font-size: 14px; color: var(--fg2)">Organiser note: the amount received was ₱500, not ₱700.</div></div><div><button class="btn" type="button" style="height: 34px; padding: 0 14px; border-radius: 10px; background: var(--primary); color: var(--on-primary); font-size: 13px">Fix payment</button></div></div></div>
+      <div style="display: flex; gap: 12px; padding: 14px 16px; border-radius: 14px; background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--bad)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--bad)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" aria-hidden="true" style="flex-shrink: 0; margin-top: 1px"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6M9 9l6 6"/></svg><div style="display: flex; flex-direction: column; gap: 3px"><div style="font-weight: 600; font-size: 15px">This event has been cancelled</div><div style="font-size: 14px; color: var(--fg2)">Tickets no longer scan. If you paid, the organisers will contact you about a refund.</div></div></div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="meta"><b>Inputs</b><span>48px tall on phones, 16px text. Focus ring in grass or lime; invalid in danger with the message right under.</span></div>
+    <div class="day cell">
+      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px">
+        <div style="display: flex; flex-direction: column; gap: 6px"><label for="d-email" style="font-size: 13px; font-weight: 600">Email</label><input id="d-email" type="email" placeholder="you@example.com" style="font: inherit; font-size: 16px; height: 48px; padding: 0 14px; border-radius: 12px; border: 1px solid var(--line); background: var(--surface); color: var(--fg)"></div>
+        <div style="display: flex; flex-direction: column; gap: 6px"><label for="d-ref" style="font-size: 13px; font-weight: 600">Reference number</label><input id="d-ref" type="text" value="1234 567 890123" style="font: inherit; font-size: 16px; height: 48px; padding: 0 14px; border-radius: 12px; border: 2px solid var(--focus); background: var(--surface); color: var(--fg); box-shadow: 0 0 0 4px rgba(57,181,74,.18)"><div style="font-size: 12px; color: var(--fg2)">Shown on the GCash confirmation screen.</div></div>
+        <div style="display: flex; flex-direction: column; gap: 6px"><label for="d-name" style="font-size: 13px; font-weight: 600">Name on tickets</label><input id="d-name" type="text" value="Z" aria-invalid="true" style="font: inherit; font-size: 16px; height: 48px; padding: 0 14px; border-radius: 12px; border: 2px solid var(--bad); background: var(--surface); color: var(--fg)"><div style="font-size: 12px; color: var(--bad); font-weight: 500">Use at least 2 characters.</div></div>
+        <div style="display: flex; flex-direction: column; gap: 6px"><label for="d-search" style="font-size: 13px; font-weight: 600">Search</label><div style="position: relative; display: flex; align-items: center"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true" style="position: absolute; left: 14px; color: var(--fg2)"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><input id="d-search" type="search" placeholder="Name, code or tier" style="font: inherit; font-size: 16px; height: 48px; width: 100%; box-sizing: border-box; padding: 0 14px 0 42px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--fg)"></div></div>
+      </div>
+    </div>
+    <div class="night cell">
+      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px">
+        <div style="display: flex; flex-direction: column; gap: 6px"><label for="n-email" style="font-size: 13px; font-weight: 600">Email</label><input id="n-email" type="email" placeholder="you@example.com" style="font: inherit; font-size: 16px; height: 48px; padding: 0 14px; border-radius: 12px; border: 1px solid var(--line); background: var(--surface); color: var(--fg)"></div>
+        <div style="display: flex; flex-direction: column; gap: 6px"><label for="n-ref" style="font-size: 13px; font-weight: 600">Reference number</label><input id="n-ref" type="text" value="1234 567 890123" style="font: inherit; font-size: 16px; height: 48px; padding: 0 14px; border-radius: 12px; border: 2px solid var(--focus); background: var(--surface); color: var(--fg); box-shadow: 0 0 0 4px rgba(140,198,62,.22)"><div style="font-size: 12px; color: var(--fg2)">Shown on the GCash confirmation screen.</div></div>
+        <div style="display: flex; flex-direction: column; gap: 6px"><label for="n-name" style="font-size: 13px; font-weight: 600">Name on tickets</label><input id="n-name" type="text" value="Z" aria-invalid="true" style="font: inherit; font-size: 16px; height: 48px; padding: 0 14px; border-radius: 12px; border: 2px solid var(--bad); background: var(--surface); color: var(--fg)"><div style="font-size: 12px; color: var(--bad); font-weight: 500">Use at least 2 characters.</div></div>
+        <div style="display: flex; flex-direction: column; gap: 6px"><label for="n-search" style="font-size: 13px; font-weight: 600">Search</label><div style="position: relative; display: flex; align-items: center"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true" style="position: absolute; left: 14px; color: var(--fg2)"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><input id="n-search" type="search" placeholder="Name, code or tier" style="font: inherit; font-size: 16px; height: 48px; width: 100%; box-sizing: border-box; padding: 0 14px 0 42px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--fg)"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="meta"><b>Stat tile</b><span>Display number, eyebrow label, a bar when there is a capacity. Highlight = sun tint.</span></div>
+    <div class="day cell"><div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px">
+      <div style="border-radius: 14px; background: var(--surface); border: 1px solid var(--line); padding: 14px; display: flex; flex-direction: column; gap: 8px"><div class="eyebrow" style="color: var(--fg2)">Reserved</div><div class="display" style="font-size: 32px; font-weight: 800; line-height: 1; font-variant-numeric: tabular-nums">142<span style="font-size: 14px; font-weight: 600; color: var(--fg2)"> / 170</span></div><div style="height: 6px; border-radius: 999px; background: var(--muted); overflow: hidden"><div style="width: 84%; height: 100%; background: var(--primary); border-radius: 999px"></div></div></div>
+      <div style="border-radius: 14px; background: var(--surface); border: 1px solid var(--line); padding: 14px; display: flex; flex-direction: column; gap: 8px"><div class="eyebrow" style="color: var(--fg2)">Checked in</div><div class="display" style="font-size: 32px; font-weight: 800; line-height: 1; font-variant-numeric: tabular-nums">96</div><div style="font-size: 12px; color: var(--fg2)">68% of issued</div></div>
+      <div style="border-radius: 14px; background: var(--warn-bg); border: 1px solid var(--warn-dot); padding: 14px; display: flex; flex-direction: column; gap: 8px"><div class="eyebrow" style="color: var(--warn)">To review</div><div class="display" style="font-size: 32px; font-weight: 800; line-height: 1; font-variant-numeric: tabular-nums">7</div><div style="font-size: 12px; color: var(--warn)">oldest 3h ago</div></div>
+    </div></div>
+    <div class="night cell"><div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px">
+      <div style="border-radius: 14px; background: var(--surface); border: 1px solid var(--line); padding: 14px; display: flex; flex-direction: column; gap: 8px"><div class="eyebrow" style="color: var(--fg2)">Reserved</div><div class="display" style="font-size: 32px; font-weight: 800; line-height: 1; font-variant-numeric: tabular-nums">142<span style="font-size: 14px; font-weight: 600; color: var(--fg2)"> / 170</span></div><div style="height: 6px; border-radius: 999px; background: var(--muted); overflow: hidden"><div style="width: 84%; height: 100%; background: var(--primary); border-radius: 999px"></div></div></div>
+      <div style="border-radius: 14px; background: var(--surface); border: 1px solid var(--line); padding: 14px; display: flex; flex-direction: column; gap: 8px"><div class="eyebrow" style="color: var(--fg2)">Checked in</div><div class="display" style="font-size: 32px; font-weight: 800; line-height: 1; font-variant-numeric: tabular-nums">96</div><div style="font-size: 12px; color: var(--fg2)">68% of issued</div></div>
+      <div style="border-radius: 14px; background: var(--warn-bg); border: 1px solid rgba(245,240,160,.4); padding: 14px; display: flex; flex-direction: column; gap: 8px"><div class="eyebrow" style="color: var(--warn)">To review</div><div class="display" style="font-size: 32px; font-weight: 800; line-height: 1; font-variant-numeric: tabular-nums">7</div><div style="font-size: 12px; color: var(--warn)">oldest 3h ago</div></div>
+    </div></div>
+  </div>
+
+  <div class="row">
+    <div class="meta"><b>Trail stepper</b><span>Pick → Pay → Ticket. The current marker is a mountain flag; done markers fill in.</span></div>
+    <div class="day cell"><div style="display: flex; align-items: center; gap: 0; padding: 4px 8px">
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 6px; width: 72px"><div style="width: 28px; height: 28px; border-radius: 50%; background: var(--primary); color: var(--on-primary); display: grid; place-items: center"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" width="14" height="14" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></div><div style="font-size: 12px; font-weight: 600">Pick</div></div>
+      <div style="flex: 1; height: 0; border-top: 2px dashed var(--primary); margin-bottom: 20px"></div>
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 6px; width: 72px"><div style="width: 32px; height: 32px; border-radius: 50%; background: var(--hi); color: var(--on-hi); display: grid; place-items: center; box-shadow: 0 0 0 4px var(--warn-bg)"><svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16" aria-hidden="true"><path d="M4 20 12 5l8 15H4Z"/></svg></div><div style="font-size: 12px; font-weight: 700">Pay</div></div>
+      <div style="flex: 1; height: 0; border-top: 2px dashed var(--line); margin-bottom: 20px"></div>
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 6px; width: 72px"><div style="width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--line); background: var(--surface); display: grid; place-items: center; color: var(--fg2); font-size: 12px; font-weight: 700">3</div><div style="font-size: 12px; font-weight: 600; color: var(--fg2)">Ticket</div></div>
+    </div></div>
+    <div class="night cell"><div style="display: flex; align-items: center; gap: 0; padding: 4px 8px">
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 6px; width: 72px"><div style="width: 28px; height: 28px; border-radius: 50%; background: var(--primary); color: var(--on-primary); display: grid; place-items: center"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" width="14" height="14" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></div><div style="font-size: 12px; font-weight: 600">Pick</div></div>
+      <div style="flex: 1; height: 0; border-top: 2px dashed var(--primary); margin-bottom: 20px"></div>
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 6px; width: 72px"><div style="width: 32px; height: 32px; border-radius: 50%; background: var(--hi); color: var(--on-hi); display: grid; place-items: center; box-shadow: 0 0 0 4px var(--warn-bg)"><svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16" aria-hidden="true"><path d="M4 20 12 5l8 15H4Z"/></svg></div><div style="font-size: 12px; font-weight: 700">Pay</div></div>
+      <div style="flex: 1; height: 0; border-top: 2px dashed var(--line); margin-bottom: 20px"></div>
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 6px; width: 72px"><div style="width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--line); background: var(--surface); display: grid; place-items: center; color: var(--fg2); font-size: 12px; font-weight: 700">3</div><div style="font-size: 12px; font-weight: 600; color: var(--fg2)">Ticket</div></div>
+    </div></div>
+  </div>
+
+  <div class="row">
+    <div class="meta"><b>Segmented control + stepper</b><span>Both work here. 44px targets so they survive a cold night at the door.</span></div>
+    <div class="day cell">
+      <div role="tablist" aria-label="Check-in method" style="display: flex; gap: 4px; padding: 4px; border-radius: 14px; background: var(--surface2)">
+        <button type="button" role="tab" class="seg {{segScanCls}}" aria-selected="{{segScan}}" onClick="{{pickScan}}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" aria-hidden="true"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2M7 12h10"/></svg>Camera</button>
+        <button type="button" role="tab" class="seg {{segCodeCls}}" aria-selected="{{segCode}}" onClick="{{pickCode}}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" aria-hidden="true"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M8 14h8"/></svg>Type code</button>
+        <button type="button" role="tab" class="seg {{segListCls}}" aria-selected="{{segList}}" onClick="{{pickList}}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>Guest list</button>
+      </div>
+      <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; border-radius: 14px; background: var(--surface); border: 1px solid var(--line)">
+        <div><div style="font-weight: 600">Regular <span style="color: var(--fg2); font-weight: 500">₱350</span></div><div style="font-size: 12px; color: var(--fg2)">Includes one drink · max 4 per order</div></div>
+        <div role="group" aria-label="Regular quantity" style="display: flex; align-items: center; gap: 10px">
+          <button type="button" class="btn" aria-label="Fewer" onClick="{{dec}}" style="width: 44px; height: 44px; border-radius: 999px; background: transparent; color: var(--fg); border-color: var(--line)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" width="18" height="18" aria-hidden="true"><path d="M5 12h14"/></svg></button>
+          <span class="display" aria-live="polite" style="min-width: 28px; text-align: center; font-size: 22px; font-weight: 800; font-variant-numeric: tabular-nums">{{qty}}</span>
+          <button type="button" class="btn" aria-label="More" onClick="{{inc}}" style="width: 44px; height: 44px; border-radius: 999px; background: var(--primary); color: var(--on-primary)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" width="18" height="18" aria-hidden="true"><path d="M5 12h14M12 5v14"/></svg></button>
+        </div>
+      </div>
+    </div>
+    <div class="night cell">
+      <div role="tablist" aria-label="Check-in method" style="display: flex; gap: 4px; padding: 4px; border-radius: 14px; background: var(--surface2)">
+        <button type="button" role="tab" class="seg {{segScanCls}}" aria-selected="{{segScan}}" onClick="{{pickScan}}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" aria-hidden="true"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2M7 12h10"/></svg>Camera</button>
+        <button type="button" role="tab" class="seg {{segCodeCls}}" aria-selected="{{segCode}}" onClick="{{pickCode}}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" aria-hidden="true"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M8 14h8"/></svg>Type code</button>
+        <button type="button" role="tab" class="seg {{segListCls}}" aria-selected="{{segList}}" onClick="{{pickList}}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>Guest list</button>
+      </div>
+      <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; border-radius: 14px; background: var(--surface); border: 1px solid var(--line)">
+        <div><div style="font-weight: 600">Regular <span style="color: var(--fg2); font-weight: 500">₱350</span></div><div style="font-size: 12px; color: var(--fg2)">Includes one drink · max 4 per order</div></div>
+        <div role="group" aria-label="Regular quantity" style="display: flex; align-items: center; gap: 10px">
+          <button type="button" class="btn" aria-label="Fewer" onClick="{{dec}}" style="width: 44px; height: 44px; border-radius: 999px; background: transparent; color: var(--fg); border-color: var(--line)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" width="18" height="18" aria-hidden="true"><path d="M5 12h14"/></svg></button>
+          <span class="display" aria-live="polite" style="min-width: 28px; text-align: center; font-size: 22px; font-weight: 800; font-variant-numeric: tabular-nums">{{qty}}</span>
+          <button type="button" class="btn" aria-label="More" onClick="{{inc}}" style="width: 44px; height: 44px; border-radius: 999px; background: var(--primary); color: var(--on-primary)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" width="18" height="18" aria-hidden="true"><path d="M5 12h14M12 5v14"/></svg></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="meta"><b>Bottom tab bar</b><span>Phones only, top-level pages only. Hidden wherever a sticky CTA owns the bottom edge.</span></div>
+    <div class="day cell"><nav aria-label="Main" style="display: flex; border-radius: 16px; background: var(--surface); border: 1px solid var(--line); padding: 8px 6px 6px">
+      <a href="#" aria-current="page" style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; text-decoration: none; color: var(--primary); font-size: 11px; font-weight: 700"><span style="display: grid; place-items: center; width: 52px; height: 30px; border-radius: 999px; background: var(--ok-bg)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" aria-hidden="true"><path d="M4 20 12 5l8 15H4Z"/><path d="M12 20v-6"/></svg></span>Events</a>
+      <a href="#" style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; text-decoration: none; color: var(--fg2); font-size: 11px; font-weight: 600"><span style="display: grid; place-items: center; width: 52px; height: 30px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" aria-hidden="true"><path d="M2 9a3 3 0 0 1 0 6v3a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-3a3 3 0 0 1 0-6V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M13 5v2M13 17v2M13 11v2"/></svg></span>My tickets</a>
+      <a href="#" style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; text-decoration: none; color: var(--fg2); font-size: 11px; font-weight: 600"><span style="display: grid; place-items: center; width: 52px; height: 30px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" aria-hidden="true"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>Account</a>
+    </nav></div>
+    <div class="night cell"><nav aria-label="Main" style="display: flex; border-radius: 16px; background: var(--surface); border: 1px solid var(--line); padding: 8px 6px 6px">
+      <a href="#" aria-current="page" style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; text-decoration: none; color: var(--primary); font-size: 11px; font-weight: 700"><span style="display: grid; place-items: center; width: 52px; height: 30px; border-radius: 999px; background: var(--ok-bg)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" aria-hidden="true"><path d="M4 20 12 5l8 15H4Z"/><path d="M12 20v-6"/></svg></span>Events</a>
+      <a href="#" style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; text-decoration: none; color: var(--fg2); font-size: 11px; font-weight: 600"><span style="display: grid; place-items: center; width: 52px; height: 30px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" aria-hidden="true"><path d="M2 9a3 3 0 0 1 0 6v3a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-3a3 3 0 0 1 0-6V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M13 5v2M13 17v2M13 11v2"/></svg></span>My tickets</a>
+      <a href="#" style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; text-decoration: none; color: var(--fg2); font-size: 11px; font-weight: 600"><span style="display: grid; place-items: center; width: 52px; height: 30px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" aria-hidden="true"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>Account</a>
+    </nav></div>
+  </div>
+
+  <div class="row">
+    <div class="meta"><b>Stamps</b><span>Rubber-stamp overlays. Rotated, double ring, Bricolage caps.</span></div>
+    <div class="day cell"><div style="display: flex; flex-wrap: wrap; gap: 22px; align-items: center; padding: 6px 10px">
+      <span class="stamp" style="color: var(--ok); padding: 8px 16px; font-size: 13px">Checked in</span>
+      <span class="stamp" style="color: var(--bad); padding: 8px 16px; font-size: 13px">Sold out</span>
+      <span class="stamp" style="color: var(--fg2); padding: 8px 16px; font-size: 13px">Cancelled</span>
+      <span class="stamp" style="color: var(--info); padding: 8px 16px; font-size: 13px">Valid</span>
+    </div></div>
+    <div class="night cell"><div style="display: flex; flex-wrap: wrap; gap: 22px; align-items: center; padding: 6px 10px">
+      <span class="stamp" style="color: var(--ok); padding: 8px 16px; font-size: 13px">Checked in</span>
+      <span class="stamp" style="color: var(--bad); padding: 8px 16px; font-size: 13px">Sold out</span>
+      <span class="stamp" style="color: var(--fg2); padding: 8px 16px; font-size: 13px">Cancelled</span>
+      <span class="stamp" style="color: var(--info); padding: 8px 16px; font-size: 13px">Valid</span>
+    </div></div>
+  </div>
+
+  <div class="row">
+    <div class="meta"><b>Empty state</b><span>A tent under the ridge. Sun by day, moon by night. Copy stays in the house voice.</span></div>
+    <div class="day cell"><div style="border-radius: 16px; border: 1px dashed var(--line); background: var(--surface); padding: 20px; display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center">
+      <svg viewBox="0 0 160 80" width="160" height="80" aria-hidden="true"><circle cx="34" cy="24" r="9" fill="#f7e017"/><path d="M0 80V52L30 30L56 50L90 22L120 48L148 34L160 42V80Z" fill="#8cc63e"/><path d="M0 80V64L40 56L80 70L120 54L160 66V80Z" fill="#39b54a"/><path d="M92 76 114 44l22 32H92Z" fill="#f6f4ec" stroke="#1b5e3b" stroke-width="2.5" stroke-linejoin="round"/><path d="M114 44v32" stroke="#1b5e3b" stroke-width="2.5"/><path d="M106 76h16l-8-14z" fill="#1b5e3b"/></svg>
+      <div class="display" style="font-size: 18px; font-weight: 700">Nothing on the calendar yet</div>
+      <div style="font-size: 14px; color: var(--fg2)">The campfire&#39;s still lit, though. Check back soon.</div>
+      <button class="btn" type="button" style="height: 38px; padding: 0 16px; border-radius: 999px; background: transparent; color: var(--fg); border-color: var(--line); font-size: 14px">Browse past events</button>
+    </div></div>
+    <div class="night cell"><div style="border-radius: 16px; border: 1px dashed var(--line); background: var(--surface); padding: 20px; display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center">
+      <svg viewBox="0 0 160 80" width="160" height="80" aria-hidden="true"><defs><mask id="em"><rect width="160" height="80" fill="#fff"/><circle cx="40" cy="20" r="8" fill="#000"/></mask></defs><g fill="#f5f0a0"><circle cx="12" cy="12" r="1.2"/><circle cx="70" cy="8" r="1.4"/><circle cx="100" cy="16" r="1"/><circle cx="140" cy="10" r="1.3"/><circle cx="122" cy="28" r="1"/></g><circle cx="34" cy="24" r="9" fill="#f5f0a0" mask="url(#em)"/><path d="M0 80V52L30 30L56 50L90 22L120 48L148 34L160 42V80Z" fill="#244d3a"/><path d="M0 80V64L40 56L80 70L120 54L160 66V80Z" fill="#17422f"/><path d="M92 76 114 44l22 32H92Z" fill="#1c2f34" stroke="#8cc63e" stroke-width="2.5" stroke-linejoin="round"/><path d="M114 44v32" stroke="#8cc63e" stroke-width="2.5"/><path d="M106 76h16l-8-14z" fill="#f5f0a0"/></svg>
+      <div class="display" style="font-size: 18px; font-weight: 700">Nothing on the calendar yet</div>
+      <div style="font-size: 14px; color: var(--fg2)">The campfire&#39;s still lit, though. Check back soon.</div>
+      <button class="btn" type="button" style="height: 38px; padding: 0 16px; border-radius: 999px; background: transparent; color: var(--fg); border-color: var(--line); font-size: 14px">Browse past events</button>
+    </div></div>
+  </div>
+
+  <div class="row">
+    <div class="meta"><b>Skeleton</b><span>Shimmer in the surface tint, shaped like the content it replaces. Still under reduced motion.</span></div>
+    <div class="day cell"><div style="display: flex; gap: 12px; align-items: center"><div class="shimmer" style="width: 56px; height: 56px; border-radius: 12px"></div><div style="flex: 1; display: flex; flex-direction: column; gap: 8px"><div class="shimmer" style="height: 14px; width: 60%; border-radius: 6px"></div><div class="shimmer" style="height: 12px; width: 40%; border-radius: 6px"></div></div><div class="shimmer" style="width: 72px; height: 24px; border-radius: 999px"></div></div></div>
+    <div class="night cell"><div style="display: flex; gap: 12px; align-items: center"><div class="shimmer" style="width: 56px; height: 56px; border-radius: 12px"></div><div style="flex: 1; display: flex; flex-direction: column; gap: 8px"><div class="shimmer" style="height: 14px; width: 60%; border-radius: 6px"></div><div class="shimmer" style="height: 12px; width: 40%; border-radius: 6px"></div></div><div class="shimmer" style="width: 72px; height: 24px; border-radius: 999px"></div></div></div>
+  </div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":1900}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { seg: 'scan', qty: 1 };
+  }
+  renderVals() {
+    const seg = this.state.seg;
+    const qty = this.state.qty;
+    return {
+      qty: qty,
+      segScan: seg === 'scan', segCode: seg === 'code', segList: seg === 'list',
+      segScanCls: seg === 'scan' ? 'on' : '',
+      segCodeCls: seg === 'code' ? 'on' : '',
+      segListCls: seg === 'list' ? 'on' : '',
+      pickScan: () => this.setState({ seg: 'scan' }),
+      pickCode: () => this.setState({ seg: 'code' }),
+      pickList: () => this.setState({ seg: 'list' }),
+      inc: () => this.setState({ qty: Math.min(4, qty + 1) }),
+      dec: () => this.setState({ qty: Math.max(0, qty - 1) })
+    };
+  }
+}
+</script>
+</body>
+</html>

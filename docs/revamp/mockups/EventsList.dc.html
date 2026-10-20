@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Admin events</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Geist:wght@400..700&family=Geist+Mono:wght@400..700&display=swap">
+<style>
+body{margin:0}
+a{color:inherit}a:hover{color:inherit}
+.day{--bg:#f6f4ec;--surface:#ffffff;--surface2:#eef2e8;--fg:#0b3d2e;--fg2:#5b7060;--line:rgba(11,61,46,.14);--primary:#1b5e3b;--on-primary:#ffffff;--accent:#1e6fa3;--hi:#f7e017;--on-hi:#0b3d2e;--ok:#1b5e3b;--ok-bg:rgba(57,181,74,.14);--ok-dot:#39b54a;--warn:#6b4f00;--warn-bg:rgba(247,224,23,.26);--warn-dot:#d4b800;--bad:#b4321f;--bad-bg:rgba(180,50,31,.1);--muted:#dfe6d8}
+.display{font-family:'Bricolage Grotesque',Geist,system-ui,sans-serif;letter-spacing:-.02em}
+.mono{font-family:'Geist Mono',ui-monospace,monospace}
+.eyebrow{font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase}
+.btn{font:inherit;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid transparent;font-weight:600;line-height:1;text-decoration:none}
+.side a{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:12px;text-decoration:none;font-size:14px;font-weight:600;color:var(--fg2)}
+.side a[aria-current]{background:var(--surface);color:var(--fg);box-shadow:0 1px 2px rgba(11,61,46,.08)}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;font-size:12px;font-weight:600;white-space:nowrap}
+table{border-collapse:collapse;width:100%;min-width:900px}
+th{text-align:left;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--fg2);padding:12px 14px;border-bottom:1px solid var(--line)}
+td{padding:14px;border-bottom:1px solid var(--line);font-size:14px;vertical-align:middle}
+tr:last-child td{border-bottom:0}
+.meter{height:6px;border-radius:999px;background:var(--muted);overflow:hidden;width:110px}
+.meter span{display:block;height:100%;background:var(--primary);border-radius:999px}
+</style>
+</helmet>
+<div class="day" style="min-height: 100vh; background: var(--bg); color: var(--fg); font-family: Geist, system-ui, sans-serif; display: flex; flex-wrap: wrap">
+
+  <nav class="side" aria-label="Organiser" style="flex: 1 1 220px; max-width: 250px; padding: 20px 16px; box-sizing: border-box; display: flex; flex-direction: column; gap: 6px; border-right: 1px solid var(--line)">
+    <a href="#" style="padding: 4px 8px 16px; gap: 10px"><img src="/_blob/f5b90c3cd8af5b37d6afb44083aaa6b4" alt="" style="width: 34px; height: 34px"><span style="line-height: 1.1"><span class="display" style="display: block; font-size: 16px; font-weight: 700; color: var(--fg)">Base Camp</span><span style="display: inline-block; margin-top: 3px; font-size: 10px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; padding: 2px 7px; border-radius: 999px; background: var(--ok-bg); color: var(--primary)">Admin</span></span></a>
+    <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>Dashboard</a>
+    <a href="#" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="18" height="18" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Events</a>
+    <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="m9 14 2 2 4-4"/></svg>Review queue<span style="margin-left: auto; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px; background: var(--hi); color: var(--on-hi)">7</span></a>
+    <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>Attendees</a>
+    <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2M7 12h10"/></svg>Door scanner</a>
+    <div style="height: 1px; background: var(--line); margin: 8px 4px"></div>
+    <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/></svg>Team</a>
+    <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true"><circle cx="13.5" cy="6.5" r="2.5"/><circle cx="19" cy="12" r="2"/><circle cx="6" cy="12" r="2"/><circle cx="10" cy="18" r="2"/><path d="M12 2a10 10 0 1 0 10 10"/></svg>Ticket lab</a>
+  </nav>
+
+  <main style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column">
+    <div style="display: flex; align-items: center; gap: 12px; padding: 14px 28px; border-bottom: 1px solid var(--line); flex-wrap: wrap">
+      <div style="font-size: 13px; color: var(--fg2)">Organiser · <span style="color: var(--fg); font-weight: 600">Events</span></div>
+      <div style="flex: 1"></div>
+      <a href="#" class="btn" style="height: 38px; padding: 0 16px; border-radius: 999px; background: var(--primary); color: var(--on-primary); font-size: 14px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" width="16" height="16" aria-hidden="true"><path d="M5 12h14M12 5v14"/></svg>New event</a>
+    </div>
+
+    <div style="padding: 24px 28px 40px; display: flex; flex-direction: column; gap: 18px; max-width: 1100px; width: 100%; box-sizing: border-box">
+      <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap">
+        <div><h1 class="display" style="margin: 0; font-size: 32px; line-height: 1; font-weight: 800">Events</h1><div style="font-size: 14px; color: var(--fg2); margin-top: 6px">10 in total · 3 live · ₱81,150 confirmed this year</div></div>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center">
+          <div role="group" aria-label="Filter" style="display: flex; gap: 4px; padding: 4px; border-radius: 999px; background: var(--surface2)">
+            <button type="button" aria-pressed="true" style="font: inherit; cursor: pointer; height: 32px; padding: 0 14px; border-radius: 999px; border: 0; background: var(--surface); color: var(--fg); font-size: 13px; font-weight: 600; box-shadow: 0 1px 2px rgba(11,61,46,.1)">Upcoming <span style="color: var(--fg2)">3</span></button>
+            <button type="button" aria-pressed="false" style="font: inherit; cursor: pointer; height: 32px; padding: 0 14px; border-radius: 999px; border: 0; background: transparent; color: var(--fg2); font-size: 13px; font-weight: 600">Drafts <span>1</span></button>
+            <button type="button" aria-pressed="false" style="font: inherit; cursor: pointer; height: 32px; padding: 0 14px; border-radius: 999px; border: 0; background: transparent; color: var(--fg2); font-size: 13px; font-weight: 600">Past <span>6</span></button>
+            <button type="button" aria-pressed="false" style="font: inherit; cursor: pointer; height: 32px; padding: 0 14px; border-radius: 999px; border: 0; background: transparent; color: var(--fg2); font-size: 13px; font-weight: 600">All</button>
+          </div>
+          <label for="q" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Search events</label>
+          <input id="q" type="search" placeholder="Search" style="font: inherit; font-size: 13px; height: 40px; width: 180px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--fg)">
+        </div>
+      </div>
+
+      <div style="border-radius: 18px; background: var(--surface); border: 1px solid var(--line); overflow-x: auto">
+        <table>
+          <thead><tr><th>Event</th><th>When</th><th>Status</th><th>Reserved</th><th>To review</th><th>Confirmed</th><th><span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Actions</span></th></tr></thead>
+          <tbody>
+            <tr>
+              <td><a href="#" style="display: flex; align-items: center; gap: 12px; text-decoration: none"><span style="width: 44px; height: 44px; border-radius: 10px; background: #1c2f34; flex-shrink: 0; overflow: hidden; display: grid; place-items: center"><span class="display" style="font-size: 11px; font-weight: 800; color: #8cc63e">VOL.3</span></span><span style="min-width: 0"><span style="display: block; font-weight: 600">Base Camp Sessions Vol. 3</span><span style="display: block; font-size: 12px; color: var(--fg2)">Canto, Ketchup Food Community</span></span></a></td>
+              <td><div style="font-weight: 600">Sat, Nov 1</div><div style="font-size: 12px; color: var(--fg2)">7:00 PM · in 12 days</div></td>
+              <td><span class="pill" style="background: var(--ok-bg); color: var(--ok)"><span style="width: 6px; height: 6px; border-radius: 50%; background: var(--ok-dot)"></span>Published</span></td>
+              <td><div style="display: flex; align-items: center; gap: 10px"><div class="meter"><span style="width: 93%"></span></div><span class="mono" style="font-size: 12px">158/170</span></div></td>
+              <td><span class="pill" style="background: var(--hi); color: var(--on-hi)">7 to review</span></td>
+              <td class="mono" style="font-size: 13px">₱41,250</td>
+              <td style="text-align: right"><button type="button" class="btn" aria-label="More actions for Base Camp Sessions Vol. 3" style="width: 34px; height: 34px; border-radius: 999px; background: transparent; color: var(--fg2); border-color: var(--line)"><svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16" aria-hidden="true"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg></button></td>
+            </tr>
+            <tr>
+              <td><a href="#" style="display: flex; align-items: center; gap: 12px; text-decoration: none"><span style="width: 44px; height: 44px; border-radius: 10px; background: linear-gradient(180deg, #3cc5e8, #8cc63e); flex-shrink: 0"></span><span style="min-width: 0"><span style="display: block; font-weight: 600">Sunrise Hike: Mt. Yangbew</span><span style="display: block; font-size: 12px; color: var(--fg2)">Tawang jump-off, La Trinidad</span></span></a></td>
+              <td><div style="font-weight: 600">Sun, Nov 9</div><div style="font-size: 12px; color: var(--ok); font-weight: 600">5:00 AM · tomorrow</div></td>
+              <td><span class="pill" style="background: var(--ok-bg); color: var(--ok)"><span style="width: 6px; height: 6px; border-radius: 50%; background: var(--ok-dot)"></span>Published</span></td>
+              <td><div style="display: flex; align-items: center; gap: 10px"><div class="meter"><span style="width: 55%"></span></div><span class="mono" style="font-size: 12px">22/40</span></div></td>
+              <td><span style="font-size: 12px; color: var(--fg2)">—</span></td>
+              <td class="mono" style="font-size: 13px; color: var(--fg2)">Free</td>
+              <td style="text-align: right"><button type="button" class="btn" aria-label="More actions for Sunrise Hike" style="width: 34px; height: 34px; border-radius: 999px; background: transparent; color: var(--fg2); border-color: var(--line)"><svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16" aria-hidden="true"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg></button></td>
+            </tr>
+            <tr>
+              <td><a href="#" style="display: flex; align-items: center; gap: 12px; text-decoration: none"><span style="width: 44px; height: 44px; border-radius: 10px; background: #1e6fa3; flex-shrink: 0; display: grid; place-items: center"><span class="display" style="font-size: 9px; font-weight: 800; color: #f6f4ec">RUN</span></span><span style="min-width: 0"><span style="display: block; font-weight: 600">Trail Run: John Hay Loop</span><span style="display: block; font-size: 12px; color: var(--bad); font-weight: 600">Paid tiers, no GCash details</span></span></a></td>
+              <td><div style="font-weight: 600">Sat, Nov 15</div><div style="font-size: 12px; color: var(--fg2)">6:30 AM · sales open Oct 25</div></td>
+              <td><span class="pill" style="background: var(--ok-bg); color: var(--ok)"><span style="width: 6px; height: 6px; border-radius: 50%; background: var(--ok-dot)"></span>Published</span></td>
+              <td><div style="display: flex; align-items: center; gap: 10px"><div class="meter"><span style="width: 0%"></span></div><span class="mono" style="font-size: 12px">0/60</span></div></td>
+              <td><span style="font-size: 12px; color: var(--fg2)">—</span></td>
+              <td class="mono" style="font-size: 13px">₱0</td>
+              <td style="text-align: right"><button type="button" class="btn" aria-label="More actions for Trail Run" style="width: 34px; height: 34px; border-radius: 999px; background: transparent; color: var(--fg2); border-color: var(--line)"><svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16" aria-hidden="true"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg></button></td>
+            </tr>
+            <tr style="opacity: .85">
+              <td><a href="#" style="display: flex; align-items: center; gap: 12px; text-decoration: none"><span style="width: 44px; height: 44px; border-radius: 10px; background: var(--surface2); border: 1px dashed var(--line); flex-shrink: 0; display: grid; place-items: center; color: var(--fg2)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.1-3.1a2 2 0 0 0-2.8 0L6 21"/></svg></span><span style="min-width: 0"><span style="display: block; font-weight: 600">Anime Night: Akatsuki Edition</span><span style="display: block; font-size: 12px; color: var(--fg2)">Baden Powell Hall · needs a poster</span></span></a></td>
+              <td><div style="font-weight: 600">Sat, Nov 22</div><div style="font-size: 12px; color: var(--fg2)">6:00 PM</div></td>
+              <td><span class="pill" style="background: var(--surface2); color: var(--fg2)"><span style="width: 6px; height: 6px; border-radius: 50%; background: var(--fg2)"></span>Draft</span></td>
+              <td><div style="display: flex; align-items: center; gap: 10px"><div class="meter"><span style="width: 0%"></span></div><span class="mono" style="font-size: 12px">0/80</span></div></td>
+              <td><span style="font-size: 12px; color: var(--fg2)">—</span></td>
+              <td class="mono" style="font-size: 13px; color: var(--fg2)">—</td>
+              <td style="text-align: right"><span class="btn" style="height: 32px; padding: 0 12px; border-radius: 999px; background: transparent; color: var(--fg); border-color: var(--line); font-size: 12px">Publish checklist</span></td>
+            </tr>
+            <tr style="opacity: .7">
+              <td><a href="#" style="display: flex; align-items: center; gap: 12px; text-decoration: none"><span style="width: 44px; height: 44px; border-radius: 10px; background: linear-gradient(180deg, #27404a, #1c2f34); flex-shrink: 0"></span><span style="min-width: 0"><span style="display: block; font-weight: 600">Base Camp Sessions Vol. 2</span><span style="display: block; font-size: 12px; color: var(--fg2)">Canto · 142 came</span></span></a></td>
+              <td><div style="font-weight: 600">Sat, Sep 6</div><div style="font-size: 12px; color: var(--fg2)">7:00 PM</div></td>
+              <td><span class="pill" style="background: var(--surface2); color: var(--fg2)"><span style="width: 6px; height: 6px; border-radius: 50%; background: var(--fg2)"></span>Ended</span></td>
+              <td><div style="display: flex; align-items: center; gap: 10px"><div class="meter"><span style="width: 95%; background: var(--fg2)"></span></div><span class="mono" style="font-size: 12px">142/150</span></div></td>
+              <td><span style="font-size: 12px; color: var(--fg2)">—</span></td>
+              <td class="mono" style="font-size: 13px">₱39,900</td>
+              <td style="text-align: right"><button type="button" class="btn" aria-label="More actions for Sessions Vol. 2" style="width: 34px; height: 34px; border-radius: 999px; background: transparent; color: var(--fg2); border-color: var(--line)"><svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16" aria-hidden="true"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg></button></td>
+            </tr>
+            <tr style="opacity: .7">
+              <td><a href="#" style="display: flex; align-items: center; gap: 12px; text-decoration: none"><span style="width: 44px; height: 44px; border-radius: 10px; background: var(--bad-bg); flex-shrink: 0; display: grid; place-items: center; color: var(--bad)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/></svg></span><span style="min-width: 0"><span style="display: block; font-weight: 600; text-decoration: line-through">Halloween Jam</span><span style="display: block; font-size: 12px; color: var(--fg2)">Venue flooded · 31 refunds sent</span></span></a></td>
+              <td><div style="font-weight: 600">Fri, Oct 31</div><div style="font-size: 12px; color: var(--fg2)">8:00 PM</div></td>
+              <td><span class="pill" style="background: var(--bad-bg); color: var(--bad)"><span style="width: 6px; height: 6px; border-radius: 50%; background: var(--bad)"></span>Cancelled</span></td>
+              <td><div style="display: flex; align-items: center; gap: 10px"><div class="meter"><span style="width: 0%"></span></div><span class="mono" style="font-size: 12px; color: var(--fg2)">voided</span></div></td>
+              <td><span style="font-size: 12px; color: var(--fg2)">—</span></td>
+              <td class="mono" style="font-size: 13px; color: var(--fg2)">—</td>
+              <td style="text-align: right"><button type="button" class="btn" aria-label="More actions for Halloween Jam" style="width: 34px; height: 34px; border-radius: 999px; background: transparent; color: var(--fg2); border-color: var(--line)"><svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16" aria-hidden="true"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg></button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="font-size: 12px; color: var(--fg2)">Rows open the event overview. Reserved counts holds that haven&#39;t expired. Confirmed is money from approved bookings only.</div>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

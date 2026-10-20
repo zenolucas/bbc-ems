@@ -8,6 +8,10 @@ Events, gigs and paperless QR tickets for the Baguio Base Camp community.
 - Door staff scan with their phone. The scanner works offline and syncs when signal returns.
 - Organisers give volunteers **door crew** access from `/admin/team`: scanner and check-in only, no emails, payments or event editing.
 
+## Design
+
+The UI follows the "Alpine Day / Starlit Night" system: light mode is a pine morning, dark mode a starlit ridge. Tokens, components and the page-by-page spec live in [`docs/revamp/README.md`](docs/revamp/README.md); the mockups are in `docs/revamp/mockups/`.
+
 ## Stack
 
 Next.js 16 (App Router) · Tailwind v4 + shadcn/ui · Drizzle ORM + Postgres (Neon in prod) · Better Auth (magic link) · Resend · Vercel Blob · resvg + bwip-js for ticket PNGs · @zxing/browser for camera scanning.

@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Ticket wallet</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Geist:wght@400..700&family=Geist+Mono:wght@400..700&display=swap">
+<style>
+body{margin:0}
+a{color:inherit}a:hover{color:inherit}
+.night{--bg:#0e1c20;--surface:#1c2f34;--surface2:#27404a;--fg:#e8f0e6;--fg2:#a9bfae;--line:rgba(232,240,230,.16);--primary:#8cc63e;--on-primary:#0b3d2e;--accent:#7fd8f0;--ok:#a6d85a;--ok-bg:rgba(140,198,62,.16);--ok-dot:#8cc63e;--info:#7fd8f0;--info-bg:rgba(127,216,240,.14)}
+.display{font-family:'Bricolage Grotesque',Geist,system-ui,sans-serif;letter-spacing:-.02em}
+.mono{font-family:'Geist Mono',ui-monospace,monospace}
+.eyebrow{font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase}
+.btn{font:inherit;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid transparent;font-weight:600;line-height:1;text-decoration:none}
+.phone{width:390px;height:844px;border-radius:40px;overflow:hidden;position:relative;display:flex;flex-direction:column;font-family:Geist,system-ui,sans-serif;background:var(--bg);color:var(--fg);box-shadow:0 24px 60px rgba(0,0,0,.35)}
+.stamp{display:inline-flex;align-items:center;justify-content:center;border:4px double currentColor;border-radius:999px;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;letter-spacing:.16em;text-transform:uppercase;transform:rotate(-14deg)}
+.lbl{font-size:13px;font-weight:700;color:#e8f0e6;display:flex;align-items:center;gap:8px;padding:0 0 10px 6px}
+.lbl span{font-weight:500;color:#a9bfae}
+</style>
+</helmet>
+<div style="width: 860px; height: 900px; box-sizing: border-box; background: #0b161a; padding: 20px; display: flex; gap: 40px; overflow: hidden; font-family: Geist, system-ui, sans-serif">
+
+  <div style="display: flex; flex-direction: column">
+    <div class="lbl">Ticket wallet <span>· swipe between the booking&#39;s tickets</span></div>
+    <div class="night phone">
+      <header style="height: 56px; display: flex; align-items: center; gap: 6px; padding: 0 8px; flex-shrink: 0">
+        <a href="#" class="btn" aria-label="Back to booking" style="width: 44px; height: 44px; border-radius: 999px; background: transparent; color: var(--fg)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></a>
+        <div style="font-size: 15px; font-weight: 600">Your ticket</div>
+        <div style="margin-left: auto; margin-right: 8px; display: flex; align-items: center; gap: 8px"><span style="font-size: 12px; color: var(--fg2)">1 of 2</span><span style="display: inline-flex; align-items: center; gap: 6px; padding: 5px 11px; border-radius: 999px; background: var(--ok-bg); color: var(--ok); font-size: 12px; font-weight: 600"><span style="width: 7px; height: 7px; border-radius: 50%; background: var(--ok-dot)"></span>Valid</span></div>
+      </header>
+
+      <div style="position: relative; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; padding: 0 20px">
+        <div style="position: absolute; left: 50%; top: 46%; width: 420px; height: 420px; transform: translate(-50%, -50%); background: radial-gradient(closest-side, rgba(140,198,62,.28), rgba(60,197,232,.08) 60%, transparent); pointer-events: none"></div>
+        <svg viewBox="0 0 300 440" width="300" height="440" role="img" aria-label="Ticket BBC-7K3M-PX2Q for Zen Lucas, Regular, Base Camp Sessions Vol. 3" style="position: relative; filter: drop-shadow(0 20px 40px rgba(0,0,0,.45))">
+          <defs><linearGradient id="tg" x1="0" x2="1"><stop offset="0" stop-color="#3cc5e8"/><stop offset=".5" stop-color="#1e6fa3"/><stop offset="1" stop-color="#1c2f34"/></linearGradient></defs>
+          <rect width="300" height="440" rx="18" fill="#27404a"/>
+          <rect x="0" y="0" width="300" height="8" rx="4" fill="url(#tg)"/>
+          <text x="24" y="46" font-family="Geist, sans-serif" font-size="7.5" font-weight="700" fill="#39b54a" letter-spacing="2.2">BAGUIO BASE CAMP</text>
+          <text x="24" y="70" font-family="Bricolage Grotesque, sans-serif" font-size="17" font-weight="800" fill="#e8f0e6" letter-spacing="-.3">Base Camp Sessions Vol. 3</text>
+          <text x="24" y="88" font-family="Geist, sans-serif" font-size="8.5" fill="#a9bfae">Sat, Nov 1, 2026 · 7:00 PM</text>
+          <text x="24" y="101" font-family="Geist, sans-serif" font-size="8.5" fill="#a9bfae">Canto, Ketchup Food Community</text>
+          <rect x="50" y="120" width="200" height="200" rx="10" fill="#1c2f34"/>
+          <path fill="#e8f0e6" d="M130 136h8v8h-8zM146 136h8v8h-8zM154 136h8v8h-8zM170 136h8v8h-8zM138 144h8v8h-8zM162 144h8v8h-8zM170 144h8v8h-8zM130 152h8v8h-8zM154 152h8v8h-8zM170 152h8v8h-8zM138 160h8v8h-8zM146 160h8v8h-8zM170 160h8v8h-8zM130 168h8v8h-8zM162 168h8v8h-8zM146 176h8v8h-8zM154 176h8v8h-8zM170 176h8v8h-8zM130 184h8v8h-8zM138 184h8v8h-8zM162 184h8v8h-8zM66 192h8v8h-8zM82 192h8v8h-8zM90 192h8v8h-8zM106 192h8v8h-8zM122 192h8v8h-8zM138 192h8v8h-8zM154 192h8v8h-8zM170 192h8v8h-8zM178 192h8v8h-8zM194 192h8v8h-8zM210 192h8v8h-8zM226 192h8v8h-8zM74 200h8v8h-8zM98 200h8v8h-8zM114 200h8v8h-8zM122 200h8v8h-8zM170 200h8v8h-8zM186 200h8v8h-8zM202 200h8v8h-8zM218 200h8v8h-8zM66 208h8v8h-8zM90 208h8v8h-8zM106 208h8v8h-8zM122 208h8v8h-8zM178 208h8v8h-8zM194 208h8v8h-8zM210 208h8v8h-8zM226 208h8v8h-8zM82 216h8v8h-8zM98 216h8v8h-8zM114 216h8v8h-8zM122 216h8v8h-8zM170 216h8v8h-8zM186 216h8v8h-8zM202 216h8v8h-8zM218 216h8v8h-8zM74 224h8v8h-8zM90 224h8v8h-8zM106 224h8v8h-8zM122 224h8v8h-8zM178 224h8v8h-8zM186 224h8v8h-8zM210 224h8v8h-8zM226 224h8v8h-8zM66 232h8v8h-8zM82 232h8v8h-8zM114 232h8v8h-8zM122 232h8v8h-8zM170 232h8v8h-8zM194 232h8v8h-8zM218 232h8v8h-8zM74 240h8v8h-8zM98 240h8v8h-8zM106 240h8v8h-8zM122 240h8v8h-8zM130 240h8v8h-8zM146 240h8v8h-8zM154 240h8v8h-8zM178 240h8v8h-8zM202 240h8v8h-8zM226 240h8v8h-8zM130 248h8v8h-8zM138 248h8v8h-8zM162 248h8v8h-8zM170 248h8v8h-8zM186 248h8v8h-8zM210 248h8v8h-8zM218 248h8v8h-8zM146 256h8v8h-8zM154 256h8v8h-8zM178 256h8v8h-8zM194 256h8v8h-8zM226 256h8v8h-8zM130 264h8v8h-8zM162 264h8v8h-8zM170 264h8v8h-8zM186 264h8v8h-8zM202 264h8v8h-8zM218 264h8v8h-8zM138 272h8v8h-8zM146 272h8v8h-8zM178 272h8v8h-8zM210 272h8v8h-8zM226 272h8v8h-8zM130 280h8v8h-8zM154 280h8v8h-8zM170 280h8v8h-8zM194 280h8v8h-8zM202 280h8v8h-8zM146 288h8v8h-8zM162 288h8v8h-8zM178 288h8v8h-8zM186 288h8v8h-8zM218 288h8v8h-8zM130 296h8v8h-8zM138 296h8v8h-8zM170 296h8v8h-8zM194 296h8v8h-8zM210 296h8v8h-8zM226 296h8v8h-8z"/>
+          <g><rect x="66" y="136" width="56" height="56" fill="#3cc5e8"/><rect x="74" y="144" width="40" height="40" fill="#1c2f34"/><rect x="82" y="152" width="24" height="24" fill="#3cc5e8"/></g>
+          <g><rect x="178" y="136" width="56" height="56" fill="#8cc63e"/><rect x="186" y="144" width="40" height="40" fill="#1c2f34"/><rect x="194" y="152" width="24" height="24" fill="#8cc63e"/></g>
+          <g><rect x="66" y="248" width="56" height="56" fill="#39b54a"/><rect x="74" y="256" width="40" height="40" fill="#1c2f34"/><rect x="82" y="264" width="24" height="24" fill="#39b54a"/></g>
+          <g transform="translate(128 198)"><circle cx="22" cy="22" r="22" fill="#1c2f34"/><circle cx="22" cy="22" r="19" fill="none" stroke="#3cc5e8" stroke-width="2.2"/><path d="M5 31 15 14l5 8 3-4 4 7 4-5 9 11Z" fill="#39b54a"/><path d="M5 31 15 14l5 8-3 4 4 5Z" fill="#8cc63e"/><rect x="5" y="32" width="34" height="2" fill="#1b5e3b"/><circle cx="12" cy="11" r="2.2" fill="#f7e017"/></g>
+          <text x="150" y="354" text-anchor="middle" font-family="Geist Mono, monospace" font-size="18" font-weight="700" fill="#e8f0e6" letter-spacing="2">BBC-7K3M-PX2Q</text>
+          <text x="150" y="374" text-anchor="middle" font-family="Bricolage Grotesque, sans-serif" font-size="11" font-weight="700" fill="#e8f0e6">Zen Lucas</text>
+          <text x="150" y="388" text-anchor="middle" font-family="Geist, sans-serif" font-size="8" fill="#a9bfae">Regular · includes one drink</text>
+          <line x1="24" x2="276" y1="404" y2="404" stroke="#3a5560" stroke-dasharray="3 5"/>
+          <text x="150" y="424" text-anchor="middle" font-family="Geist, sans-serif" font-size="7" fill="#a9bfae">Show this code at the door · one scan per ticket</text>
+        </svg>
+        <div style="position: relative; display: flex; align-items: center; gap: 8px"><span style="width: 8px; height: 8px; border-radius: 50%; background: var(--fg)"></span><span style="width: 8px; height: 8px; border-radius: 50%; background: var(--fg); opacity: .3"></span><span style="font-size: 12px; color: var(--fg2); margin-left: 6px">Swipe for Mika&#39;s ticket →</span></div>
+      </div>
+
+      <div style="padding: 0 16px 10px; display: flex; gap: 8px">
+        <a href="#" class="btn" style="flex: 1; height: 44px; border-radius: 999px; background: transparent; color: var(--fg); border-color: var(--line); font-size: 13px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>Save image</a>
+        <button type="button" class="btn" style="flex: 1; height: 44px; border-radius: 999px; background: transparent; color: var(--fg); border-color: var(--line); font-size: 13px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy code</button>
+        <button type="button" class="btn" aria-label="Share ticket" style="width: 44px; height: 44px; border-radius: 999px; background: transparent; color: var(--fg); border-color: var(--line)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" aria-hidden="true"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8M16 6l-4-4-4 4M12 2v13"/></svg></button>
+      </div>
+      <div style="padding: 0 24px 10px; font-size: 12px; color: var(--fg2); text-align: center; line-height: 1.45">Turn brightness up at the door. No signal? Save the image now, or give the crew the code.</div>
+      <div style="margin: 0 16px 22px; padding: 12px 14px; border-radius: 16px; background: var(--surface); border: 1px solid var(--line); display: flex; align-items: center; gap: 12px; font-size: 13px">
+        <div style="flex: 1; min-width: 0"><div style="font-weight: 600">Sat, Nov 1 · doors 7:00 PM</div><div style="color: var(--fg2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Canto, Romulo Dr · <a href="#" style="color: var(--accent); font-weight: 600; text-decoration: none">Map ↗</a></div></div>
+        <a href="#" class="btn" style="height: 36px; padding: 0 12px; border-radius: 999px; background: var(--surface2); color: var(--fg); font-size: 12px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="14" height="14" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Calendar</a>
+      </div>
+    </div>
+  </div>
+
+  <div style="display: flex; flex-direction: column">
+    <div class="lbl">Checked in <span>· stamp overlay, ticket dimmed, calm confirmation</span></div>
+    <div class="night phone">
+      <header style="height: 56px; display: flex; align-items: center; gap: 6px; padding: 0 8px; flex-shrink: 0">
+        <a href="#" class="btn" aria-label="Back to booking" style="width: 44px; height: 44px; border-radius: 999px; background: transparent; color: var(--fg)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></a>
+        <div style="font-size: 15px; font-weight: 600">Your ticket</div>
+        <div style="margin-left: auto; margin-right: 8px; display: flex; align-items: center; gap: 8px"><span style="font-size: 12px; color: var(--fg2)">1 of 2</span><span style="display: inline-flex; align-items: center; gap: 6px; padding: 5px 11px; border-radius: 999px; background: var(--surface2); color: var(--fg2); font-size: 12px; font-weight: 600"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" width="12" height="12" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Checked in</span></div>
+      </header>
+
+      <div style="margin: 4px 16px 0; padding: 12px 14px; border-radius: 14px; background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--info); display: flex; gap: 10px; align-items: center"><svg viewBox="0 0 24 24" fill="none" stroke="var(--info)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" aria-hidden="true" style="flex-shrink: 0"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg><div style="font-size: 13px; line-height: 1.4"><span style="font-weight: 600">Scanned at 8:14 PM.</span> <span style="color: var(--fg2)">Enjoy the night. This QR won&#39;t scan again.</span></div></div>
+
+      <div style="position: relative; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; padding: 0 20px">
+        <svg viewBox="0 0 300 440" width="300" height="440" role="img" aria-label="Ticket BBC-7K3M-PX2Q for Zen Lucas, already checked in" style="position: relative; opacity: .55; filter: grayscale(.4) drop-shadow(0 20px 40px rgba(0,0,0,.45))">
+          <defs><linearGradient id="tg2" x1="0" x2="1"><stop offset="0" stop-color="#3cc5e8"/><stop offset=".5" stop-color="#1e6fa3"/><stop offset="1" stop-color="#1c2f34"/></linearGradient></defs>
+          <rect width="300" height="440" rx="18" fill="#27404a"/>
+          <rect x="0" y="0" width="300" height="8" rx="4" fill="url(#tg2)"/>
+          <text x="24" y="46" font-family="Geist, sans-serif" font-size="7.5" font-weight="700" fill="#39b54a" letter-spacing="2.2">BAGUIO BASE CAMP</text>
+          <text x="24" y="70" font-family="Bricolage Grotesque, sans-serif" font-size="17" font-weight="800" fill="#e8f0e6" letter-spacing="-.3">Base Camp Sessions Vol. 3</text>
+          <text x="24" y="88" font-family="Geist, sans-serif" font-size="8.5" fill="#a9bfae">Sat, Nov 1, 2026 · 7:00 PM</text>
+          <text x="24" y="101" font-family="Geist, sans-serif" font-size="8.5" fill="#a9bfae">Canto, Ketchup Food Community</text>
+          <rect x="50" y="120" width="200" height="200" rx="10" fill="#1c2f34"/>
+          <path fill="#e8f0e6" d="M130 136h8v8h-8zM146 136h8v8h-8zM154 136h8v8h-8zM170 136h8v8h-8zM138 144h8v8h-8zM162 144h8v8h-8zM170 144h8v8h-8zM130 152h8v8h-8zM154 152h8v8h-8zM170 152h8v8h-8zM138 160h8v8h-8zM146 160h8v8h-8zM170 160h8v8h-8zM130 168h8v8h-8zM162 168h8v8h-8zM146 176h8v8h-8zM154 176h8v8h-8zM170 176h8v8h-8zM130 184h8v8h-8zM138 184h8v8h-8zM162 184h8v8h-8zM66 192h8v8h-8zM82 192h8v8h-8zM90 192h8v8h-8zM106 192h8v8h-8zM122 192h8v8h-8zM138 192h8v8h-8zM154 192h8v8h-8zM170 192h8v8h-8zM178 192h8v8h-8zM194 192h8v8h-8zM210 192h8v8h-8zM226 192h8v8h-8zM74 200h8v8h-8zM98 200h8v8h-8zM114 200h8v8h-8zM122 200h8v8h-8zM170 200h8v8h-8zM186 200h8v8h-8zM202 200h8v8h-8zM218 200h8v8h-8zM66 208h8v8h-8zM90 208h8v8h-8zM106 208h8v8h-8zM122 208h8v8h-8zM178 208h8v8h-8zM194 208h8v8h-8zM210 208h8v8h-8zM226 208h8v8h-8zM82 216h8v8h-8zM98 216h8v8h-8zM114 216h8v8h-8zM122 216h8v8h-8zM170 216h8v8h-8zM186 216h8v8h-8zM202 216h8v8h-8zM218 216h8v8h-8zM74 224h8v8h-8zM90 224h8v8h-8zM106 224h8v8h-8zM122 224h8v8h-8zM178 224h8v8h-8zM186 224h8v8h-8zM210 224h8v8h-8zM226 224h8v8h-8zM66 232h8v8h-8zM82 232h8v8h-8zM114 232h8v8h-8zM122 232h8v8h-8zM170 232h8v8h-8zM194 232h8v8h-8zM218 232h8v8h-8zM74 240h8v8h-8zM98 240h8v8h-8zM106 240h8v8h-8zM122 240h8v8h-8zM130 240h8v8h-8zM146 240h8v8h-8zM154 240h8v8h-8zM178 240h8v8h-8zM202 240h8v8h-8zM226 240h8v8h-8zM130 248h8v8h-8zM138 248h8v8h-8zM162 248h8v8h-8zM170 248h8v8h-8zM186 248h8v8h-8zM210 248h8v8h-8zM218 248h8v8h-8zM146 256h8v8h-8zM154 256h8v8h-8zM178 256h8v8h-8zM194 256h8v8h-8zM226 256h8v8h-8zM130 264h8v8h-8zM162 264h8v8h-8zM170 264h8v8h-8zM186 264h8v8h-8zM202 264h8v8h-8zM218 264h8v8h-8zM138 272h8v8h-8zM146 272h8v8h-8zM178 272h8v8h-8zM210 272h8v8h-8zM226 272h8v8h-8zM130 280h8v8h-8zM154 280h8v8h-8zM170 280h8v8h-8zM194 280h8v8h-8zM202 280h8v8h-8zM146 288h8v8h-8zM162 288h8v8h-8zM178 288h8v8h-8zM186 288h8v8h-8zM218 288h8v8h-8zM130 296h8v8h-8zM138 296h8v8h-8zM170 296h8v8h-8zM194 296h8v8h-8zM210 296h8v8h-8zM226 296h8v8h-8z"/>
+          <g><rect x="66" y="136" width="56" height="56" fill="#3cc5e8"/><rect x="74" y="144" width="40" height="40" fill="#1c2f34"/><rect x="82" y="152" width="24" height="24" fill="#3cc5e8"/></g>
+          <g><rect x="178" y="136" width="56" height="56" fill="#8cc63e"/><rect x="186" y="144" width="40" height="40" fill="#1c2f34"/><rect x="194" y="152" width="24" height="24" fill="#8cc63e"/></g>
+          <g><rect x="66" y="248" width="56" height="56" fill="#39b54a"/><rect x="74" y="256" width="40" height="40" fill="#1c2f34"/><rect x="82" y="264" width="24" height="24" fill="#39b54a"/></g>
+          <g transform="translate(128 198)"><circle cx="22" cy="22" r="22" fill="#1c2f34"/><circle cx="22" cy="22" r="19" fill="none" stroke="#3cc5e8" stroke-width="2.2"/><path d="M5 31 15 14l5 8 3-4 4 7 4-5 9 11Z" fill="#39b54a"/><path d="M5 31 15 14l5 8-3 4 4 5Z" fill="#8cc63e"/><rect x="5" y="32" width="34" height="2" fill="#1b5e3b"/><circle cx="12" cy="11" r="2.2" fill="#f7e017"/></g>
+          <text x="150" y="354" text-anchor="middle" font-family="Geist Mono, monospace" font-size="18" font-weight="700" fill="#e8f0e6" letter-spacing="2">BBC-7K3M-PX2Q</text>
+          <text x="150" y="374" text-anchor="middle" font-family="Bricolage Grotesque, sans-serif" font-size="11" font-weight="700" fill="#e8f0e6">Zen Lucas</text>
+          <text x="150" y="388" text-anchor="middle" font-family="Geist, sans-serif" font-size="8" fill="#a9bfae">Regular · includes one drink</text>
+          <line x1="24" x2="276" y1="404" y2="404" stroke="#3a5560" stroke-dasharray="3 5"/>
+          <text x="150" y="424" text-anchor="middle" font-family="Geist, sans-serif" font-size="7" fill="#a9bfae">Show this code at the door · one scan per ticket</text>
+        </svg>
+        <span class="stamp" aria-hidden="true" style="position: absolute; left: 50%; top: 44%; margin: -34px 0 0 -118px; width: 236px; height: 68px; box-sizing: border-box; color: #8cc63e; font-size: 24px; background: rgba(14,28,32,.35); backdrop-filter: blur(1px)">Checked in</span>
+        <div style="position: relative; display: flex; align-items: center; gap: 8px"><span style="width: 8px; height: 8px; border-radius: 50%; background: var(--fg)"></span><span style="width: 8px; height: 8px; border-radius: 50%; background: var(--fg); opacity: .3"></span><span style="font-size: 12px; color: var(--fg2); margin-left: 6px">Mika&#39;s ticket is still valid →</span></div>
+      </div>
+
+      <div style="margin: 0 16px 22px; padding: 12px 14px; border-radius: 16px; background: var(--surface); border: 1px solid var(--line); display: flex; align-items: center; gap: 12px; font-size: 13px">
+        <div style="flex: 1; min-width: 0"><div style="font-weight: 600">Sat, Nov 1 · doors 7:00 PM</div><div style="color: var(--fg2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Canto, Romulo Dr · first act 8 PM</div></div>
+        <a href="#" class="btn" style="height: 36px; padding: 0 12px; border-radius: 999px; background: var(--surface2); color: var(--fg); font-size: 12px">Booking</a>
+      </div>
+    </div>
+  </div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":860,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Event detail on a phone</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Geist:wght@400..700&family=Geist+Mono:wght@400..700&display=swap">
+<style>
+body{margin:0}
+a{color:inherit}a:hover{color:inherit}
+.day{--bg:#f6f4ec;--surface:#ffffff;--surface2:#eef2e8;--fg:#0b3d2e;--fg2:#5b7060;--line:rgba(11,61,46,.14);--primary:#1b5e3b;--on-primary:#ffffff;--accent:#1e6fa3;--hi:#f7e017;--on-hi:#0b3d2e;--muted:#dfe6d8;--ok-bg:rgba(57,181,74,.14)}
+.night{--bg:#0e1c20;--surface:#1c2f34;--surface2:#27404a;--fg:#e8f0e6;--fg2:#a9bfae;--line:rgba(232,240,230,.16);--primary:#8cc63e;--on-primary:#0b3d2e;--accent:#7fd8f0;--hi:#f5f0a0;--on-hi:#0b3d2e;--muted:#27404a;--ok-bg:rgba(140,198,62,.16)}
+.display{font-family:'Bricolage Grotesque',Geist,system-ui,sans-serif;letter-spacing:-.02em}
+.mono{font-family:'Geist Mono',ui-monospace,monospace}
+.eyebrow{font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase}
+.btn{font:inherit;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid transparent;font-weight:600;line-height:1;text-decoration:none}
+.phone{width:390px;height:1560px;border-radius:40px;overflow:hidden;position:relative;display:flex;flex-direction:column;font-family:Geist,system-ui,sans-serif;background:var(--bg);color:var(--fg);box-shadow:0 24px 60px rgba(11,61,46,.2)}
+.prose h3{font-family:'Bricolage Grotesque',sans-serif;font-size:17px;font-weight:700;margin:14px 0 6px}
+.prose ul{margin:0;padding-left:18px;font-size:14px;line-height:1.6;color:var(--fg2)}
+.tier{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;border-top:1px solid var(--line)}
+</style>
+</helmet>
+<div style="width: 860px; height: 1600px; box-sizing: border-box; background: #e6eae1; padding: 20px; display: flex; gap: 40px; overflow: hidden">
+
+  <div class="day phone">
+    <header style="position: absolute; left: 0; right: 0; top: 0; height: 56px; z-index: 2; display: flex; align-items: center; justify-content: space-between; padding: 0 12px">
+      <a href="#" class="btn" aria-label="Back to events" style="width: 40px; height: 40px; border-radius: 999px; background: rgba(246,244,236,.85); color: #0b3d2e; backdrop-filter: blur(8px)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></a>
+      <button type="button" class="btn" aria-label="Share event" style="width: 40px; height: 40px; border-radius: 999px; background: rgba(246,244,236,.85); color: #0b3d2e; backdrop-filter: blur(8px)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8M16 6l-4-4-4 4M12 2v13"/></svg></button>
+    </header>
+
+    <div style="position: relative; height: 320px; flex-shrink: 0; overflow: hidden; background: #1c2f34">
+      <svg viewBox="0 0 390 320" preserveAspectRatio="xMidYMid slice" aria-hidden="true" style="position: absolute; inset: 0; width: 100%; height: 100%"><rect width="390" height="320" fill="#1c2f34"/><circle cx="300" cy="100" r="110" fill="#8cc63e"/><g stroke="#f5f0a0" stroke-width="4" opacity=".9"><path d="M0 230h390M0 248h390M0 266h390"/></g><text x="22" y="190" font-family="Bricolage Grotesque, sans-serif" font-size="104" font-weight="800" fill="#f6f4ec" letter-spacing="-5">VOL.3</text><text x="24" y="60" font-family="Geist, sans-serif" font-size="13" font-weight="700" fill="#3cc5e8" letter-spacing="4">BASE CAMP SESSIONS</text></svg>
+      <div style="position: absolute; inset: 0; background: linear-gradient(180deg, rgba(11,22,26,0) 40%, rgba(11,22,26,.85) 100%)"></div>
+      <div style="position: absolute; left: 12px; top: 64px; background: var(--bg); border-radius: 12px; padding: 6px 10px; text-align: center; line-height: 1; box-shadow: 0 2px 8px rgba(0,0,0,.25)"><div class="eyebrow" style="font-size: 9px; color: var(--fg2)">Nov</div><div class="display" style="font-size: 22px; font-weight: 800">1</div></div>
+      <span style="position: absolute; right: 12px; top: 68px; padding: 6px 11px; border-radius: 999px; background: #f7e017; color: #0b3d2e; font-size: 12px; font-weight: 700">Few left</span>
+      <div style="position: absolute; left: 20px; right: 20px; bottom: 18px; display: flex; flex-direction: column; gap: 6px; color: #ffffff">
+        <div class="eyebrow" style="color: #f5f0a0">Sat, Nov 1 · 7:00 PM</div>
+        <h1 class="display" style="margin: 0; font-size: 32px; line-height: 1; font-weight: 800">Base Camp Sessions Vol. 3</h1>
+        <div style="font-size: 14px; color: rgba(255,255,255,.85)">Live sets, cold nights, warm people.</div>
+      </div>
+    </div>
+
+    <div style="padding: 16px 20px 0; display: flex; flex-direction: column; gap: 10px; font-size: 14px">
+      <div style="display: flex; align-items: flex-start; gap: 10px"><svg viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" width="18" height="18" aria-hidden="true" style="flex-shrink: 0; margin-top: 1px"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><div><div style="font-weight: 600">Saturday, Nov 1, 2026</div><div style="color: var(--fg2); font-size: 13px">7:00 PM – 11:00 PM · doors 7, first act 8</div></div></div>
+      <div style="display: flex; align-items: flex-start; gap: 10px"><svg viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" width="18" height="18" aria-hidden="true" style="flex-shrink: 0; margin-top: 1px"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg><div><div style="font-weight: 600">Canto, Ketchup Food Community</div><div style="color: var(--fg2); font-size: 13px">Romulo Dr, Baguio City · <a href="#" style="color: var(--accent); font-weight: 600; text-decoration: none">Open map ↗</a></div></div></div>
+    </div>
+
+    <section style="margin: 18px 16px 0; border-radius: 22px; background: var(--surface); border: 1px solid var(--line); padding: 16px 16px 14px; display: flex; flex-direction: column">
+      <div style="display: flex; align-items: center; justify-content: space-between; padding-bottom: 8px"><h2 class="display" style="margin: 0; font-size: 20px; font-weight: 800; display: flex; align-items: center; gap: 8px"><svg viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" aria-hidden="true"><path d="M2 9a3 3 0 0 1 0 6v3a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-3a3 3 0 0 1 0-6V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M13 5v2M13 17v2M13 11v2"/></svg>Tickets</h2><span style="font-size: 12px; color: var(--fg2)">max 4 per order</span></div>
+      <div class="tier"><div style="min-width: 0; flex: 1"><div style="font-weight: 600; color: var(--fg2); text-decoration: line-through">Early Bird</div><div style="font-size: 12px; color: var(--fg2)">First 30 only · sold out</div></div><div class="display" style="font-size: 17px; font-weight: 800; color: var(--fg2); text-decoration: line-through">₱250</div></div>
+      <div class="tier"><div style="min-width: 0; flex: 1; display: flex; flex-direction: column; gap: 6px"><div><div style="font-weight: 600">Regular</div><div style="font-size: 12px; color: var(--fg2)">Includes one drink</div></div><div style="display: flex; align-items: center; gap: 8px"><div style="flex: 1; max-width: 140px; height: 5px; border-radius: 999px; background: var(--muted); overflow: hidden"><div style="width: 90%; height: 100%; background: #d4b800; border-radius: 999px"></div></div><span style="font-size: 12px; font-weight: 600; color: #6b4f00">12 left</span></div></div><div class="display" style="font-size: 17px; font-weight: 800">₱350</div></div>
+      <div class="tier"><div style="min-width: 0; flex: 1"><div style="font-weight: 600">Crew / Guest list</div><div style="font-size: 12px; color: var(--fg2)">Invite only</div></div><div class="display" style="font-size: 17px; font-weight: 800; color: var(--primary)">Free</div></div>
+      <a href="#" class="btn" style="margin-top: 12px; height: 48px; border-radius: 999px; background: var(--primary); color: var(--on-primary); font-size: 15px">Book tickets</a>
+      <div style="text-align: center; font-size: 12px; color: var(--fg2); margin-top: 10px">Paperless. You&#39;ll get a QR to show at the door.</div>
+    </section>
+
+    <section class="prose" style="padding: 20px 20px 0">
+      <h3 style="margin-top: 0">Lineup</h3>
+      <ul><li>Last Set Syndrome</li><li>The Pine Needles</li><li>DJ Fogline</li></ul>
+      <h3>House rules</h3>
+      <ul><li>Doors 7 PM, first act 8 PM</li><li>Bring a jacket, it&#39;s Baguio</li><li>Tickets are per person and scanned once at the door</li></ul>
+    </section>
+
+    <section style="margin: 20px 16px 0; border-radius: 18px; background: var(--surface); border: 1px solid var(--line); padding: 14px 16px; display: flex; align-items: center; gap: 12px">
+      <div style="width: 44px; height: 44px; border-radius: 12px; background: var(--ok-bg); display: grid; place-items: center; color: var(--primary); flex-shrink: 0"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+      <div style="font-size: 13px; line-height: 1.45"><span style="font-weight: 600">Bringing friends?</span> <span style="color: var(--fg2)">Book up to 4, then put each name on its ticket and send them their QR.</span></div>
+    </section>
+
+    <div style="margin-top: auto; padding: 0 16px 100px"></div>
+
+    <div style="position: absolute; left: 0; right: 0; bottom: 0; padding: 12px 16px 22px; background: rgba(246,244,236,.92); border-top: 1px solid var(--line); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: space-between; gap: 12px">
+      <div style="min-width: 0"><div class="display" style="font-size: 18px; font-weight: 800">from ₱250</div><div style="font-size: 12px; color: var(--fg2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Sat, Nov 1 · 7:00 PM · 12 left</div></div>
+      <a href="#" class="btn" style="height: 48px; padding: 0 22px; border-radius: 999px; background: var(--primary); color: var(--on-primary); font-size: 15px; flex-shrink: 0">Book tickets</a>
+    </div>
+  </div>
+
+  <div class="night phone">
+    <header style="position: absolute; left: 0; right: 0; top: 0; height: 56px; z-index: 2; display: flex; align-items: center; justify-content: space-between; padding: 0 12px">
+      <a href="#" class="btn" aria-label="Back to events" style="width: 40px; height: 40px; border-radius: 999px; background: rgba(14,28,32,.7); color: #e8f0e6; backdrop-filter: blur(8px)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></a>
+      <button type="button" class="btn" aria-label="Share event" style="width: 40px; height: 40px; border-radius: 999px; background: rgba(14,28,32,.7); color: #e8f0e6; backdrop-filter: blur(8px)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8M16 6l-4-4-4 4M12 2v13"/></svg></button>
+    </header>
+
+    <div style="position: relative; height: 320px; flex-shrink: 0; overflow: hidden; background: #1c2f34">
+      <svg viewBox="0 0 390 320" preserveAspectRatio="xMidYMid slice" aria-hidden="true" style="position: absolute; inset: 0; width: 100%; height: 100%"><rect width="390" height="320" fill="#1c2f34"/><circle cx="300" cy="100" r="110" fill="#8cc63e"/><g stroke="#f5f0a0" stroke-width="4" opacity=".9"><path d="M0 230h390M0 248h390M0 266h390"/></g><text x="22" y="190" font-family="Bricolage Grotesque, sans-serif" font-size="104" font-weight="800" fill="#f6f4ec" letter-spacing="-5">VOL.3</text><text x="24" y="60" font-family="Geist, sans-serif" font-size="13" font-weight="700" fill="#3cc5e8" letter-spacing="4">BASE CAMP SESSIONS</text></svg>
+      <div style="position: absolute; inset: 0; background: linear-gradient(180deg, rgba(14,28,32,0) 40%, rgba(14,28,32,.92) 100%)"></div>
+      <div style="position: absolute; left: 12px; top: 64px; background: var(--surface); border-radius: 12px; padding: 6px 10px; text-align: center; line-height: 1; box-shadow: 0 2px 8px rgba(0,0,0,.35)"><div class="eyebrow" style="font-size: 9px; color: var(--fg2)">Nov</div><div class="display" style="font-size: 22px; font-weight: 800">1</div></div>
+      <span style="position: absolute; right: 12px; top: 68px; padding: 6px 11px; border-radius: 999px; background: #f5f0a0; color: #0b3d2e; font-size: 12px; font-weight: 700">Few left</span>
+      <div style="position: absolute; left: 20px; right: 20px; bottom: 18px; display: flex; flex-direction: column; gap: 6px; color: #ffffff">
+        <div class="eyebrow" style="color: #f5f0a0">Sat, Nov 1 · 7:00 PM</div>
+        <h1 class="display" style="margin: 0; font-size: 32px; line-height: 1; font-weight: 800">Base Camp Sessions Vol. 3</h1>
+        <div style="font-size: 14px; color: rgba(255,255,255,.85)">Live sets, cold nights, warm people.</div>
+      </div>
+    </div>
+
+    <div style="padding: 16px 20px 0; display: flex; flex-direction: column; gap: 10px; font-size: 14px">
+      <div style="display: flex; align-items: flex-start; gap: 10px"><svg viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" width="18" height="18" aria-hidden="true" style="flex-shrink: 0; margin-top: 1px"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><div><div style="font-weight: 600">Saturday, Nov 1, 2026</div><div style="color: var(--fg2); font-size: 13px">7:00 PM – 11:00 PM · doors 7, first act 8</div></div></div>
+      <div style="display: flex; align-items: flex-start; gap: 10px"><svg viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" width="18" height="18" aria-hidden="true" style="flex-shrink: 0; margin-top: 1px"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg><div><div style="font-weight: 600">Canto, Ketchup Food Community</div><div style="color: var(--fg2); font-size: 13px">Romulo Dr, Baguio City · <a href="#" style="color: var(--accent); font-weight: 600; text-decoration: none">Open map ↗</a></div></div></div>
+    </div>
+
+    <section style="margin: 18px 16px 0; border-radius: 22px; background: var(--surface); border: 1px solid var(--line); padding: 16px 16px 14px; display: flex; flex-direction: column">
+      <div style="display: flex; align-items: center; justify-content: space-between; padding-bottom: 8px"><h2 class="display" style="margin: 0; font-size: 20px; font-weight: 800; display: flex; align-items: center; gap: 8px"><svg viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" aria-hidden="true"><path d="M2 9a3 3 0 0 1 0 6v3a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-3a3 3 0 0 1 0-6V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M13 5v2M13 17v2M13 11v2"/></svg>Tickets</h2><span style="font-size: 12px; color: var(--fg2)">max 4 per order</span></div>
+      <div class="tier"><div style="min-width: 0; flex: 1"><div style="font-weight: 600; color: var(--fg2); text-decoration: line-through">Early Bird</div><div style="font-size: 12px; color: var(--fg2)">First 30 only · sold out</div></div><div class="display" style="font-size: 17px; font-weight: 800; color: var(--fg2); text-decoration: line-through">₱250</div></div>
+      <div class="tier"><div style="min-width: 0; flex: 1; display: flex; flex-direction: column; gap: 6px"><div><div style="font-weight: 600">Regular</div><div style="font-size: 12px; color: var(--fg2)">Includes one drink</div></div><div style="display: flex; align-items: center; gap: 8px"><div style="flex: 1; max-width: 140px; height: 5px; border-radius: 999px; background: var(--muted); overflow: hidden"><div style="width: 90%; height: 100%; background: #f5f0a0; border-radius: 999px"></div></div><span style="font-size: 12px; font-weight: 600; color: #f5f0a0">12 left</span></div></div><div class="display" style="font-size: 17px; font-weight: 800">₱350</div></div>
+      <div class="tier"><div style="min-width: 0; flex: 1"><div style="font-weight: 600">Crew / Guest list</div><div style="font-size: 12px; color: var(--fg2)">Invite only</div></div><div class="display" style="font-size: 17px; font-weight: 800; color: var(--primary)">Free</div></div>
+      <a href="#" class="btn" style="margin-top: 12px; height: 48px; border-radius: 999px; background: var(--primary); color: var(--on-primary); font-size: 15px">Book tickets</a>
+      <div style="text-align: center; font-size: 12px; color: var(--fg2); margin-top: 10px">Paperless. You&#39;ll get a QR to show at the door.</div>
+    </section>
+
+    <section class="prose" style="padding: 20px 20px 0">
+      <h3 style="margin-top: 0">Lineup</h3>
+      <ul><li>Last Set Syndrome</li><li>The Pine Needles</li><li>DJ Fogline</li></ul>
+      <h3>House rules</h3>
+      <ul><li>Doors 7 PM, first act 8 PM</li><li>Bring a jacket, it&#39;s Baguio</li><li>Tickets are per person and scanned once at the door</li></ul>
+    </section>
+
+    <section style="margin: 20px 16px 0; border-radius: 18px; background: var(--surface); border: 1px solid var(--line); padding: 14px 16px; display: flex; align-items: center; gap: 12px">
+      <div style="width: 44px; height: 44px; border-radius: 12px; background: var(--ok-bg); display: grid; place-items: center; color: var(--primary); flex-shrink: 0"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+      <div style="font-size: 13px; line-height: 1.45"><span style="font-weight: 600">Bringing friends?</span> <span style="color: var(--fg2)">Book up to 4, then put each name on its ticket and send them their QR.</span></div>
+    </section>
+
+    <div style="margin-top: auto; padding: 0 16px 100px"></div>
+
+    <div style="position: absolute; left: 0; right: 0; bottom: 0; padding: 12px 16px 22px; background: rgba(14,28,32,.9); border-top: 1px solid var(--line); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: space-between; gap: 12px">
+      <div style="min-width: 0"><div class="display" style="font-size: 18px; font-weight: 800">from ₱250</div><div style="font-size: 12px; color: var(--fg2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Sat, Nov 1 · 7:00 PM · 12 left</div></div>
+      <a href="#" class="btn" style="height: 48px; padding: 0 22px; border-radius: 999px; background: var(--primary); color: var(--on-primary); font-size: 15px; flex-shrink: 0">Book tickets</a>
+    </div>
+  </div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":860,"height":1600}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Event card variants</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Geist:wght@400..700&family=Geist+Mono:wght@400..700&display=swap">
+<style>
+body{margin:0}
+a{color:inherit}a:hover{color:inherit}
+.day{--bg:#f6f4ec;--surface:#ffffff;--surface2:#eef2e8;--fg:#0b3d2e;--fg2:#5b7060;--line:rgba(11,61,46,.14);--primary:#1b5e3b;--on-primary:#ffffff;--hi:#f7e017;--on-hi:#0b3d2e;--bad:#b4321f;--muted:#dfe6d8}
+.night{--bg:#0e1c20;--surface:#1c2f34;--surface2:#27404a;--fg:#e8f0e6;--fg2:#a9bfae;--line:rgba(232,240,230,.16);--primary:#8cc63e;--on-primary:#0b3d2e;--hi:#f5f0a0;--on-hi:#0b3d2e;--bad:#ff9a88;--muted:#27404a}
+.display{font-family:'Bricolage Grotesque',Geist,system-ui,sans-serif;letter-spacing:-.02em}
+.eyebrow{font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase}
+.stub{position:relative}
+.stub::before,.stub::after{content:"";position:absolute;width:18px;height:18px;border-radius:50%;background:var(--bg);top:var(--notch);transform:translateY(-50%)}
+.stub::before{left:-9px}.stub::after{right:-9px}
+.stamp{display:inline-flex;align-items:center;justify-content:center;border:3px double currentColor;border-radius:999px;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;letter-spacing:.14em;text-transform:uppercase;transform:rotate(-12deg)}
+.card{display:flex;flex-direction:column;border-radius:20px;background:var(--surface);border:1px solid var(--line);overflow:hidden;text-decoration:none;color:var(--fg);font-family:Geist,system-ui,sans-serif}
+.lbl{font-size:12px;font-weight:600;color:var(--fg2);display:flex;align-items:center;gap:6px}
+</style>
+</helmet>
+<div style="width: 1280px; height: 800px; box-sizing: border-box; background: #f6f4ec; color: #0b3d2e; font-family: Geist, system-ui, sans-serif; display: flex; flex-direction: column; overflow: hidden">
+
+  <div class="day" style="padding: 32px 40px 24px; display: flex; flex-direction: column; gap: 14px; background: var(--bg)">
+    <div style="display: flex; align-items: baseline; justify-content: space-between"><div style="display: flex; flex-direction: column; gap: 6px"><div class="eyebrow" style="color: #1b5e3b">Event card</div><h1 class="display" style="margin: 0; font-size: 28px; line-height: 1; font-weight: 800">A ticket stub you can tap</h1></div><div style="font-size: 13px; color: #5b7060; max-width: 480px; text-align: right">Date tab top-left, availability chip top-right, title wraps to two lines, perforated tear-off strip carries the price. Hover lifts the card and zooms the poster 3%.</div></div>
+    <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px">
+
+      <div style="display: flex; flex-direction: column; gap: 8px"><div class="lbl">With poster · available</div>
+      <a href="#" class="card stub" style="--notch: 263px">
+        <div style="position: relative; height: 170px; overflow: hidden; background: #1c2f34"><svg viewBox="0 0 280 170" preserveAspectRatio="xMidYMid slice" aria-hidden="true" style="position: absolute; inset: 0; width: 100%; height: 100%"><rect width="280" height="170" fill="#1c2f34"/><circle cx="210" cy="60" r="70" fill="#8cc63e"/><g stroke="#f5f0a0" stroke-width="3" opacity=".9"><path d="M0 130h280M0 142h280M0 154h280"/></g><text x="18" y="112" font-family="Bricolage Grotesque, sans-serif" font-size="64" font-weight="800" fill="#f6f4ec" letter-spacing="-3">VOL.3</text><text x="20" y="40" font-family="Geist, sans-serif" font-size="11" font-weight="700" fill="#3cc5e8" letter-spacing="3">BASE CAMP SESSIONS</text></svg><div style="position: absolute; left: 10px; top: 10px; background: var(--bg); border-radius: 10px; padding: 5px 9px; text-align: center; line-height: 1; box-shadow: 0 2px 8px rgba(0,0,0,.2)"><div class="eyebrow" style="font-size: 9px; color: var(--fg2)">Nov</div><div class="display" style="font-size: 20px; font-weight: 800">1</div></div></div>
+        <div style="padding: 12px 14px 10px; display: flex; flex-direction: column; gap: 5px"><div class="display" style="font-size: 17px; font-weight: 700; line-height: 1.15">Base Camp Sessions Vol. 3</div><div style="font-size: 12px; color: var(--fg2)">Live sets, cold nights, warm people.</div><div style="font-size: 12px; color: var(--fg2)">Sat, Nov 1 · 7:00 PM · Canto</div></div>
+        <div style="border-top: 2px dashed var(--line); padding: 10px 14px; display: flex; justify-content: space-between; align-items: center"><span style="font-size: 12px; color: var(--fg2)">from</span><span class="display" style="font-size: 17px; font-weight: 800; color: var(--primary)">₱250</span></div>
+      </a></div>
+
+      <div style="display: flex; flex-direction: column; gap: 8px"><div class="lbl">No poster · skyline fallback</div>
+      <a href="#" class="card stub" style="--notch: 263px">
+        <div style="position: relative; height: 170px; overflow: hidden; background: #3cc5e8"><svg viewBox="0 0 400 200" preserveAspectRatio="xMidYMax slice" aria-hidden="true" style="position: absolute; inset: 0; width: 100%; height: 100%"><defs><linearGradient id="ds" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3cc5e8"/><stop offset="1" stop-color="#cdeefa"/></linearGradient></defs><rect width="400" height="200" fill="url(#ds)"/><circle cx="64" cy="54" r="17" fill="#f7e017"/><g fill="#fff" opacity=".9"><ellipse cx="290" cy="64" rx="36" ry="11"/><ellipse cx="306" cy="55" rx="20" ry="12"/></g><path d="M0 200V128L48 86L96 122L158 54L214 118L262 92L320 138L368 104L400 126V200Z" fill="#8cc63e"/><path d="M0 200V158L52 136L118 164L186 112L254 160L318 138L400 172V200Z" fill="#39b54a"/><g fill="#1b5e3b"><path d="M40 160l-7 18h14z M40 150l-5 13h10z"/><path d="M200 136l-8 20h16z M200 124l-6 15h12z"/><path d="M300 158l-7 18h14z M300 148l-5 13h10z"/></g><path d="M0 200V186L72 172L150 192L232 168L312 186L400 174V200Z" fill="#1f9a3e"/></svg><div style="position: absolute; left: 10px; top: 10px; background: var(--bg); border-radius: 10px; padding: 5px 9px; text-align: center; line-height: 1; box-shadow: 0 2px 8px rgba(0,0,0,.15)"><div class="eyebrow" style="font-size: 9px; color: var(--fg2)">Nov</div><div class="display" style="font-size: 20px; font-weight: 800">9</div></div></div>
+        <div style="padding: 12px 14px 10px; display: flex; flex-direction: column; gap: 5px"><div class="display" style="font-size: 17px; font-weight: 700; line-height: 1.15">Sunrise Hike: Mt. Yangbew</div><div style="font-size: 12px; color: var(--fg2)">Easy 40-minute hike, big views, bring coffee.</div><div style="font-size: 12px; color: var(--fg2)">Sun, Nov 9 · 5:00 AM · Tawang</div></div>
+        <div style="border-top: 2px dashed var(--line); padding: 10px 14px; display: flex; justify-content: space-between; align-items: center"><span style="font-size: 12px; color: var(--fg2)">18 of 40 spots left</span><span class="display" style="font-size: 17px; font-weight: 800; color: var(--primary)">Free</span></div>
+      </a></div>
+
+      <div style="display: flex; flex-direction: column; gap: 8px"><div class="lbl">Few left · sun chip</div>
+      <a href="#" class="card stub" style="--notch: 263px">
+        <div style="position: relative; height: 170px; overflow: hidden; background: #1e6fa3"><svg viewBox="0 0 280 170" preserveAspectRatio="xMidYMid slice" aria-hidden="true" style="position: absolute; inset: 0; width: 100%; height: 100%"><rect width="280" height="170" fill="#1e6fa3"/><path d="M0 170V110L60 70L120 120L190 50L250 110L280 90V170Z" fill="#0b3d2e"/><circle cx="60" cy="48" r="24" fill="#f7e017"/><text x="16" y="150" font-family="Bricolage Grotesque, sans-serif" font-size="30" font-weight="800" fill="#f6f4ec">TRAIL RUN</text></svg><div style="position: absolute; left: 10px; top: 10px; background: var(--bg); border-radius: 10px; padding: 5px 9px; text-align: center; line-height: 1; box-shadow: 0 2px 8px rgba(0,0,0,.2)"><div class="eyebrow" style="font-size: 9px; color: var(--fg2)">Nov</div><div class="display" style="font-size: 20px; font-weight: 800">15</div></div><span style="position: absolute; right: 10px; top: 10px; padding: 5px 10px; border-radius: 999px; background: var(--hi); color: var(--on-hi); font-size: 12px; font-weight: 700">Few left</span></div>
+        <div style="padding: 12px 14px 10px; display: flex; flex-direction: column; gap: 5px"><div class="display" style="font-size: 17px; font-weight: 700; line-height: 1.15">Trail Run: John Hay Loop</div><div style="font-size: 12px; color: var(--fg2)">10K through the pines, breakfast after.</div><div style="font-size: 12px; color: var(--fg2)">Sat, Nov 15 · 6:30 AM · Camp John Hay</div></div>
+        <div style="border-top: 2px dashed var(--line); padding: 10px 14px; display: flex; justify-content: space-between; align-items: center"><span style="font-size: 12px; color: var(--fg2)">from</span><span class="display" style="font-size: 17px; font-weight: 800; color: var(--primary)">₱150</span></div>
+      </a></div>
+
+      <div style="display: flex; flex-direction: column; gap: 8px"><div class="lbl">Sold out · stamp, poster dimmed</div>
+      <a href="#" class="card stub" style="--notch: 263px">
+        <div style="position: relative; height: 170px; overflow: hidden; background: #27404a"><svg viewBox="0 0 280 170" preserveAspectRatio="xMidYMid slice" aria-hidden="true" style="position: absolute; inset: 0; width: 100%; height: 100%; opacity: .45"><rect width="280" height="170" fill="#27404a"/><g fill="#f5f0a0"><circle cx="40" cy="30" r="2"/><circle cx="120" cy="60" r="1.5"/><circle cx="200" cy="24" r="2"/><circle cx="250" cy="80" r="1.4"/></g><text x="16" y="120" font-family="Bricolage Grotesque, sans-serif" font-size="40" font-weight="800" fill="#f6f4ec">ANIME</text><text x="16" y="150" font-family="Bricolage Grotesque, sans-serif" font-size="22" font-weight="700" fill="#8cc63e">NIGHT</text></svg><div style="position: absolute; left: 10px; top: 10px; background: var(--bg); border-radius: 10px; padding: 5px 9px; text-align: center; line-height: 1; opacity: .8"><div class="eyebrow" style="font-size: 9px; color: var(--fg2)">Nov</div><div class="display" style="font-size: 20px; font-weight: 800">22</div></div><span class="stamp" style="position: absolute; left: 50%; top: 50%; margin: -22px 0 0 -70px; width: 140px; height: 44px; color: #f6f4ec; font-size: 15px; box-sizing: border-box">Sold out</span></div>
+        <div style="padding: 12px 14px 10px; display: flex; flex-direction: column; gap: 5px"><div class="display" style="font-size: 17px; font-weight: 700; line-height: 1.15; color: var(--fg2)">Anime Night: Akatsuki Edition</div><div style="font-size: 12px; color: var(--fg2)">Cloaks encouraged. Rain expected.</div><div style="font-size: 12px; color: var(--fg2)">Sat, Nov 22 · 6:00 PM · Baden Powell Hall</div></div>
+        <div style="border-top: 2px dashed var(--line); padding: 10px 14px; display: flex; justify-content: space-between; align-items: center"><span style="font-size: 12px; color: var(--fg2)">Join the waitlist on Discord</span><span class="display" style="font-size: 17px; font-weight: 800; color: var(--fg2); text-decoration: line-through">₱150</span></div>
+      </a></div>
+    </div>
+  </div>
+
+  <div class="night" style="flex: 1; padding: 24px 40px 32px; display: flex; flex-direction: column; gap: 14px; background: var(--bg); color: var(--fg)">
+    <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px">
+
+      <div style="display: flex; flex-direction: column; gap: 8px"><div class="lbl">Cancelled</div>
+      <a href="#" class="card stub" style="--notch: 263px">
+        <div style="position: relative; height: 170px; overflow: hidden; background: #27404a"><svg viewBox="0 0 280 170" preserveAspectRatio="xMidYMid slice" aria-hidden="true" style="position: absolute; inset: 0; width: 100%; height: 100%; opacity: .4; filter: grayscale(1)"><rect width="280" height="170" fill="#1e6fa3"/><circle cx="210" cy="60" r="70" fill="#8cc63e"/><text x="18" y="112" font-family="Bricolage Grotesque, sans-serif" font-size="56" font-weight="800" fill="#f6f4ec">JAM</text></svg><div style="position: absolute; left: 10px; top: 10px; background: var(--surface); border-radius: 10px; padding: 5px 9px; text-align: center; line-height: 1; opacity: .8"><div class="eyebrow" style="font-size: 9px; color: var(--fg2)">Oct</div><div class="display" style="font-size: 20px; font-weight: 800">31</div></div><span style="position: absolute; right: 10px; top: 10px; padding: 5px 10px; border-radius: 999px; background: #b4321f; color: #ffffff; font-size: 12px; font-weight: 700">Cancelled</span></div>
+        <div style="padding: 12px 14px 10px; display: flex; flex-direction: column; gap: 5px"><div class="display" style="font-size: 17px; font-weight: 700; line-height: 1.15; color: var(--fg2); text-decoration: line-through">Halloween Jam</div><div style="font-size: 12px; color: var(--fg2)">Venue flooded. Refunds go out Friday.</div><div style="font-size: 12px; color: var(--fg2)">Fri, Oct 31 · 8:00 PM</div></div>
+        <div style="border-top: 2px dashed var(--line); padding: 10px 14px; display: flex; justify-content: space-between; align-items: center"><span style="font-size: 12px; color: var(--bad); font-weight: 600">Tickets voided</span><span class="display" style="font-size: 17px; font-weight: 800; color: var(--fg2); text-decoration: line-through">₱200</span></div>
+      </a></div>
+
+      <div style="display: flex; flex-direction: column; gap: 8px"><div class="lbl">Past · 75% opacity</div>
+      <a href="#" class="card stub" style="--notch: 263px; opacity: .75">
+        <div style="position: relative; height: 170px; overflow: hidden; background: #0b161a"><svg viewBox="0 0 400 200" preserveAspectRatio="xMidYMax slice" aria-hidden="true" style="position: absolute; inset: 0; width: 100%; height: 100%"><defs><linearGradient id="ns" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0b161a"/><stop offset="1" stop-color="#1f4a5c"/></linearGradient><mask id="nm"><rect width="400" height="200" fill="#fff"/><circle cx="339" cy="44" r="16" fill="#000"/></mask></defs><rect width="400" height="200" fill="url(#ns)"/><g fill="#f5f0a0"><circle cx="24" cy="28" r="1.6"/><circle cx="92" cy="22" r="1.3"/><circle cx="130" cy="58" r="1.8"/><circle cx="204" cy="74" r="1.4"/><circle cx="262" cy="50" r="1.9"/><circle cx="40" cy="104" r="1.4"/></g><circle cx="330" cy="50" r="18" fill="#f5f0a0" mask="url(#nm)"/><path d="M0 200V128L48 86L96 122L158 54L214 118L262 92L320 138L368 104L400 126V200Z" fill="#244d3a"/><path d="M0 200V158L52 136L118 164L186 112L254 160L318 138L400 172V200Z" fill="#17422f"/><path d="M0 200V186L72 172L150 192L232 168L312 186L400 174V200Z" fill="#0b3d2e"/></svg><div style="position: absolute; left: 10px; top: 10px; background: var(--surface); border-radius: 10px; padding: 5px 9px; text-align: center; line-height: 1"><div class="eyebrow" style="font-size: 9px; color: var(--fg2)">Sep</div><div class="display" style="font-size: 20px; font-weight: 800">6</div></div></div>
+        <div style="padding: 12px 14px 10px; display: flex; flex-direction: column; gap: 5px"><div class="display" style="font-size: 17px; font-weight: 700; line-height: 1.15">Base Camp Sessions Vol. 2</div><div style="font-size: 12px; color: var(--fg2)">Sat, Sep 6 · 7:00 PM · Canto</div></div>
+        <div style="border-top: 2px dashed var(--line); padding: 10px 14px; display: flex; justify-content: space-between; align-items: center"><span style="font-size: 12px; color: var(--fg2)">Event has ended</span><span style="font-size: 12px; color: var(--fg2); font-weight: 600">142 came</span></div>
+      </a></div>
+
+      <div style="display: flex; flex-direction: column; gap: 8px"><div class="lbl">Sales not open yet</div>
+      <a href="#" class="card stub" style="--notch: 263px">
+        <div style="position: relative; height: 170px; overflow: hidden; background: #0b3d2e"><svg viewBox="0 0 280 170" preserveAspectRatio="xMidYMid slice" aria-hidden="true" style="position: absolute; inset: 0; width: 100%; height: 100%"><rect width="280" height="170" fill="#0b3d2e"/><g fill="none" stroke="#9db58a" stroke-width="1.2" opacity=".5"><path d="M-10 40c30-20 60-20 90 0s60 20 90 0 60-20 90 0 40 20 60 0"/><path d="M-10 70c30-16 60-16 90 0s60 16 90 0 60-16 90 0 40 16 60 0"/><path d="M-10 100c30-20 60-20 90 0s60 20 90 0 60-20 90 0 40 20 60 0"/><path d="M-10 130c30-14 60-14 90 0s60 14 90 0 60-14 90 0 40 14 60 0"/></g><text x="16" y="150" font-family="Bricolage Grotesque, sans-serif" font-size="30" font-weight="800" fill="#8cc63e">DEC 13</text></svg><div style="position: absolute; left: 10px; top: 10px; background: var(--surface); border-radius: 10px; padding: 5px 9px; text-align: center; line-height: 1"><div class="eyebrow" style="font-size: 9px; color: var(--fg2)">Dec</div><div class="display" style="font-size: 20px; font-weight: 800">13</div></div><span style="position: absolute; right: 10px; top: 10px; padding: 5px 10px; border-radius: 999px; background: var(--surface); color: var(--fg); font-size: 12px; font-weight: 700; border: 1px solid var(--line)">Opens Nov 20</span></div>
+        <div style="padding: 12px 14px 10px; display: flex; flex-direction: column; gap: 5px"><div class="display" style="font-size: 17px; font-weight: 700; line-height: 1.15">Year-End Camp Out</div><div style="font-size: 12px; color: var(--fg2)">Tents, tunes, and too much coffee.</div><div style="font-size: 12px; color: var(--fg2)">Sat, Dec 13 · 3:00 PM · Mt. Costa</div></div>
+        <div style="border-top: 2px dashed var(--line); padding: 10px 14px; display: flex; justify-content: space-between; align-items: center"><span style="font-size: 12px; color: var(--fg2)">Tickets from Nov 20</span><span class="display" style="font-size: 17px; font-weight: 800; color: var(--primary)">₱800</span></div>
+      </a></div>
+
+      <div style="display: flex; flex-direction: column; gap: 8px"><div class="lbl">Hover / focus · lifted, poster zoomed</div>
+      <a href="#" class="card stub" style="--notch: 263px; transform: translateY(-4px); box-shadow: 0 18px 40px rgba(0,0,0,.45), 0 0 0 3px rgba(140,198,62,.5)">
+        <div style="position: relative; height: 170px; overflow: hidden; background: #1c2f34"><svg viewBox="0 0 280 170" preserveAspectRatio="xMidYMid slice" aria-hidden="true" style="position: absolute; inset: 0; width: 100%; height: 100%; transform: scale(1.04)"><rect width="280" height="170" fill="#1c2f34"/><circle cx="210" cy="60" r="70" fill="#8cc63e"/><g stroke="#f5f0a0" stroke-width="3" opacity=".9"><path d="M0 130h280M0 142h280M0 154h280"/></g><text x="18" y="112" font-family="Bricolage Grotesque, sans-serif" font-size="64" font-weight="800" fill="#f6f4ec" letter-spacing="-3">VOL.3</text><text x="20" y="40" font-family="Geist, sans-serif" font-size="11" font-weight="700" fill="#3cc5e8" letter-spacing="3">BASE CAMP SESSIONS</text></svg><div style="position: absolute; left: 10px; top: 10px; background: var(--surface); border-radius: 10px; padding: 5px 9px; text-align: center; line-height: 1; box-shadow: 0 2px 8px rgba(0,0,0,.3)"><div class="eyebrow" style="font-size: 9px; color: var(--fg2)">Nov</div><div class="display" style="font-size: 20px; font-weight: 800">1</div></div></div>
+        <div style="padding: 12px 14px 10px; display: flex; flex-direction: column; gap: 5px"><div class="display" style="font-size: 17px; font-weight: 700; line-height: 1.15">Base Camp Sessions Vol. 3</div><div style="font-size: 12px; color: var(--fg2)">Live sets, cold nights, warm people.</div><div style="font-size: 12px; color: var(--fg2)">Sat, Nov 1 · 7:00 PM · Canto</div></div>
+        <div style="border-top: 2px dashed var(--line); padding: 8px 10px 8px 14px; display: flex; justify-content: space-between; align-items: center"><span style="font-size: 12px; color: var(--fg2)">from ₱250</span><span style="display: inline-flex; align-items: center; height: 32px; padding: 0 14px; border-radius: 999px; background: var(--primary); color: var(--on-primary); font-size: 13px; font-weight: 700">Book tickets</span></div>
+      </a></div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":800}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>
