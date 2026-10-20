@@ -73,9 +73,7 @@ export function useScanner(eventId: string) {
   const pruneLocalUsed = useCallback(async () => {
     const q = await store.queue.get(eventId);
     const pending = new Set(q.filter((x) => x.localResult === "ok" && x.ticketId).map((x) => x.ticketId as string));
-    const u = await store.used.get(eventId);
-    const kept = Object.fromEntries(Object.entries(u).filter(([id]) => pending.has(id)));
-    await store.used.set(eventId, kept);
+    const kept = await store.used.update(eventId, (u) => Object.fromEntries(Object.entries(u).filter(([id]) => pending.has(id))));
     setLocalUsed(kept);
   }, [eventId]);
 
@@ -131,8 +129,7 @@ export function useScanner(eventId: string) {
       }
       // Re-read: scans made while the request was in flight must stay queued
       const done = new Set(outcomes.map((o) => o.clientId));
-      const remaining = (await store.queue.get(eventId)).filter((x) => !done.has(x.clientId));
-      await store.queue.set(eventId, remaining);
+      const remaining = await store.queue.update(eventId, (cur) => cur.filter((x) => !done.has(x.clientId)));
       setQueueLen(remaining.length);
       if (fresh.length) {
         refetch = true;
@@ -205,18 +202,15 @@ export function useScanner(eventId: string) {
         scannedAt: new Date().toISOString(),
         localResult: toLocal(result.kind),
       };
-      const q = await store.queue.get(eventId);
-      await store.queue.set(eventId, [...q, item]);
-      setQueueLen(q.length + 1);
+      const q = await store.queue.update(eventId, (cur) => [...cur, item]);
+      setQueueLen(q.length);
       if (result.kind === "ok" && ticketId) {
         okTicketRef.current.set(ticketId, Date.now());
-        const u = { ...(await store.used.get(eventId)), [ticketId]: item.scannedAt };
-        await store.used.set(eventId, u);
+        const u = await store.used.update(eventId, (cur) => ({ ...cur, [ticketId]: item.scannedAt }));
         setLocalUsed(u);
       }
       const entry: RecentScan = { at: result.at, kind: result.kind, holder: result.ticket?.holder, code: result.ticket?.code, tier: result.ticket?.tier };
-      const r = [entry, ...(await store.recent.get(eventId))].slice(0, 10);
-      await store.recent.set(eventId, r);
+      const r = await store.recent.update(eventId, (cur) => [entry, ...cur]);
       setRecent(r);
       setLast(result);
       feedback(toFeedback(result.kind));
