@@ -149,7 +149,8 @@ function Stars({ w, h, seed, animated }: { w: number; h: number; seed: string; a
           key={i}
           cx={st.x.toFixed(1)}
           cy={st.y.toFixed(1)}
-          r={(st.r * (w / 400)).toFixed(1)}
+          // grow sub-linearly: the hero is already scaled up to fill a desktop, and full-size stars read as dots
+          r={(st.r * Math.sqrt(w / 400)).toFixed(1)}
           opacity={st.o.toFixed(2)}
           className={animated && i % 3 === 0 ? "animate-twinkle" : undefined}
           style={animated && i % 3 === 0 ? { animationDelay: `${st.d.toFixed(2)}s` } : undefined}
@@ -172,12 +173,6 @@ export function CampIllustration({ className }: { className?: string }) {
         <path d="M130 86h20l-10-18z" fill="#1b5e3b" />
       </svg>
       <svg viewBox="0 0 200 90" aria-hidden className={cn("hidden dark:block", className)}>
-        <defs>
-          <mask id="camp-moon">
-            <rect width="200" height="90" fill="#fff" />
-            <circle cx="46" cy="20" r="9" fill="#000" />
-          </mask>
-        </defs>
         <g fill="#f5f0a0">
           <circle cx="14" cy="14" r="1.3" />
           <circle cx="90" cy="10" r="1.5" />
@@ -185,7 +180,8 @@ export function CampIllustration({ className }: { className?: string }) {
           <circle cx="176" cy="12" r="1.4" />
           <circle cx="160" cy="30" r="1" />
         </g>
-        <circle cx="40" cy="26" r="11" fill="#f5f0a0" mask="url(#camp-moon)" />
+        {/* the r11 moon at (40,26) less an r9 bite at (46,20), as a path: a mask id would clash when several empties share a page */}
+        <path d="M38.44 15.11A11 11 0 1 0 50.89 27.56A9 9 0 0 1 38.44 15.11Z" fill="#f5f0a0" />
         <path d="M0 90V58L36 34L70 56L112 24L150 52L186 38L200 46V90Z" fill="#244d3a" />
         <path d="M0 90V72L50 62L100 80L150 60L200 74V90Z" fill="#17422f" />
         <path d="M112 86 140 46l28 40h-56Z" fill="#1c2f34" stroke="#8cc63e" strokeWidth="2.5" strokeLinejoin="round" />

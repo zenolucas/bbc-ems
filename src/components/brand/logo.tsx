@@ -2,14 +2,40 @@ import Image from "next/image";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
-export function Logo({ className, size = 36, withText = true }: { className?: string; size?: number; withText?: boolean }) {
+/**
+ * The lockup: mark plus "Baguio" eyebrow over "Base Camp" in the display face.
+ * `compactOnPhone` drops the eyebrow under 640px, where the header is tight.
+ */
+export function Logo({
+  className,
+  size = 36,
+  withText = true,
+  compactOnPhone = false,
+}: {
+  className?: string;
+  size?: number;
+  withText?: boolean;
+  compactOnPhone?: boolean;
+}) {
   return (
-    <Link href="/" className={cn("flex items-center gap-2.5 font-semibold tracking-tight", className)}>
-      <Image src="/brand/bbc-logo.png" alt="Baguio Base Camp" width={size} height={size} priority />
+    <Link
+      href="/"
+      aria-label={withText ? "Baguio Base Camp, home" : undefined}
+      className={cn("flex shrink-0 items-center gap-2.5 rounded-lg text-foreground outline-none focus-visible:ring-3 focus-visible:ring-ring/50", className)}
+    >
+      <Image
+        src="/brand/bbc-logo.png"
+        alt={withText ? "" : "Baguio Base Camp"}
+        width={size}
+        height={size}
+        priority
+        style={{ "--logo": `${size}px` } as React.CSSProperties}
+        className={cn(compactOnPhone && "size-[34px] sm:size-(--logo)")}
+      />
       {withText && (
-        <span className="leading-none">
-          <span className="block text-sm text-muted-foreground font-medium">Baguio</span>
-          <span className="block text-base">Base Camp</span>
+        <span className="leading-[1.05]">
+          <span className={cn("bbc-eyebrow block text-[10px] text-muted-foreground", compactOnPhone && "hidden sm:block")}>Baguio</span>
+          <span className="block font-display text-[17px] font-bold tracking-[-0.02em] sm:text-lg">Base Camp</span>
         </span>
       )}
     </Link>

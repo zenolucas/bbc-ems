@@ -1,20 +1,47 @@
 "use client";
+import { useSyncExternalStore } from "react";
 import { useTheme } from "next-themes";
+import { Moon, Sun } from "lucide-react";
 import { cn } from "@/lib/utils";
+
+const noop = () => () => {};
 
 /**
  * Day/night switch: a little sky with a ridge, the sun on the left by day and a
  * crescent on the right by night. State is painted by the `.dark` class, so the
- * server render matches the client without reading the theme.
+ * server render matches the client without reading the theme. `aria-checked`
+ * waits for hydration: the server cannot know the theme.
+ *
+ * `variant="icon"` is the compact phone header version: a 40px round button with
+ * the sun by day and the moon by night, same switch semantics.
  */
-export function ThemeToggle({ className }: { className?: string }) {
+export function ThemeToggle({ className, variant = "switch" }: { className?: string; variant?: "switch" | "icon" }) {
   const { resolvedTheme, setTheme } = useTheme();
+  const hydrated = useSyncExternalStore(noop, () => true, () => false);
+  if (variant === "icon") {
+    return (
+      <button
+        type="button"
+        role="switch"
+        aria-label="Night mode"
+        aria-checked={hydrated ? resolvedTheme === "dark" : undefined}
+        onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
+        className={cn(
+          "grid size-10 shrink-0 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-surface-2 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50 dark:text-star",
+          className,
+        )}
+      >
+        <Sun className="size-5 dark:hidden" aria-hidden />
+        <Moon className="hidden size-5 dark:block" aria-hidden />
+      </button>
+    );
+  }
   return (
     <button
       type="button"
       role="switch"
       aria-label="Night mode"
-      aria-checked={resolvedTheme === "dark"}
+      aria-checked={hydrated ? resolvedTheme === "dark" : undefined}
       onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
       className={cn(
         "relative h-[34px] w-16 shrink-0 overflow-hidden rounded-full border border-border bg-[linear-gradient(180deg,#3cc5e8,#cdeefa)] transition-colors focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50 dark:bg-[linear-gradient(180deg,#0b161a,#1f4a5c)]",

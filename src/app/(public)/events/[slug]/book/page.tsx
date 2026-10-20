@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
-import { ArrowLeft } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
+import { TrailSteps } from "@/components/ui/trail-steps";
 import { getEventBySlug, tierAvailability, tierIsOnSale } from "@/lib/events";
-import { fmtRange } from "@/lib/format";
+import { fmtDate, fmtTime } from "@/lib/format";
 import { getCurrentUser } from "@/lib/session";
 import { BookForm } from "./book-form";
 
@@ -40,12 +41,23 @@ export default async function BookPage({ params, searchParams }: PageProps<"/eve
     onSale: tierIsOnSale(t, now),
   }));
   return (
-    <div className="mx-auto max-w-xl space-y-6">
-      <Link href={`/events/${slug}`} className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"><ArrowLeft className="size-4" /> Back to event</Link>
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight">{event.title}</h1>
-        <p className="text-sm text-muted-foreground">{fmtRange(event.startsAt, event.endsAt)} · {event.venueName}</p>
+    <div className="mx-auto max-w-xl lg:max-w-4xl">
+      <div className="-mt-4 flex items-center gap-2 lg:mt-0">
+        <Link href={`/events/${slug}`} aria-label="Back to event" className="-ml-2 grid size-11 place-items-center rounded-full hover:bg-muted"><ChevronLeft className="size-[22px]" /></Link>
+        <span className="text-[15px] font-semibold">Book tickets</span>
       </div>
+      <div className="mt-1 space-y-1">
+        <h1 className="text-2xl leading-[1.05] font-extrabold tracking-tight lg:text-3xl">{event.title}</h1>
+        <p className="text-[13px] text-muted-foreground">{fmtDate(event.startsAt, "EEE, MMM d")} · {fmtTime(event.startsAt)} · {event.venueName}</p>
+      </div>
+      <TrailSteps
+        className="mt-5 lg:max-w-md"
+        steps={[
+          { label: "Pick", status: "current" },
+          { label: "Pay", status: "pending" },
+          { label: "Ticket", status: "pending" },
+        ]}
+      />
       <BookForm eventId={event.id} slug={slug} tiers={tiers} holdHours={event.bookingHoldHours} hasPayment={Boolean(event.gcashNumber || event.gcashQrUrl)} initial={parseInitial(q)} />
     </div>
   );

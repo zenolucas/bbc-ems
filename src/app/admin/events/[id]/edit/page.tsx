@@ -4,6 +4,7 @@ import { EventForm } from "@/components/admin/event-form";
 import { FlashToast } from "@/components/ui/flash-toast";
 import { env } from "@/lib/env";
 import { getEventById } from "@/lib/events";
+import { relative } from "@/lib/format";
 import { requireAdmin } from "@/lib/session";
 
 export const metadata = { title: "Edit event" };
@@ -17,7 +18,7 @@ export default async function EditEventPage({ params }: PageProps<"/admin/events
   return (
     <>
       <Suspense><FlashToast messages={{ duplicated: "Copy created as a draft. Update the dates, then save." }} /></Suspense>
-      <EventForm event={ev} tiers={tiers} appUrl={env.appUrl} />
+      <EventForm event={ev} tiers={tiers} appUrl={env.appUrl} now={new Date().getTime()} savedLabel={`Last saved ${relative(ev.updatedAt)}`} />
     </>
   );
 }

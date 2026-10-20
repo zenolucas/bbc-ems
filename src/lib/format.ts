@@ -44,3 +44,12 @@ export function fromLocalInput(v: string | null | undefined) {
   const [hh, mm] = time.split(":").map(Number);
   return new Date(new TZDate(y, m - 1, d, hh, mm, 0, TZ).getTime());
 }
+/** Compact time left for holds and countdowns: "3d 4h", "20h 05m", "14m", "<1m". Never negative. */
+export function fmtLeft(ms: number) {
+  const m = Math.floor(Math.max(0, ms) / 60e3);
+  if (m < 1) return "<1m";
+  const d = Math.floor(m / 1440), h = Math.floor((m % 1440) / 60), min = m % 60;
+  if (d > 0) return `${d}d ${h}h`;
+  if (h > 0) return `${h}h ${String(min).padStart(2, "0")}m`;
+  return `${min}m`;
+}

@@ -23,7 +23,7 @@ export function CancelButton({ bookingId, paid }: { bookingId: string; paid?: bo
         if (ok) router.refresh();
       }}
       trigger={(open) => (
-        <Button type="button" variant="ghost" size="sm" className="text-muted-foreground" onClick={open}>
+        <Button type="button" variant="ghost" className="h-10 rounded-full px-4 text-[13px] font-semibold text-muted-foreground md:h-10" onClick={open}>
           Cancel booking
         </Button>
       )}

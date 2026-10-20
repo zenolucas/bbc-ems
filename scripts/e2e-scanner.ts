@@ -55,7 +55,8 @@ function cookiesFromNetscape(file: string) {
     await page.getByRole("button", { name: "Check in" }).click();
   };
   const result = async (text: string) => page.getByRole("alertdialog", { name: text }).waitFor({ timeout: 5000 }).then(() => true, () => false);
-  const dismiss = () => page.getByRole("button", { name: /Tap anywhere to continue/ }).click();
+  // "Already scanned" offers Continue (beside Undo); every other result says "Tap anywhere to continue"
+  const dismiss = () => page.getByRole("button", { name: /^(Tap anywhere to continue|Continue)$/ }).click();
 
   await page.getByRole("tab", { name: "Type code" }).click();
 
@@ -112,7 +113,7 @@ function cookiesFromNetscape(file: string) {
   await typeCode(c1);
   check("undone ticket valid again after refresh", await result("Welcome in"));
   await dismiss();
-  check("recent scans list", await page.getByText("Recent scans on this phone").isVisible());
+  check("recent scans list", await page.getByText("Recent on this phone").isVisible());
 
   // 7. reload offline: shell from the service worker, list from IndexedDB
   await waitStat("To sync", 0);
