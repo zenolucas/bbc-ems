@@ -48,7 +48,7 @@ export function ReviewList({ eventId, bookings }: { eventId: string; bookings: R
             </div>
             {["under_review", "pending_payment", "rejected"].includes(b.status) && (
               <div className="flex gap-2 sm:flex-col">
-                <Button size="sm" disabled={pending} onClick={() => start(async () => { const r = await approveAction(b.id, eventId); r?.error ? toast.error(r.error) : toast.success("Approved, tickets issued"); })}><Check className="size-4" /> Approve</Button>
+                <Button size="sm" disabled={pending} onClick={() => start(async () => { const r = await approveAction(b.id, eventId); if (r?.error) toast.error(r.error); else toast.success("Approved, tickets issued"); })}><Check className="size-4" /> Approve</Button>
                 {b.status !== "rejected" && <Button size="sm" variant="outline" disabled={pending} onClick={() => { setNote(""); setRejecting(b); }}><X className="size-4" /> Reject</Button>}
                 {b.paymentProofUrl && <Button asChild size="sm" variant="ghost"><a href={b.paymentProofUrl} target="_blank"><ExternalLink className="size-4" /> Open</a></Button>}
               </div>
@@ -64,7 +64,7 @@ export function ReviewList({ eventId, bookings }: { eventId: string; bookings: R
           <Textarea value={note} onChange={(e) => setNote(e.target.value)} placeholder="e.g. Amount received was ₱250, tier costs ₱350. Please send the balance and upload the new receipt." rows={4} />
           <DialogFooter>
             <Button variant="outline" onClick={() => setRejecting(null)}>Cancel</Button>
-            <Button variant="destructive" disabled={pending} onClick={() => start(async () => { if (!rejecting) return; const r = await rejectAction(rejecting.id, eventId, note); r?.error ? toast.error(r.error) : toast.success("Rejected"); setRejecting(null); })}>Reject</Button>
+            <Button variant="destructive" disabled={pending} onClick={() => start(async () => { if (!rejecting) return; const r = await rejectAction(rejecting.id, eventId, note); if (r?.error) toast.error(r.error); else toast.success("Rejected"); setRejecting(null); })}>Reject</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

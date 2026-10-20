@@ -5,11 +5,11 @@ const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
 
 type Common = { eventTitle: string; when: string; venue: string; bookingId: string };
 
-export function BookingReceivedEmail(p: Common & { totalLabel: string; ref: string }) {
+export function BookingReceivedEmail(p: Common & { totalLabel: string; paymentRef: string }) {
   return (
     <EmailLayout preview={`We got your payment details for ${p.eventTitle}`}>
       <Text style={s.h1}>Payment received, pending review</Text>
-      <Text style={s.p}>Thanks! We&apos;ve logged your payment for <strong>{p.eventTitle}</strong> ({p.totalLabel}, ref {p.ref}). An organiser will confirm it shortly and your tickets will appear under My tickets.</Text>
+      <Text style={s.p}>Thanks! We&apos;ve logged your payment for <strong>{p.eventTitle}</strong> ({p.totalLabel}, ref {p.paymentRef}). An organiser will confirm it shortly and your tickets will appear under My tickets.</Text>
       <Text style={s.muted}>{p.when} · {p.venue}</Text>
       <Button href={`${appUrl}/bookings/${p.bookingId}`} style={s.button}>View booking</Button>
     </EmailLayout>

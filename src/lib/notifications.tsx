@@ -22,7 +22,7 @@ async function load(bookingId: string) {
 
 export async function notifyPaymentSubmitted(bookingId: string) {
   const { b, common } = await load(bookingId);
-  const { html, text } = await renderEmail(<BookingReceivedEmail {...common} totalLabel={peso(b.totalCents)} ref={b.paymentRef ?? "—"} />);
+  const { html, text } = await renderEmail(<BookingReceivedEmail {...common} totalLabel={peso(b.totalCents)} paymentRef={b.paymentRef ?? "—"} />);
   await sendEmail({ to: b.user.email, subject: `Payment received · ${b.event.title}`, html, text });
 }
 

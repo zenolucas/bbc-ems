@@ -12,10 +12,7 @@ export const metadata = { title: "My tickets" };
 export default async function MePage() {
   const user = await requireUser("/me");
   const all = await listUserBookings(user.id);
-  const now = Date.now();
-  const isPast = (b: (typeof all)[number]) => (b.event.endsAt ?? new Date(b.event.startsAt.getTime() + 6 * 3600e3)).getTime() < now;
-  const upcoming = all.filter((b) => !isPast(b) && !["cancelled", "expired"].includes(b.status));
-  const past = all.filter((b) => isPast(b) || ["cancelled", "expired"].includes(b.status));
+  const { upcoming, past } = splitBookings(all);
 
   return (
     <div className="mx-auto max-w-3xl space-y-8">
@@ -40,6 +37,16 @@ export default async function MePage() {
       )}
     </div>
   );
+}
+
+function splitBookings(all: Awaited<ReturnType<typeof listUserBookings>>) {
+  const now = Date.now();
+  const isPast = (b: (typeof all)[number]) => (b.event.endsAt ?? new Date(b.event.startsAt.getTime() + 6 * 3600e3)).getTime() < now;
+  const inactive = (b: (typeof all)[number]) => ["cancelled", "expired"].includes(b.status);
+  return {
+    upcoming: all.filter((b) => !isPast(b) && !inactive(b)),
+    past: all.filter((b) => isPast(b) || inactive(b)),
+  };
 }
 
 function BookingBlock({ b, muted }: { b: Awaited<ReturnType<typeof listUserBookings>>[number]; muted?: boolean }) {
