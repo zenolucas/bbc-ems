@@ -1,4 +1,4 @@
-import { C, buildMatrix, dateLine, drawQr, esc, text, truncate, wrap } from "../helpers";
+import { C, DISPLAY, buildMatrix, dateLine, drawQr, esc, text, truncate, wrap } from "../helpers";
 import type { TicketRenderer } from "../types";
 
 export const campfireStamp: TicketRenderer = (i) => {
@@ -32,8 +32,8 @@ export const campfireStamp: TicketRenderer = (i) => {
     finderColors: ["#111111", "#111111", "#111111"],
     plate: { color: C.white, radius: 0, quiet: 3 },
   })}
-  ${text(cx, qy + qrSize + 46, i.shortCode, { size: 24, weight: 700, fill: "#111111", anchor: "middle", spacing: 3 })}
-  ${text(cx, 686, truncate(i.holderName, 30), { size: 18, weight: 600, fill: fg, anchor: "middle" })}
+  ${text(cx, qy + qrSize + 46, i.shortCode, { size: 26, weight: 800, fill: "#111111", anchor: "middle", spacing: 3, family: DISPLAY })}
+  ${text(cx, 686, truncate(i.holderName, 30), { size: 22, weight: 700, fill: fg, anchor: "middle", family: DISPLAY })}
   ${text(cx, 712, `${i.tierName} · ${dateLine(i.event.startsAt)} · ${truncate(i.event.venueName, 30)}`, { size: 14, fill: sub, anchor: "middle" })}
   ${text(cx, 740, "one scan per ticket", { size: 12, fill: sub, anchor: "middle" })}`;
   return { svg: wrap(svg, W, H), width: W, height: H };

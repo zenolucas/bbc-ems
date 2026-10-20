@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { CalendarDays, MapPin } from "lucide-react";
+import { Skyline } from "@/components/brand/skyline";
 import type { Event, TicketTier } from "@/db/schema";
 import { fmtDate, fmtTime, peso } from "@/lib/format";
 import { cn } from "@/lib/utils";
@@ -22,9 +23,7 @@ export function EventCard({ event, past }: { event: Event & { tiers: TicketTier[
         {event.coverImageUrl ? (
           <Image src={event.coverImageUrl} alt="" fill unoptimized className="object-cover transition-transform duration-500 group-hover:scale-[1.03]" />
         ) : (
-          <div className="bbc-skyline absolute inset-0">
-            <Ridge />
-          </div>
+          <Skyline variant="auto" size="card" seed={event.slug} className="absolute inset-0" />
         )}
         <div className="absolute left-3 top-3 rounded-lg bg-background/90 px-2.5 py-1.5 text-center shadow backdrop-blur">
           <div className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">{fmtDate(event.startsAt, "MMM")}</div>
@@ -52,15 +51,4 @@ export function priceSummary(tiers: { priceCents: number }[]) {
   if (tiers.length === 0) return "";
   if (paid.length === 0) return "Free";
   return `from ${peso(Math.min(...paid))}`;
-}
-
-/** Decorative mountain ridge for events without a poster. */
-export function Ridge({ className }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 400 300" preserveAspectRatio="none" className={cn("absolute inset-x-0 bottom-0 h-3/5 w-full", className)} aria-hidden>
-      <path d="M0 300 L0 200 L70 110 L120 170 L190 60 L260 160 L300 120 L400 220 L400 300 Z" fill="#8cc63e" />
-      <path d="M0 300 L0 240 L60 190 L130 230 L200 140 L270 220 L330 180 L400 250 L400 300 Z" fill="#39b54a" />
-      <path d="M0 300 L0 270 L80 240 L160 275 L240 230 L320 265 L400 245 L400 300 Z" fill="#1f9a3e" />
-    </svg>
-  );
 }

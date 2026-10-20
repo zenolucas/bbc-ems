@@ -1,4 +1,4 @@
-import { C, buildMatrix, dateLine, drawQr, seeded, text, timeLine, truncate, wrap } from "../helpers";
+import { C, DISPLAY, buildMatrix, dateLine, drawQr, seeded, text, timeLine, truncate, wrap } from "../helpers";
 import type { TicketRenderer } from "../types";
 
 function contours(seed: string, w: number, h: number) {
@@ -28,8 +28,9 @@ export const trailPass: TicketRenderer = (i) => {
   const qrSize = 220;
   const qx = bodyW + (W - bodyW - qrSize) / 2, qy = 70;
 
+  const accent = dark ? C.lime : C.pine;
   const field = (x: number, y: number, label: string, value: string, size = 20) =>
-    text(x, y, label, { size: 11, weight: 700, fill: C.grass, spacing: 2 }) + text(x, y + 26, value, { size, weight: 600, fill: fg });
+    text(x, y, label, { size: 11, weight: 700, fill: accent, spacing: 2 }) + text(x, y + 26, value, { size, weight: 600, fill: fg });
 
   const notch = (cx: number, cy: number) => `<circle cx="${cx}" cy="${cy}" r="16" fill="${dark ? C.night : "#dfe6d8"}"/>`;
 
@@ -44,22 +45,23 @@ export const trailPass: TicketRenderer = (i) => {
     <line x1="${bodyW}" x2="${bodyW}" y1="0" y2="${H}" stroke="${sub}" stroke-width="2" stroke-dasharray="6 8"/>
     ${notch(bodyW, 0)}${notch(bodyW, H)}
   </g>
-  ${text(44, 60, "TRAIL PASS · BAGUIO BASE CAMP", { size: 12, weight: 700, fill: C.grass, spacing: 3 })}
-  ${text(44, 104, truncate(i.event.title, 36), { size: i.event.title.length > 26 ? 28 : 34, weight: 700, fill: fg })}
+  ${text(44, 60, "TRAIL PASS · BAGUIO BASE CAMP", { size: 12, weight: 700, fill: accent, spacing: 3 })}
+  ${text(44, 104, truncate(i.event.title, 36), { size: i.event.title.length > 26 ? 28 : 34, weight: 800, fill: fg, family: DISPLAY })}
   ${field(44, 160, "HOLDER", truncate(i.holderName, 24))}
   ${field(360, 160, "TIER", truncate(i.tierName, 20))}
   ${field(44, 232, "DATE", dateLine(i.event.startsAt))}
   ${field(360, 232, "TIME", timeLine(i.event.startsAt))}
   ${field(44, 304, "VENUE", truncate(i.event.venueName, 40), 18)}
   ${i.barcodeSvg ? `<g transform="translate(360 300)">${i.barcodeSvg}</g>` : ""}
-  ${text(44, 392, i.shortCode, { size: 15, weight: 600, fill: sub, spacing: 2 })}
+  ${text(44, 392, i.shortCode, { size: 15, weight: 700, fill: sub, spacing: 2, family: DISPLAY })}
   ${drawQr(m, {
     x: qx, y: qy, size: qrSize, shape: "square",
-    color: () => (dark ? C.fog : C.deepForest),
-    finderColors: dark ? [C.sky, C.lime, C.grass] : [C.skyDeep, C.grass, C.pine],
-    plate: { color: dark ? C.night : C.white, radius: 0, quiet: 3 },
+    // Dark modules on a white plate in both themes; the scanner does not read inverted codes.
+    color: () => C.deepForest,
+    finderColors: [C.skyDeep, C.grass, C.pine],
+    plate: { color: C.white, radius: dark ? 12 : 0, quiet: 3 },
   })}
-  ${text(bodyW + (W - bodyW) / 2, 340, i.shortCode, { size: 22, weight: 700, fill: fg, anchor: "middle", spacing: 2 })}
+  ${text(bodyW + (W - bodyW) / 2, 340, i.shortCode, { size: 24, weight: 800, fill: fg, anchor: "middle", spacing: 2, family: DISPLAY })}
   ${text(bodyW + (W - bodyW) / 2, 368, "scan at the door", { size: 12, fill: sub, anchor: "middle" })}`;
   return { svg: wrap(svg, W, H), width: W, height: H };
 };

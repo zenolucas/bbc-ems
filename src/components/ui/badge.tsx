@@ -18,6 +18,14 @@ const badgeVariants = cva(
         ghost:
           "hover:bg-muted hover:text-muted-foreground dark:hover:bg-muted/50",
         link: "text-primary underline-offset-4 hover:underline",
+        // Semantic tones: soft tint behind text that passes contrast in both themes.
+        success: "bg-success-soft text-success-foreground",
+        warning: "bg-warning-soft text-warning-foreground",
+        info: "bg-info-soft text-info-foreground",
+        danger: "bg-destructive-soft text-destructive",
+        muted: "bg-surface-2 text-muted-foreground",
+        sun: "bg-sun text-deep-forest dark:bg-star",
+        inverse: "bg-foreground text-background",
       },
     },
     defaultVariants: {

@@ -7,7 +7,7 @@ export default function manifest(): MetadataRoute.Manifest {
     description: "Events, gigs and paperless tickets for Baguio Base Camp.",
     start_url: "/",
     display: "standalone",
-    background_color: "#1c2f34",
+    background_color: "#0e1c20",
     theme_color: "#1b5e3b",
     icons: [
       { src: "/brand/icon-192.png", sizes: "192x192", type: "image/png" },

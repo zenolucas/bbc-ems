@@ -7,7 +7,8 @@ import remarkGfm from "remark-gfm";
 import { CalendarDays, ExternalLink, MapPin, Ticket } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Notice } from "@/components/ui/notice";
-import { Ridge, priceSummary } from "@/components/event/event-card";
+import { Skyline } from "@/components/brand/skyline";
+import { priceSummary } from "@/components/event/event-card";
 import { statusLabel } from "@/components/event/status-badge";
 import { activeBookingFor, getEventBySlug, tierAvailability, tierIsOnSale } from "@/lib/events";
 import { fmtDateTime, fmtRange, peso } from "@/lib/format";
@@ -59,7 +60,7 @@ export default async function EventPage({ params }: PageProps<"/events/[slug]">)
             {event.coverImageUrl ? (
               <Image src={event.coverImageUrl} alt="" fill unoptimized priority className="object-cover" />
             ) : (
-              <div className="bbc-skyline absolute inset-0"><Ridge /></div>
+              <Skyline variant="auto" size="card" seed={event.slug} className="absolute inset-0" />
             )}
           </div>
           <header className="space-y-3">

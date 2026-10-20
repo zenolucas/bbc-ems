@@ -1,5 +1,6 @@
 import Image from "next/image";
-import { EventCard, Ridge } from "@/components/event/event-card";
+import { Skyline } from "@/components/brand/skyline";
+import { EventCard } from "@/components/event/event-card";
 import { EmptyState } from "@/components/ui/empty-state";
 import { listPublishedEvents } from "@/lib/events";
 
@@ -9,8 +10,9 @@ export default async function Home() {
   const { upcoming, past } = await listPublishedEvents();
   return (
     <div className="space-y-12">
-      <section className="bbc-skyline relative overflow-hidden rounded-3xl px-6 py-14 text-white sm:px-10 sm:py-20">
-        <Ridge className="opacity-90" />
+      {/* Night scene in both themes for now: the copy is white. Phase 2 rebuilds this hero around variant="auto". */}
+      <section className="relative overflow-hidden rounded-3xl px-6 py-14 text-white sm:px-10 sm:py-20">
+        <Skyline variant="night" size="hero" className="absolute inset-0" />
         <div className="relative z-10 max-w-xl">
           <div className="mb-4 flex items-center gap-3">
             <Image src="/brand/bbc-logo.png" alt="" width={56} height={56} className="drop-shadow" />

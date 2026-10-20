@@ -6,6 +6,7 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
+  /* brand */
   --color-sky: var(--bbc-sky);
   --color-sky-deep: var(--bbc-sky-deep);
   --color-lime: var(--bbc-lime);
@@ -14,6 +15,7 @@
   --color-pine: var(--bbc-pine);
   --color-deep-forest: var(--bbc-deep-forest);
   --color-night: var(--bbc-night);
+  --color-midnight: var(--bbc-midnight);
   --color-slate: var(--bbc-slate);
   --color-sun: var(--bbc-sun);
   --color-star: var(--bbc-star);
@@ -21,11 +23,29 @@
   --color-fog: var(--bbc-fog);
   --color-sage: var(--bbc-sage);
   --color-moss: var(--bbc-moss);
+
+  /* semantic */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-surface-1: var(--surface-1);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-success-soft: var(--success-soft);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-warning-soft: var(--warning-soft);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
+  --color-info-soft: var(--info-soft);
+  --color-destructive-soft: var(--destructive-soft);
+
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-  --font-heading: var(--font-sans);
+  --font-display: var(--font-bricolage);
+  --font-heading: var(--font-bricolage);
+
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -62,14 +82,56 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
+
+  /* motion: small, brand-specific; every one is switched off under reduced motion below */
+  --animate-twinkle: bbc-twinkle 3.2s ease-in-out infinite;
+  --animate-drift: bbc-drift 48s linear infinite alternate;
+  --animate-shimmer: bbc-shimmer 1.6s linear infinite;
+  --animate-scanline: bbc-scanline 2.2s ease-in-out infinite alternate;
+  --animate-pulse-ring: bbc-pulse-ring 1.6s ease-out infinite;
+  --animate-pop: bbc-pop 0.5s cubic-bezier(0.2, 1.4, 0.4, 1) both;
+  --animate-fade-up: bbc-fade-up 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+
+  @keyframes bbc-twinkle {
+    0%, 100% { opacity: 0.35; }
+    50% { opacity: 1; }
+  }
+  @keyframes bbc-drift {
+    from { transform: translateX(0); }
+    to { transform: translateX(-6%); }
+  }
+  @keyframes bbc-shimmer {
+    from { background-position: 200% 0; }
+    to { background-position: -200% 0; }
+  }
+  @keyframes bbc-scanline {
+    from { top: 6%; }
+    to { top: 94%; }
+  }
+  @keyframes bbc-pulse-ring {
+    from { transform: scale(0.6); opacity: 0.8; }
+    to { transform: scale(1.8); opacity: 0; }
+  }
+  @keyframes bbc-pop {
+    from { transform: scale(0.4); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+  @keyframes bbc-fade-up {
+    from { transform: translateY(12px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
 }
 
 /* ---------------------------------------------------------------
    Baguio Base Camp palette
-   Logo: sky cyan, deep blue, lime/grass/forest greens, night slate,
-   sun yellow. Evergreen: cream, fog, sage, moss, pine, deep forest.
+   The logo is split day / night, and so is the UI: light mode is a
+   pine morning (cream, sky, lime, sun), dark mode a starlit ridge
+   (midnight, slate, lime, star-yellow). Brand values never change
+   between themes; the semantic tokens below pick from them.
    --------------------------------------------------------------- */
 :root {
+  color-scheme: light;
+
   /* brand */
   --bbc-sky: #3cc5e8;
   --bbc-sky-deep: #1e6fa3;
@@ -79,6 +141,7 @@
   --bbc-pine: #1b5e3b;
   --bbc-deep-forest: #0b3d2e;
   --bbc-night: #1c2f34;
+  --bbc-midnight: #0e1c20;
   --bbc-slate: #27404a;
   --bbc-sun: #f7e017;
   --bbc-star: #f5f0a0;
@@ -87,9 +150,12 @@
   --bbc-sage: #9db58a;
   --bbc-moss: #4f7942;
 
-  /* shadcn semantic tokens, light */
+  /* Alpine Day */
   --background: var(--bbc-cream);
   --foreground: var(--bbc-deep-forest);
+  --surface-1: #ffffff;
+  --surface-2: #eef2e8;
+  --surface-3: #e3e9dc;
   --card: #ffffff;
   --card-foreground: var(--bbc-deep-forest);
   --popover: #ffffff;
@@ -98,19 +164,30 @@
   --primary-foreground: #ffffff;
   --secondary: var(--bbc-fog);
   --secondary-foreground: var(--bbc-pine);
-  --muted: #edf0e7;
+  --muted: #eef2e8;
   --muted-foreground: #5b7060;
   --accent: #dff5fb;
   --accent-foreground: var(--bbc-sky-deep);
-  --destructive: #c0392b;
+  --destructive: #b4321f;
+  --destructive-soft: rgb(180 50 31 / 0.1);
+  /* Sun yellow is a background only on light surfaces; the text on it is deep forest. */
+  --success: var(--bbc-grass);
+  --success-foreground: var(--bbc-pine);
+  --success-soft: rgb(57 181 74 / 0.14);
+  --warning: #d4b800;
+  --warning-foreground: #6b4f00;
+  --warning-soft: rgb(247 224 23 / 0.26);
+  --info: var(--bbc-sky-deep);
+  --info-foreground: var(--bbc-sky-deep);
+  --info-soft: rgb(60 197 232 / 0.18);
   --border: #d9e0d2;
   --input: #d9e0d2;
   --ring: var(--bbc-grass);
-  --chart-1: var(--bbc-sky);
-  --chart-2: var(--bbc-lime);
-  --chart-3: var(--bbc-forest);
-  --chart-4: var(--bbc-sky-deep);
-  --chart-5: var(--bbc-sun);
+  --chart-1: var(--bbc-pine);
+  --chart-2: var(--bbc-sky-deep);
+  --chart-3: var(--bbc-grass);
+  --chart-4: var(--bbc-moss);
+  --chart-5: #d4b800;
   --radius: 0.75rem;
   --sidebar: #ffffff;
   --sidebar-foreground: var(--bbc-deep-forest);
@@ -122,37 +199,54 @@
   --sidebar-ring: var(--bbc-grass);
 }
 
+/* Starlit Night */
 .dark {
-  --background: var(--bbc-night);
+  color-scheme: dark;
+
+  --background: var(--bbc-midnight);
   --foreground: var(--bbc-fog);
-  --card: var(--bbc-slate);
+  --surface-1: var(--bbc-night);
+  --surface-2: var(--bbc-slate);
+  --surface-3: #324f57;
+  --card: var(--bbc-night);
   --card-foreground: var(--bbc-fog);
-  --popover: var(--bbc-slate);
+  --popover: var(--bbc-night);
   --popover-foreground: var(--bbc-fog);
   --primary: var(--bbc-lime);
   --primary-foreground: var(--bbc-deep-forest);
-  --secondary: #324f57;
+  --secondary: var(--bbc-slate);
   --secondary-foreground: var(--bbc-fog);
-  --muted: #2f474f;
+  --muted: var(--bbc-slate);
   --muted-foreground: #a9bfae;
   --accent: #1f4a5c;
-  --accent-foreground: #9fe1f4;
-  --destructive: #e8604f;
-  --border: rgba(232, 240, 230, 0.12);
-  --input: rgba(232, 240, 230, 0.16);
+  --accent-foreground: #7fd8f0;
+  --destructive: #ff8a76;
+  --destructive-soft: rgb(255 138 118 / 0.14);
+  /* Star yellow may carry text at night: it clears 12:1 on midnight. */
+  --success: var(--bbc-lime);
+  --success-foreground: #a6d85a;
+  --success-soft: rgb(140 198 62 / 0.16);
+  --warning: var(--bbc-star);
+  --warning-foreground: var(--bbc-star);
+  --warning-soft: rgb(245 240 160 / 0.14);
+  --info: #7fd8f0;
+  --info-foreground: #7fd8f0;
+  --info-soft: rgb(127 216 240 / 0.14);
+  --border: rgb(232 240 230 / 0.14);
+  --input: rgb(232 240 230 / 0.18);
   --ring: var(--bbc-lime);
-  --chart-1: var(--bbc-sky);
-  --chart-2: var(--bbc-lime);
+  --chart-1: var(--bbc-lime);
+  --chart-2: #7fd8f0;
   --chart-3: var(--bbc-grass);
-  --chart-4: #5fb6e0;
+  --chart-4: var(--bbc-sage);
   --chart-5: var(--bbc-star);
-  --sidebar: var(--bbc-slate);
+  --sidebar: var(--bbc-night);
   --sidebar-foreground: var(--bbc-fog);
   --sidebar-primary: var(--bbc-lime);
   --sidebar-primary-foreground: var(--bbc-deep-forest);
-  --sidebar-accent: #324f57;
+  --sidebar-accent: var(--bbc-slate);
   --sidebar-accent-foreground: var(--bbc-fog);
-  --sidebar-border: rgba(232, 240, 230, 0.12);
+  --sidebar-border: rgb(232 240 230 / 0.14);
   --sidebar-ring: var(--bbc-lime);
 }
 
@@ -166,13 +260,97 @@
   html {
     @apply font-sans;
   }
+  /* Headlines are the product (event titles), so they get the display face by default. */
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+  }
 }
-/* Day/night mountain gradient used in heroes and cards */
-.bbc-skyline {
-  background:
-    linear-gradient(135deg, var(--bbc-sky) 0%, var(--bbc-sky-deep) 48%, var(--bbc-slate) 52%, var(--bbc-night) 100%);
+
+@layer components {
+  /* The ticket lockup's small caps label: "BAGUIO BASE CAMP", "UP NEXT", section kickers. */
+  .bbc-eyebrow {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+
+  /* Day meets night, the signature gradient */
+  .bbc-skyline {
+    background: linear-gradient(135deg, var(--bbc-sky) 0%, var(--bbc-sky-deep) 48%, var(--bbc-slate) 52%, var(--bbc-night) 100%);
+  }
+  /* Light-mode hero sky and dark-mode hero sky */
+  .bbc-dawn {
+    background: linear-gradient(180deg, var(--bbc-sky) 0%, #cdeefa 100%);
+  }
+  .bbc-dusk {
+    background: linear-gradient(180deg, #0b161a 0%, #1f4a5c 100%);
+  }
+  .bbc-ridge {
+    background: linear-gradient(180deg, var(--bbc-lime) 0%, var(--bbc-grass) 55%, var(--bbc-forest) 100%);
+  }
+
+  /* Topographic contour texture (from the Trail Pass ticket) for quiet backgrounds */
+  .bbc-contour {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='60'%3E%3Cg fill='none' stroke='%239db58a' stroke-width='1.2'%3E%3Cpath d='M-10 30c20-18 40-18 60 0s40 18 60 0 40-18 60 0' opacity='.5'/%3E%3Cpath d='M-10 50c20-14 40-14 60 0s40 14 60 0 40-14 60 0' opacity='.35'/%3E%3Cpath d='M-10 10c20-10 40-10 60 0s40 10 60 0 40-10 60 0' opacity='.25'/%3E%3C/g%3E%3C/svg%3E");
+    background-size: 120px 60px;
+  }
+  .dark .bbc-contour {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='60'%3E%3Cg fill='none' stroke='%23a9bfae' stroke-width='1.2'%3E%3Cpath d='M-10 30c20-18 40-18 60 0s40 18 60 0 40-18 60 0' opacity='.22'/%3E%3Cpath d='M-10 50c20-14 40-14 60 0s40 14 60 0 40-14 60 0' opacity='.15'/%3E%3Cpath d='M-10 10c20-10 40-10 60 0s40 10 60 0 40-10 60 0' opacity='.1'/%3E%3C/g%3E%3C/svg%3E");
+  }
+
+  /*
+   * Ticket-stub notches. Put `bbc-stub` on an outer element that does NOT clip
+   * (the notches sit 9px outside it) and the rounded, overflow-hidden card inside.
+   * `--stub-notch` is the perforation's distance from the top; `--stub-bg` the
+   * colour behind the card (defaults to the page).
+   */
+  .bbc-stub {
+    position: relative;
+    --stub-notch: 50%;
+    --stub-bg: var(--background);
+  }
+  .bbc-stub::before,
+  .bbc-stub::after {
+    content: "";
+    position: absolute;
+    top: var(--stub-notch);
+    z-index: 1;
+    width: 18px;
+    height: 18px;
+    border-radius: 9999px;
+    background: var(--stub-bg);
+    transform: translateY(-50%);
+    pointer-events: none;
+  }
+  .bbc-stub::before {
+    left: -9px;
+  }
+  .bbc-stub::after {
+    right: -9px;
+  }
+  .bbc-perforation {
+    border-top: 2px dashed var(--border);
+  }
+
+  /* Skeleton shimmer in the surface tint */
+  .bbc-shimmer {
+    background: linear-gradient(90deg, var(--surface-2) 0%, var(--surface-3) 50%, var(--surface-2) 100%);
+    background-size: 200% 100%;
+    animation: var(--animate-shimmer);
+  }
 }
-.bbc-ridge {
-  background:
-    linear-gradient(180deg, var(--bbc-lime) 0%, var(--bbc-grass) 55%, var(--bbc-forest) 100%);
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

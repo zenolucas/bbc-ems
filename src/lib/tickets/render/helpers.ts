@@ -23,6 +23,8 @@ export const C = {
 
 export const FONT = `Geist, 'Geist Sans', Inter, system-ui, -apple-system, 'Segoe UI', sans-serif`;
 export const MONO = `'Geist Mono', ui-monospace, SFMono-Regular, Menlo, monospace`;
+/** Display face for event titles, short codes and holder names (the web UI's headline font). */
+export const DISPLAY = `'Bricolage Grotesque', Geist, 'Geist Sans', Inter, system-ui, sans-serif`;
 
 export function esc(s: string) {
   return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
@@ -136,19 +138,7 @@ export function mountainMark(x: number, y: number, size: number, opts: { bg?: st
 }
 
 /** Deterministic pseudo-random for stars/contours so a ticket always renders the same. */
-export function seeded(seed: string) {
-  let h = 2166136261;
-  for (let i = 0; i < seed.length; i++) {
-    h ^= seed.charCodeAt(i);
-    h = Math.imul(h, 16777619);
-  }
-  return () => {
-    h += 0x6d2b79f5;
-    let t = Math.imul(h ^ (h >>> 15), 1 | h);
-    t ^= t + Math.imul(t ^ (t >>> 7), 61 | t);
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
-}
+export { seeded } from "@/lib/seeded";
 
 export function wrap(svgInner: string, width: number, height: number, extraAttrs = "") {
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}" width="${width}" height="${height}" font-family="${FONT}" ${extraAttrs}>${svgInner}</svg>`;
