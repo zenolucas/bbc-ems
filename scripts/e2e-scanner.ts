@@ -20,7 +20,8 @@ function cookiesFromNetscape(file: string) {
   const ctx = await browser.newContext({ viewport: { width: 420, height: 860 } });
   await ctx.addCookies(cookiesFromNetscape(cookieFile));
   const page = await ctx.newPage();
-  page.on("console", (m) => { if (m.type() === "error") console.log("[console.error]", m.text()); });
+  page.on("console", (m) => { if (m.type() === "error" && !/ERR_INTERNET|hmr|Failed to load resource/.test(m.text())) console.log("[console.error]", m.text().slice(0, 400)); });
+  page.on("pageerror", (e) => console.log("[pageerror]", e.message.slice(0, 400)));
   await page.goto(`${base}/admin/scan/${eventId}`);
   await page.getByText(/Ticket list/).waitFor({ timeout: 15000 });
   const stat = async (label: string) => Number(await page.locator(`div:has(> div:text-is("${label}")) > div`).first().innerText());
@@ -74,9 +75,32 @@ function cookiesFromNetscape(file: string) {
   // 6. reload offline: page served by service worker cache
   await page.waitForTimeout(1500);
   await ctx.setOffline(true);
+  const failed: string[] = [];
+  page.on("requestfailed", (r) => failed.push(`${r.failure()?.errorText} ${r.url().replace(base, "")}`));
+  page.on("response", (r) => { if (r.status() >= 400) failed.push(`HTTP ${r.status()} ${r.url().replace(base, "")}`); });
   const res = await page.reload({ waitUntil: "domcontentloaded" }).catch((e) => e);
   const okOffline = res && !(res instanceof Error) ? await page.getByText(/Ticket list|Door scanner|Checked in/).first().isVisible().catch(() => false) : false;
   console.log("offline reload served from cache:", okOffline);
+  // cached manifest must come back from IndexedDB while offline
+  await page.waitForFunction(() => {
+    const els = [...document.querySelectorAll("div")].filter((d) => d.textContent?.trim() === "Issued");
+    return Number(els[0]?.previousElementSibling?.textContent) > 0;
+  }, null, { timeout: 10000 }).catch(() => {});
+  console.log("offline reload: issued from cached manifest:", await stat("Issued"), "checked in:", await stat("Checked in"));
+  await page.getByRole("button", { name: "Type code" }).click().catch(() => {});
+  await page.waitForTimeout(800);
+  console.log("hydrated (tab switch worked):", await page.getByPlaceholder("BBC-7K3M-PX2Q").isVisible().catch(() => false));
+  const missing = await page.evaluate(async () => {
+    const srcs = [...document.scripts].map((sc) => sc.src).filter(Boolean);
+    const links = [...document.querySelectorAll("link[rel=stylesheet]")].map((l) => (l as HTMLLinkElement).href);
+    const out: string[] = [];
+    for (const u of [...srcs, ...links]) if (!(await caches.match(u))) out.push(u.replace(location.origin, ""));
+    return { total: srcs.length + links.length, missing: out };
+  });
+  console.log("scripts/styles in HTML:", missing.total, "missing from cache:", missing.missing.length, missing.missing.slice(0, 6));
+  console.log("offline body:", (await page.innerText("body")).replace(/\s+/g, " ").slice(0, 300));
+  if (failed.length) console.log("offline reload failed requests:\n  " + failed.filter((f) => !f.includes("hmr")).slice(0, 15).join("\n  "));
+  await page.waitForTimeout(300);
   await page.screenshot({ path: process.env.SHOT ?? "/tmp/scanner.png" });
   await browser.close();
 })().catch((e) => { console.error("E2E FAILED:", e.message); process.exit(1); });
