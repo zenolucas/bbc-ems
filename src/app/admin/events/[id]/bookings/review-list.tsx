@@ -70,10 +70,10 @@ export function ReviewList({ eventId, bookings, filter }: { eventId: string; boo
           const actionable = ["under_review", "pending_payment", "rejected"].includes(b.status);
           const busy = busyId === b.id;
           return (
-            <li key={b.id} id={b.id} className="grid gap-4 rounded-2xl border bg-card p-4 sm:grid-cols-[120px_1fr_auto]">
+            <li key={b.id} id={b.id} className="grid grid-cols-[72px_1fr] gap-x-3 gap-y-4 rounded-2xl border bg-card p-4 sm:grid-cols-[120px_1fr_auto] sm:gap-4">
               <button
                 type="button"
-                className="relative aspect-[3/4] w-full max-w-[160px] overflow-hidden rounded-lg border bg-muted disabled:cursor-default sm:max-w-none"
+                className="relative aspect-[3/4] w-full self-start overflow-hidden rounded-lg border bg-muted disabled:cursor-default"
                 disabled={!b.paymentProofUrl}
                 aria-label={b.paymentProofUrl ? `View receipt from ${b.userName || b.userEmail}` : "No receipt uploaded"}
                 onClick={() => { setZoom(false); setPreview(b); }}
@@ -93,7 +93,7 @@ export function ReviewList({ eventId, bookings, filter }: { eventId: string; boo
                 {b.reviewed && <div className="text-xs text-muted-foreground">{b.reviewed}</div>}
                 <div className="text-xs text-muted-foreground">Booked {b.booked} · <Link href={`/bookings/${b.id}`} className="underline">{b.id}</Link></div>
               </div>
-              <div className="flex flex-wrap gap-2 sm:w-36 sm:flex-col">
+              <div className="col-span-2 flex flex-wrap gap-2 sm:col-span-1 sm:w-36 sm:flex-col">
                 {actionable && (
                   <ConfirmDialog
                     title={`Approve ${b.userName || b.userEmail}?`}
@@ -152,11 +152,11 @@ export function ReviewList({ eventId, bookings, filter }: { eventId: string; boo
       </Dialog>
 
       <Dialog open={!!preview} onOpenChange={(o) => !o && setPreview(null)}>
-        <DialogContent className="max-h-[95vh] sm:max-w-4xl">
+        <DialogContent className="sm:max-w-4xl">
           <DialogHeader><DialogTitle>Receipt · {preview?.userName || preview?.userEmail}</DialogTitle></DialogHeader>
           {preview?.paymentProofUrl && (
             <div className="grid gap-4 md:grid-cols-[1fr_220px]">
-              <div className={cn("relative h-[60vh] overflow-auto rounded-lg bg-muted md:h-[75vh]", zoom && "cursor-zoom-out")} onClick={() => setZoom((z) => !z)}>
+              <div className={cn("relative h-[50dvh] overflow-auto rounded-lg bg-muted md:h-[75vh]", zoom && "cursor-zoom-out")} onClick={() => setZoom((z) => !z)}>
                 {zoom ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img src={preview.paymentProofUrl} alt="Receipt, zoomed" className="max-w-none" style={{ width: "200%" }} />

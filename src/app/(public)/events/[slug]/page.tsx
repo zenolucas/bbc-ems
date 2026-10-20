@@ -66,11 +66,13 @@ export default async function EventPage({ params }: PageProps<"/events/[slug]">)
             <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">{event.title}</h1>
             {event.tagline && <p className="text-lg text-muted-foreground">{event.tagline}</p>}
             <div className="flex flex-col gap-2 text-sm sm:flex-row sm:flex-wrap sm:gap-6">
-              <span className="flex items-center gap-2"><CalendarDays className="size-4 text-primary" />{fmtRange(event.startsAt, event.endsAt)}</span>
-              <span className="flex items-center gap-2">
-                <MapPin className="size-4 text-primary" />
-                {event.venueName}{event.venueAddress && <span className="text-muted-foreground">· {event.venueAddress}</span>}
-                {event.mapUrl && <a href={event.mapUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-primary underline-offset-2 hover:underline">Map <ExternalLink className="size-3" /></a>}
+              <span className="flex items-start gap-2"><CalendarDays className="mt-0.5 size-4 shrink-0 text-primary" />{fmtRange(event.startsAt, event.endsAt)}</span>
+              <span className="flex items-start gap-2">
+                <MapPin className="mt-0.5 size-4 shrink-0 text-primary" />
+                <span>
+                  {event.venueName}{event.venueAddress && <span className="text-muted-foreground"> · {event.venueAddress}</span>}
+                  {event.mapUrl && <> <a href={event.mapUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 whitespace-nowrap text-primary underline-offset-2 hover:underline">Map <ExternalLink className="size-3" /></a></>}
+                </span>
               </span>
             </div>
           </header>

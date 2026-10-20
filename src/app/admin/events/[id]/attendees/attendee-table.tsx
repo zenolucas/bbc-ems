@@ -76,7 +76,7 @@ export function AttendeeTable({ eventId, rows, isAdmin, tiers }: { eventId: stri
             </button>
           ))}
           {tiers.length > 1 && (
-            <select aria-label="Filter by tier" value={tier} onChange={(e) => setTier(e.target.value)} className="h-9 rounded-full border bg-background px-3">
+            <select aria-label="Filter by tier" value={tier} onChange={(e) => setTier(e.target.value)} className="h-9 rounded-full border bg-background px-3 text-base md:text-sm">
               <option value="all">All tiers</option>
               {tiers.map((t) => <option key={t} value={t}>{t}</option>)}
             </select>

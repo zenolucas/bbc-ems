@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { inviteAction, revokeInviteAction, setRoleAction } from "@/app/admin/team-actions";
 import { runAction } from "@/lib/run-action";
 
-const select = "h-10 rounded-lg border bg-background px-3 text-sm md:h-9";
+const select = "h-10 rounded-lg border bg-background px-3 text-base md:h-9 md:text-sm";
 
 export function InviteForm() {
   const [email, setEmail] = useState("");

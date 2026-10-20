@@ -83,12 +83,12 @@ export default async function AdminEventPage({ params }: PageProps<"/admin/event
               const pct = t.quantity ? Math.min(100, Math.round((a.held / t.quantity) * 100)) : 0;
               return (
                 <div key={t.id} className="space-y-2 py-3 text-sm">
-                  <div className="flex items-center justify-between">
-                    <div>
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="min-w-0">
                       <div className="font-medium">{t.name}</div>
                       <div className="text-muted-foreground">{peso(t.priceCents)} · max {t.perOrderLimit}/order</div>
                     </div>
-                    <div className="text-right">
+                    <div className="shrink-0 text-right">
                       <div className="font-medium tabular-nums">{a.held} / {t.quantity}</div>
                       <div className="text-xs text-muted-foreground">{a.remaining === 0 ? "Sold out" : `${a.remaining} left`}</div>
                     </div>
