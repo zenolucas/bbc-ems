@@ -7,10 +7,13 @@ Events, gigs and paperless QR tickets for the Baguio Base Camp community.
 - Tickets are ECDSA-signed QR codes in one of five brand styles, delivered in-app and by email.
 - Door staff scan with their phone. The scanner works offline and syncs when signal returns.
 - Organisers give volunteers **door crew** access from `/admin/team`: scanner and check-in only, no emails, payments or event editing.
+- The organiser area has a dashboard, a review queue (`/admin/review`, keys J/K/A/R/Z), an attendees index and ⌘K search across events, bookings and people.
 
 ## Design
 
-The UI follows the "Alpine Day / Starlit Night" system: light mode is a pine morning, dark mode a starlit ridge. Tokens, components and the page-by-page spec live in [`docs/revamp/README.md`](docs/revamp/README.md); the mockups are in `docs/revamp/mockups/`.
+The UI follows the "Alpine Day / Starlit Night" system: light mode is a pine morning, dark mode a starlit ridge. Tokens, components and the page-by-page spec live in [`docs/revamp/README.md`](docs/revamp/README.md); the mockups are in `docs/revamp/mockups/`. What has been built, and what is still open, is in [`docs/revamp/PROGRESS.md`](docs/revamp/PROGRESS.md).
+
+Email header art is PNG (Gmail and Outlook drop inline SVG), built from `src/emails/art.ts`. After changing it, run `pnpm exec tsx src/emails/build-assets.ts` and commit `public/brand/email/`.
 
 ## Stack
 
@@ -62,6 +65,7 @@ console.log("TICKET_SIGNING_PUBLIC_KEY=" + b64(publicKey.export({ format: "jwk" 
 | `pnpm smoke:flow` | Books, pays, approves, rejects and expires bookings against the local DB |
 | `pnpm smoke:tokens` | Sign/verify round trip for ticket tokens |
 | `pnpm smoke:scan <png…>` | Decodes ticket PNGs to confirm they scan |
+| `pnpm smoke:tickets` | Renders all ten ticket variants to `.smoke/tickets/` and decodes them the way the door scanner does (no inversion). Run after any change to the ticket renderers. |
 | `pnpm e2e:scanner <cookies.txt or magic-link URL> <eventId>` | Drives the scanner in Chromium against the dev server (or `E2E_BASE`): online, duplicates, offline queue, resync, conflicts, cached reload. Picks unused tickets from the DB. Offline reload only works against a production build (`next start`). |
 
 ## How ticketing works
@@ -78,7 +82,7 @@ console.log("TICKET_SIGNING_PUBLIC_KEY=" + b64(publicKey.export({ format: "jwk" 
 2. Provision Neon Postgres, Resend and Blob from the Vercel Marketplace (`vercel integration add …`) or paste existing credentials with `vercel env add`.
 3. Add the remaining env vars above (`vercel env add`), then `vercel env pull .env.local`.
 4. Run migrations against the production database: `DATABASE_URL=… pnpm db:migrate`.
-5. `vercel deploy --prod`. The cron in `vercel.json` expires unpaid holds every 15 minutes.
+5. `vercel deploy --prod`. The cron in `vercel.json` expires unpaid holds every 15 minutes. If a deploy looks half-styled (new colours or utilities missing), redeploy without the build cache: Turbopack has reused a stale stylesheet from `.next/cache/turbopack` after a branch switch. Locally, `rm -rf .next/cache/turbopack` before `pnpm build`.
 6. Verify the Resend sending domain so magic links do not land in spam.
 
 Camera access requires HTTPS, so test the scanner on a preview or production URL, not plain http.

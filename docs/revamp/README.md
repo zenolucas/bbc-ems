@@ -4,7 +4,7 @@ Design handoff for the Baguio Base Camp EMS revamp. Read this before touching an
 
 - **Canvas (30 artboards):** https://claude.ai/artifact/FtdC55UzCsYQqBP3Pjd2hZ — the source of truth for layout and copy.
 - **Mockup source:** [`mockups/`](./mockups/) holds the same 30 artboards as self-contained HTML (`*.dc.html`) plus `canvas.json` (positions, titles). Open any file in a browser, or read it for exact spacing, sizes and colour values. The markup uses inline styles and a tiny `.day` / `.night` CSS-variable set, so values translate 1:1 to the tokens below.
-- **Status:** Phase 1 (foundations) is shipped on this branch. Phases 2–6 are specified below, page by page, and are meant to be built locally with the DB running and the canvas open beside the browser.
+- **Status:** all six phases are built and merged into `master`. What shipped, where it differs from this spec, and what is still open: [`PROGRESS.md`](./PROGRESS.md). The specs below stay as the reference for future changes.
 
 ## The direction in one paragraph
 
@@ -19,7 +19,7 @@ The logo is cut in half: a sunny morning on the left, a starry night on the righ
 6. **Door mode scanner** — always dark, animated viewfinder brackets and scan line, big segmented control, flood-colour results with a spring-in icon.
 7. **Illustrated empties/404/errors** — a tent under the ridge; sun by day, moon by night.
 
-## Phase 1: what is already on this branch
+## Phase 1: foundations
 
 ### Tokens (`src/app/globals.css`)
 
