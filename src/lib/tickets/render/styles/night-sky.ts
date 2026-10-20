@@ -6,7 +6,7 @@ export const nightSky: TicketRenderer = (i) => {
   const m = buildMatrix(i.url);
   const rnd = seeded(i.shortCode);
   const qrSize = 380;
-  const qx = (W - qrSize) / 2, qy = 248;
+  const qx = (W - qrSize) / 2, qy = 258;
   const stars: string[] = [];
   for (let k = 0; k < 70; k++) {
     const x = rnd() * W, y = rnd() * H;
@@ -32,8 +32,8 @@ export const nightSky: TicketRenderer = (i) => {
     <circle cx="${W - 96}" cy="120" r="34" fill="${C.star}"/>
     <circle cx="${W - 82}" cy="110" r="30" fill="${C.night}"/>
   </g>
-  ${text(48, 184, "BAGUIO BASE CAMP", { size: 13, weight: 700, fill: C.star, spacing: 4 })}
-  ${text(48, 226, truncate(i.event.title, 30), { size: i.event.title.length > 22 ? 28 : 34, weight: 700, fill: C.white })}
+  ${text(48, 176, "BAGUIO BASE CAMP", { size: 13, weight: 700, fill: C.star, spacing: 4 })}
+  ${text(48, 216, truncate(i.event.title, 30), { size: i.event.title.length > 22 ? 28 : 34, weight: 700, fill: C.white })}
   ${drawQr(m, {
     x: qx, y: qy, size: qrSize, shape: "dot",
     color: () => C.night,
@@ -41,12 +41,12 @@ export const nightSky: TicketRenderer = (i) => {
     finderInner: C.skyDeep,
     plate: { color: C.cream, radius: 28, quiet: 4 },
   })}
-  ${text(W / 2, 694, i.shortCode, { size: 34, weight: 700, fill: C.star, anchor: "middle", spacing: 3 })}
-  ${text(W / 2, 730, truncate(i.holderName, 30), { size: 18, weight: 600, fill: C.white, anchor: "middle" })}
-  ${text(W / 2, 756, `${i.tierName} · ${dateLine(i.event.startsAt)} · ${timeLine(i.event.startsAt)}`, { size: 14, fill: "#a9bfae", anchor: "middle" })}
-  ${text(W / 2, 780, truncate(i.event.venueName, 44), { size: 14, fill: "#a9bfae", anchor: "middle" })}
+  ${text(W / 2, 708, i.shortCode, { size: 34, weight: 700, fill: C.star, anchor: "middle", spacing: 3 })}
+  ${text(W / 2, 744, truncate(i.holderName, 30), { size: 18, weight: 600, fill: C.white, anchor: "middle" })}
+  ${text(W / 2, 770, `${i.tierName} · ${dateLine(i.event.startsAt)} · ${timeLine(i.event.startsAt)}`, { size: 14, fill: "#a9bfae", anchor: "middle" })}
+  ${text(W / 2, 794, truncate(i.event.venueName, 44), { size: 14, fill: "#a9bfae", anchor: "middle" })}
   <path d="M0 ${H - 40} L70 ${H - 72} L130 ${H - 50} L210 ${H - 82} L290 ${H - 55} L360 ${H - 76} L440 ${H - 46} L520 ${H - 68} L600 ${H - 44} L600 ${H} L0 ${H} Z" fill="${C.pine}" clip-path="url(#card)"/>
   <path d="M0 ${H - 20} L90 ${H - 44} L180 ${H - 26} L280 ${H - 50} L380 ${H - 28} L480 ${H - 46} L600 ${H - 24} L600 ${H} L0 ${H} Z" fill="${C.deepForest}" clip-path="url(#card)"/>
-  ${text(W / 2, 822, "one scan per ticket", { size: 12, fill: C.sage, anchor: "middle" })}`;
+  ${text(W / 2, 850, "one scan per ticket", { size: 12, fill: C.sage, anchor: "middle" })}`;
   return { svg: wrap(svg, W, H), width: W, height: H };
 };

@@ -14,5 +14,5 @@ for (const f of process.argv.slice(2)) {
     data[i + 3] = 255;
   }
   const r = jsQR(data, png.width, png.height, { inversionAttempts: "dontInvert" });
-  console.log(f.split("/").pop(), r ? `OK -> ${r.data.slice(0, 60)}…` : "FAILED to decode");
+  console.log(f.split("/").pop(), r ? `OK -> ${r.data}` : "FAILED to decode");
 }
