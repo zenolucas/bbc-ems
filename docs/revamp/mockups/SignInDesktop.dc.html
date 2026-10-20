@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Sign in on desktop</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Geist:wght@400..700&family=Geist+Mono:wght@400..700&display=swap">
+<style>
+body{margin:0}
+a{color:inherit}a:hover{color:inherit}
+.day{--bg:#f6f4ec;--surface:#ffffff;--surface2:#eef2e8;--fg:#0b3d2e;--fg2:#5b7060;--line:rgba(11,61,46,.14);--primary:#1b5e3b;--on-primary:#ffffff;--accent:#1e6fa3;--info:#1e6fa3;--info-bg:rgba(60,197,232,.18)}
+.display{font-family:'Bricolage Grotesque',Geist,system-ui,sans-serif;letter-spacing:-.02em}
+.eyebrow{font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase}
+.btn{font:inherit;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid transparent;font-weight:600;line-height:1;text-decoration:none}
+</style>
+</helmet>
+<div class="day" style="min-height: 100vh; background: var(--bg); color: var(--fg); font-family: Geist, system-ui, sans-serif; display: flex; flex-wrap: wrap">
+
+  <section style="flex: 1 1 420px; min-height: 360px; position: relative; overflow: hidden; background: #3cc5e8; display: flex; flex-direction: column; justify-content: space-between; padding: 36px 44px; box-sizing: border-box">
+    <svg viewBox="0 0 640 800" preserveAspectRatio="xMidYMax slice" aria-hidden="true" style="position: absolute; inset: 0; width: 100%; height: 100%">
+      <defs><linearGradient id="ds" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3cc5e8"/><stop offset="1" stop-color="#cdeefa"/></linearGradient></defs>
+      <rect width="640" height="800" fill="url(#ds)"/>
+      <circle cx="120" cy="150" r="40" fill="#f7e017"/><circle cx="120" cy="150" r="56" fill="none" stroke="#f7e017" stroke-width="2.5" stroke-dasharray="6 10"/>
+      <g fill="#ffffff" opacity=".92"><ellipse cx="460" cy="190" rx="70" ry="18"/><ellipse cx="488" cy="172" rx="40" ry="22"/><ellipse cx="430" cy="180" rx="30" ry="15"/><ellipse cx="240" cy="110" rx="40" ry="11"/><ellipse cx="256" cy="102" rx="20" ry="11"/></g>
+      <path d="M0 800V560L90 460L180 540L290 380L400 520L480 450L580 560L640 500V800Z" fill="#8cc63e"/>
+      <path d="M0 800V660L100 610L220 680L340 560L460 660L560 610L640 680V800Z" fill="#39b54a"/>
+      <g fill="#1b5e3b"><path d="M80 626l-12 32h24z M80 608l-9 24h18z"/><path d="M112 622l-12 32h24z M112 604l-9 24h18z"/><path d="M350 584l-14 36h28z M350 564l-10 26h20z"/><path d="M386 596l-12 32h24z M386 578l-9 24h18z"/><path d="M540 630l-12 32h24z M540 612l-9 24h18z"/><path d="M576 636l-12 32h24z M576 618l-9 24h18z"/></g>
+      <path d="M0 800V740L120 716L260 752L400 710L540 746L640 724V800Z" fill="#1f9a3e"/>
+    </svg>
+    <a href="#" style="position: relative; display: flex; align-items: center; gap: 12px; text-decoration: none; color: #0b3d2e"><img src="/_blob/f5b90c3cd8af5b37d6afb44083aaa6b4" alt="Baguio Base Camp" style="width: 48px; height: 48px"><span style="line-height: 1.05"><span class="eyebrow" style="display: block; font-size: 10px">Baguio</span><span class="display" style="display: block; font-size: 20px; font-weight: 700">Base Camp</span></span></a>
+    <div style="position: relative; max-width: 420px; display: flex; flex-direction: column; gap: 12px; color: #0b3d2e">
+      <div class="display" style="font-size: clamp(28px, 3.4vw, 40px); line-height: 1; font-weight: 800">One link in your inbox, then you&#39;re in.</div>
+      <div style="font-size: 15px; line-height: 1.5; color: #1b3d33">No passwords, no accounts to set up. The name you choose goes on your tickets; the door crew will look for it.</div>
+    </div>
+  </section>
+
+  <section style="flex: 1 1 420px; display: flex; align-items: center; justify-content: center; padding: 48px 32px; box-sizing: border-box">
+    <div style="width: 100%; max-width: 440px; display: flex; flex-direction: column; gap: 18px">
+      <div style="display: flex; flex-direction: column; gap: 8px"><h1 class="display" style="margin: 0; font-size: 30px; line-height: 1.05; font-weight: 800">Sign in to the organiser area</h1><p style="margin: 0; font-size: 15px; line-height: 1.5; color: var(--fg2)">We&#39;ll email you a one-time link. It works once and lasts 15 minutes.</p></div>
+      <form style="display: flex; flex-direction: column; gap: 14px">
+        <div style="display: flex; flex-direction: column; gap: 6px"><label for="email" style="font-size: 13px; font-weight: 600">Email</label><input id="email" type="email" inputmode="email" autocomplete="email" placeholder="you@example.com" style="font: inherit; font-size: 16px; height: 50px; padding: 0 14px; border-radius: 14px; border: 1px solid var(--line); background: var(--surface); color: var(--fg)"></div>
+        <button type="submit" class="btn" style="height: 50px; border-radius: 999px; background: var(--primary); color: var(--on-primary); font-size: 15px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 7L2 7"/></svg>Email me a sign-in link</button>
+      </form>
+      <div style="padding: 12px 14px; border-radius: 14px; background: var(--info-bg); display: flex; gap: 10px; font-size: 13px; line-height: 1.45"><svg viewBox="0 0 24 24" fill="none" stroke="var(--info)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true" style="flex-shrink: 0"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg><span><span style="font-weight: 600">Door crew on a phone?</span> Open the link in Safari or Chrome, not inside your mail app, so the scanner stays signed in.</span></div>
+      <div style="font-size: 12px; color: var(--fg2); line-height: 1.5">Only emails an organiser added on the Team page get into the organiser area. Everyone else lands on their tickets.</div>
+    </div>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":800}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

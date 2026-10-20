@@ -7,8 +7,9 @@ import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { Input } from "@/components/ui/input";
 import { inviteAction, revokeInviteAction, setRoleAction } from "@/app/admin/team-actions";
 import { runAction } from "@/lib/run-action";
+import { cn } from "@/lib/utils";
 
-const select = "h-10 rounded-lg border bg-background px-3 text-base md:h-9 md:text-sm";
+const select = "h-10 rounded-full border bg-card px-3.5 text-base font-semibold outline-none focus-visible:ring-3 focus-visible:ring-ring/50 md:h-9 md:text-[13px]";
 
 export function InviteForm() {
   const [email, setEmail] = useState("");
@@ -27,13 +28,13 @@ export function InviteForm() {
       }}
     >
       <label htmlFor="invite-email" className="sr-only">Email</label>
-      <Input id="invite-email" type="email" inputMode="email" autoComplete="off" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="volunteer@example.com" className="flex-1" />
+      <Input id="invite-email" type="email" inputMode="email" autoComplete="off" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="volunteer@example.com" className="rounded-full px-4 sm:flex-1" />
       <label htmlFor="invite-role" className="sr-only">Role</label>
-      <select id="invite-role" value={role} onChange={(e) => setRole(e.target.value)} className={select}>
+      <select id="invite-role" value={role} onChange={(e) => setRole(e.target.value)} className={cn(select, "h-11")}>
         <option value="staff">Door crew</option>
         <option value="admin">Admin</option>
       </select>
-      <Button type="submit" disabled={pending || !email}>{pending && <Loader2 className="animate-spin" />} Give access</Button>
+      <Button type="submit" className="h-11 rounded-full px-5 md:h-9" disabled={pending || !email}>{pending && <Loader2 className="animate-spin" />} Give access</Button>
     </form>
   );
 }
@@ -61,7 +62,7 @@ export function RoleSelect({ userId, role, name }: { userId: string; role: strin
         confirmLabel="Remove access"
         destructive
         onConfirm={() => change("member")}
-        trigger={(open) => <Button size="sm" variant="ghost" className="text-destructive" disabled={pending} onClick={open}>Remove</Button>}
+        trigger={(open) => <Button size="sm" variant="ghost" className="rounded-full text-destructive" disabled={pending} onClick={open}>Remove</Button>}
       />
     </div>
   );
@@ -71,7 +72,7 @@ export function RevokeInvite({ email }: { email: string }) {
   const [pending, start] = useTransition();
   const router = useRouter();
   return (
-    <Button size="sm" variant="ghost" disabled={pending} onClick={() => start(async () => { const ok = await runAction(() => revokeInviteAction(email), { success: "Invite removed" }); if (ok) router.refresh(); })}>
+    <Button size="sm" variant="ghost" className="rounded-full" disabled={pending} onClick={() => start(async () => { const ok = await runAction(() => revokeInviteAction(email), { success: "Invite removed" }); if (ok) router.refresh(); })}>
       {pending && <Loader2 className="animate-spin" />} Revoke
     </Button>
   );

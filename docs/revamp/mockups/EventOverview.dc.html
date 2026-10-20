@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Event overview</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Geist:wght@400..700&family=Geist+Mono:wght@400..700&display=swap">
+<style>
+body{margin:0}
+a{color:inherit}a:hover{color:inherit}
+.day{--bg:#f6f4ec;--surface:#ffffff;--surface2:#eef2e8;--fg:#0b3d2e;--fg2:#5b7060;--line:rgba(11,61,46,.14);--primary:#1b5e3b;--on-primary:#ffffff;--accent:#1e6fa3;--hi:#f7e017;--on-hi:#0b3d2e;--ok:#1b5e3b;--ok-bg:rgba(57,181,74,.14);--ok-dot:#39b54a;--warn:#6b4f00;--warn-bg:rgba(247,224,23,.26);--warn-dot:#d4b800;--bad:#b4321f;--bad-bg:rgba(180,50,31,.1);--muted:#dfe6d8}
+.display{font-family:'Bricolage Grotesque',Geist,system-ui,sans-serif;letter-spacing:-.02em}
+.mono{font-family:'Geist Mono',ui-monospace,monospace}
+.eyebrow{font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase}
+.btn{font:inherit;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid transparent;font-weight:600;line-height:1;text-decoration:none}
+.side a{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:12px;text-decoration:none;font-size:14px;font-weight:600;color:var(--fg2)}
+.side a[aria-current]{background:var(--surface);color:var(--fg);box-shadow:0 1px 2px rgba(11,61,46,.08)}
+.tabs a{text-decoration:none;font-size:14px;font-weight:600;color:var(--fg2);padding:10px 4px;border-bottom:2px solid transparent;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.tabs a[aria-current]{color:var(--fg);border-bottom-color:var(--primary)}
+.card{border-radius:18px;background:var(--surface);border:1px solid var(--line)}
+.tile{border-radius:16px;background:var(--surface);border:1px solid var(--line);padding:16px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.meter{height:6px;border-radius:999px;background:var(--muted);overflow:hidden}
+.meter span{display:block;height:100%;background:var(--primary);border-radius:999px}
+</style>
+</helmet>
+<div class="day" style="min-height: 100vh; background: var(--bg); color: var(--fg); font-family: Geist, system-ui, sans-serif; display: flex; flex-wrap: wrap">
+
+  <nav class="side" aria-label="Organiser" style="flex: 1 1 220px; max-width: 250px; padding: 20px 16px; box-sizing: border-box; display: flex; flex-direction: column; gap: 6px; border-right: 1px solid var(--line)">
+    <a href="#" style="padding: 4px 8px 16px; gap: 10px"><img src="/_blob/f5b90c3cd8af5b37d6afb44083aaa6b4" alt="" style="width: 34px; height: 34px"><span style="line-height: 1.1"><span class="display" style="display: block; font-size: 16px; font-weight: 700; color: var(--fg)">Base Camp</span><span style="display: inline-block; margin-top: 3px; font-size: 10px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; padding: 2px 7px; border-radius: 999px; background: var(--ok-bg); color: var(--primary)">Admin</span></span></a>
+    <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>Dashboard</a>
+    <a href="#" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="18" height="18" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Events</a>
+    <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="m9 14 2 2 4-4"/></svg>Review queue<span style="margin-left: auto; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px; background: var(--hi); color: var(--on-hi)">7</span></a>
+    <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>Attendees</a>
+    <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2M7 12h10"/></svg>Door scanner</a>
+    <div style="height: 1px; background: var(--line); margin: 8px 4px"></div>
+    <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/></svg>Team</a>
+    <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true"><circle cx="13.5" cy="6.5" r="2.5"/><circle cx="19" cy="12" r="2"/><circle cx="6" cy="12" r="2"/><circle cx="10" cy="18" r="2"/><path d="M12 2a10 10 0 1 0 10 10"/></svg>Ticket lab</a>
+  </nav>
+
+  <main style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column">
+    <div style="display: flex; align-items: center; gap: 8px; padding: 14px 28px; border-bottom: 1px solid var(--line); font-size: 13px; color: var(--fg2); flex-wrap: wrap"><a href="#" style="text-decoration: none">Events</a><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg><span style="color: var(--fg); font-weight: 600">Base Camp Sessions Vol. 3</span></div>
+
+    <div style="padding: 22px 28px 40px; display: flex; flex-direction: column; gap: 18px; max-width: 1100px; width: 100%; box-sizing: border-box">
+      <header style="display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; flex-wrap: wrap">
+        <div style="display: flex; gap: 16px; align-items: center; min-width: 0">
+          <span style="width: 72px; height: 72px; border-radius: 16px; background: #1c2f34; flex-shrink: 0; overflow: hidden; display: grid; place-items: center; position: relative"><span style="position: absolute; right: -20px; top: -20px; width: 60px; height: 60px; border-radius: 50%; background: #8cc63e"></span><span class="display" style="position: relative; font-size: 16px; font-weight: 800; color: #f6f4ec; letter-spacing: -1px">VOL.3</span></span>
+          <div style="min-width: 0; display: flex; flex-direction: column; gap: 6px">
+            <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap"><h1 class="display" style="margin: 0; font-size: 28px; line-height: 1; font-weight: 800">Base Camp Sessions Vol. 3</h1><span style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px; background: var(--ok-bg); color: var(--ok); font-size: 12px; font-weight: 600"><span style="width: 6px; height: 6px; border-radius: 50%; background: var(--ok-dot)"></span>Published</span></div>
+            <div style="font-size: 14px; color: var(--fg2)">Sat, Nov 1, 2026 · 7:00 PM – 11:00 PM · Canto, Ketchup Food Community · <span style="font-weight: 600; color: var(--fg)">in 12 days</span></div>
+          </div>
+        </div>
+        <div style="display: flex; gap: 8px; flex-shrink: 0"><a href="#" class="btn" style="height: 38px; padding: 0 14px; border-radius: 999px; background: transparent; color: var(--fg); border-color: var(--line); font-size: 13px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="15" height="15" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14 21 3"/></svg>Public page</a><a href="#" class="btn" style="height: 38px; padding: 0 16px; border-radius: 999px; background: var(--primary); color: var(--on-primary); font-size: 13px">Edit event</a></div>
+      </header>
+
+      <nav class="tabs" aria-label="Event sections" style="display: flex; gap: 22px; border-bottom: 1px solid var(--line); overflow-x: auto"><a href="#" aria-current="page">Overview</a><a href="#">Bookings <span style="font-size: 11px; font-weight: 700; padding: 1px 7px; border-radius: 999px; background: var(--hi); color: var(--on-hi)">7</span></a><a href="#">Attendees</a><a href="#">Edit</a><a href="#">Door scanner</a></nav>
+
+      <div class="card" style="padding: 14px 16px; display: flex; align-items: center; gap: 12px; border-left: 4px solid var(--warn-dot); flex-wrap: wrap"><svg viewBox="0 0 24 24" fill="none" stroke="var(--warn)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" aria-hidden="true" style="flex-shrink: 0"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4M12 17h.01"/></svg><div style="flex: 1; min-width: 200px"><div style="font-weight: 600; font-size: 14px">7 payments waiting for review</div><div style="font-size: 13px; color: var(--fg2)">Members can&#39;t get their tickets until you approve. Oldest receipt is 3 hours old.</div></div><a href="#" class="btn" style="height: 36px; padding: 0 16px; border-radius: 999px; background: var(--primary); color: var(--on-primary); font-size: 13px">Review now</a></div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px">
+        <div class="tile"><div class="eyebrow" style="color: var(--fg2)">Reserved / capacity</div><div class="display" style="font-size: 32px; font-weight: 800; line-height: 1; font-variant-numeric: tabular-nums">158<span style="font-size: 14px; font-weight: 600; color: var(--fg2)"> / 170</span></div><div class="meter"><span style="width: 93%"></span></div><div style="font-size: 12px; color: var(--fg2)">5 unpaid holds inside this number</div></div>
+        <div class="tile"><div class="eyebrow" style="color: var(--fg2)">Tickets issued</div><div class="display" style="font-size: 32px; font-weight: 800; line-height: 1; font-variant-numeric: tabular-nums">118</div><div style="font-size: 12px; color: var(--fg2)">₱41,250 confirmed · avg ₱349</div></div>
+        <div class="tile"><div class="eyebrow" style="color: var(--fg2)">Checked in</div><div class="display" style="font-size: 32px; font-weight: 800; line-height: 1; font-variant-numeric: tabular-nums; color: var(--fg2)">—</div><div style="font-size: 12px; color: var(--fg2)">Doors open in 12 days</div></div>
+        <div class="tile" style="background: var(--warn-bg); border-color: var(--warn-dot)"><div class="eyebrow" style="color: var(--warn)">Awaiting review</div><div class="display" style="font-size: 32px; font-weight: 800; line-height: 1; font-variant-numeric: tabular-nums">7</div><div style="font-size: 12px; color: var(--warn)">₱2,450 waiting on you</div></div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 18px; align-items: start">
+        <div style="display: flex; flex-direction: column; gap: 18px">
+          <section class="card" aria-labelledby="qa" style="padding: 16px">
+            <h2 id="qa" class="display" style="margin: 0 0 12px; font-size: 18px; font-weight: 800">Quick actions</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 8px">
+              <a href="#" class="btn" style="height: 44px; border-radius: 12px; background: var(--surface2); color: var(--fg); font-size: 13px; justify-content: flex-start; padding: 0 14px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" aria-hidden="true"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="m9 14 2 2 4-4"/></svg>Bookings<span style="margin-left: auto; font-size: 11px; font-weight: 700; padding: 1px 7px; border-radius: 999px; background: var(--hi); color: var(--on-hi)">7</span></a>
+              <a href="#" class="btn" style="height: 44px; border-radius: 12px; background: var(--surface2); color: var(--fg); font-size: 13px; justify-content: flex-start; padding: 0 14px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>Attendees</a>
+              <a href="#" class="btn" style="height: 44px; border-radius: 12px; background: var(--surface2); color: var(--fg); font-size: 13px; justify-content: flex-start; padding: 0 14px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" aria-hidden="true"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2M7 12h10"/></svg>Door scanner</a>
+              <a href="#" class="btn" style="height: 44px; border-radius: 12px; background: var(--surface2); color: var(--fg); font-size: 13px; justify-content: flex-start; padding: 0 14px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>Attendees CSV</a>
+            </div>
+          </section>
+          <section class="card" aria-labelledby="st" style="padding: 16px; display: flex; flex-direction: column; gap: 12px">
+            <h2 id="st" class="display" style="margin: 0; font-size: 18px; font-weight: 800">Status</h2>
+            <div style="font-size: 13px; color: var(--fg2); line-height: 1.5">Live on the events page since Oct 8. 158 people hold seats. Unpublishing hides the page; existing tickets keep working.</div>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap"><button type="button" class="btn" style="height: 36px; padding: 0 14px; border-radius: 999px; background: transparent; color: var(--fg); border-color: var(--line); font-size: 13px">Unpublish</button><button type="button" class="btn" disabled style="height: 36px; padding: 0 14px; border-radius: 999px; background: transparent; color: var(--fg2); border-color: var(--line); font-size: 13px; opacity: .5">Mark ended</button></div>
+            <div style="border-top: 1px solid var(--line); padding-top: 12px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center"><button type="button" class="btn" style="height: 36px; padding: 0 14px; border-radius: 999px; background: transparent; color: var(--fg); border-color: var(--line); font-size: 13px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Duplicate</button><button type="button" class="btn" style="height: 36px; padding: 0 14px; border-radius: 999px; background: var(--bad-bg); color: var(--bad); font-size: 13px">Cancel event</button><span style="font-size: 12px; color: var(--fg2)">Delete is off while people have paid.</span></div>
+          </section>
+        </div>
+
+        <section class="card" aria-labelledby="tiers" style="padding: 16px; display: flex; flex-direction: column; gap: 4px">
+          <div style="display: flex; align-items: center; justify-content: space-between; padding-bottom: 8px"><h2 id="tiers" class="display" style="margin: 0; font-size: 18px; font-weight: 800">Tiers</h2><a href="#" style="font-size: 13px; font-weight: 600; color: var(--accent); text-decoration: none">Edit tiers</a></div>
+          <div style="display: flex; flex-direction: column; gap: 8px; padding: 12px 0; border-top: 1px solid var(--line)"><div style="display: flex; align-items: center; justify-content: space-between; gap: 12px"><div><div style="font-weight: 600; font-size: 14px">Early Bird <span style="font-size: 12px; font-weight: 600; color: var(--fg2); margin-left: 6px">₱250 · max 4</span></div><div style="font-size: 12px; color: var(--fg2)">First 30 only</div></div><div style="text-align: right; font-variant-numeric: tabular-nums"><div class="display" style="font-size: 16px; font-weight: 800">30<span style="font-size: 12px; font-weight: 600; color: var(--fg2)"> / 30</span></div><div style="font-size: 11px; font-weight: 600; color: var(--bad)">Sold out</div></div></div><div class="meter"><span style="width: 100%"></span></div></div>
+          <div style="display: flex; flex-direction: column; gap: 8px; padding: 12px 0; border-top: 1px solid var(--line)"><div style="display: flex; align-items: center; justify-content: space-between; gap: 12px"><div><div style="font-weight: 600; font-size: 14px">Regular <span style="font-size: 12px; font-weight: 600; color: var(--fg2); margin-left: 6px">₱350 · max 4</span></div><div style="font-size: 12px; color: var(--fg2)">Includes one drink</div></div><div style="text-align: right; font-variant-numeric: tabular-nums"><div class="display" style="font-size: 16px; font-weight: 800">108<span style="font-size: 12px; font-weight: 600; color: var(--fg2)"> / 120</span></div><div style="font-size: 11px; font-weight: 600; color: var(--warn)">12 left · 5 on hold</div></div></div><div class="meter"><span style="width: 90%"></span></div></div>
+          <div style="display: flex; flex-direction: column; gap: 8px; padding: 12px 0; border-top: 1px solid var(--line)"><div style="display: flex; align-items: center; justify-content: space-between; gap: 12px"><div><div style="font-weight: 600; font-size: 14px">Crew / Guest list <span style="font-size: 12px; font-weight: 600; color: var(--fg2); margin-left: 6px">Free · max 2</span></div><div style="font-size: 12px; color: var(--fg2)">Invite only</div></div><div style="text-align: right; font-variant-numeric: tabular-nums"><div class="display" style="font-size: 16px; font-weight: 800">20<span style="font-size: 12px; font-weight: 600; color: var(--fg2)"> / 20</span></div><div style="font-size: 11px; color: var(--fg2)">all claimed</div></div></div><div class="meter"><span style="width: 100%"></span></div></div>
+          <div style="margin-top: 8px; padding: 12px 14px; border-radius: 12px; background: var(--surface2); font-size: 13px; line-height: 1.5; color: var(--fg2)"><span style="font-weight: 600; color: var(--fg)">Payment:</span> GCash · Baguio Base Camp · 0917 000 0000 · QR uploaded · 24-hour holds. Ticket style: <span style="font-weight: 600; color: var(--fg)">Summit</span>.</div>
+        </section>
+      </div>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":1150}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

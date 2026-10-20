@@ -1,13 +1,12 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
-import { and, asc, eq, inArray, sql } from "drizzle-orm";
+import { and, asc, eq, inArray, ne, sql } from "drizzle-orm";
 import { db } from "@/db/client";
 import { bookings } from "@/db/schema";
+import { FilterPills } from "@/components/admin/filter-pills";
 import { getEventById } from "@/lib/events";
-import { fmtDateTime, relative } from "@/lib/format";
+import { fmtDate, fmtDateTime, relative } from "@/lib/format";
 import { usersByIds } from "@/lib/bookings";
 import { requireAdmin } from "@/lib/session";
-import { cn } from "@/lib/utils";
 import { ReviewList } from "./review-list";
 
 export const dynamic = "force-dynamic";
@@ -20,6 +19,11 @@ const FILTERS = {
   all: { label: "All", statuses: ["pending_payment", "under_review", "approved", "rejected", "expired", "cancelled"] },
 } as const;
 type FilterKey = keyof typeof FILTERS;
+
+function ordinal(n: number) {
+  const s = ["th", "st", "nd", "rd"], v = n % 100;
+  return n + (s[(v - 20) % 10] || s[v] || s[0]);
+}
 
 export default async function BookingsReviewPage({ params, searchParams }: PageProps<"/admin/events/[id]/bookings">) {
   const { id } = await params;
@@ -45,49 +49,81 @@ export default async function BookingsReviewPage({ params, searchParams }: PageP
     with: { user: true, items: { with: { tier: true } }, tickets: { columns: { id: true, status: true } } },
   });
   if (key === "all" || key === "confirmed") rows.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
-  const reviewers = new Map((await usersByIds([...new Set(rows.map((r) => r.reviewedBy).filter((x): x is string => !!x))])).map((u) => [u.id, u.name || u.email]));
+  const userIds = [...new Set(rows.map((r) => r.userId))];
+  const refs = [...new Set(rows.map((r) => r.paymentRef?.replace(/\s+/g, "")).filter((x): x is string => !!x))];
+  const [reviewerList, history, refUse] = await Promise.all([
+    usersByIds([...new Set(rows.map((r) => r.reviewedBy).filter((x): x is string => !!x))]),
+    // How many bookings each member has made with us, oldest first, to say "2nd booking with us"
+    userIds.length
+      ? db.select({ id: bookings.id, userId: bookings.userId }).from(bookings).where(and(inArray(bookings.userId, userIds), ne(bookings.status, "expired"))).orderBy(asc(bookings.createdAt))
+      : Promise.resolve([]),
+    // The same GCash reference on two bookings is the duplicate-receipt tell
+    refs.length
+      ? db.select({ id: bookings.id, ref: sql<string>`replace(${bookings.paymentRef}, ' ', '')` }).from(bookings).where(and(sql`replace(${bookings.paymentRef}, ' ', '') in ${refs}`, ne(bookings.status, "cancelled")))
+      : Promise.resolve([]),
+  ]);
+  const reviewers = new Map(reviewerList.map((u) => [u.id, u.name || u.email]));
 
   const now = new Date();
-  const data = rows.map((b) => ({
-    id: b.id,
-    status: b.status,
-    userName: b.user.name,
-    userEmail: b.user.email,
-    totalCents: b.totalCents,
-    paymentRef: b.paymentRef,
-    paymentProofUrl: b.paymentProofUrl,
-    submittedAt: b.submittedAt?.toISOString() ?? null,
-    createdAt: b.createdAt.toISOString(),
-    expiresAt: b.expiresAt?.toISOString() ?? null,
-    reviewNote: b.reviewNote,
-    reviewedBy: b.reviewedBy ? reviewers.get(b.reviewedBy) ?? "an admin" : null,
-    reviewedAt: b.reviewedAt?.toISOString() ?? null,
-    items: b.items.map((i) => `${i.quantity} × ${i.tier.name}`).join(", "),
-    ticketCount: b.tickets.filter((t) => t.status !== "void").length,
-    // Relative times are rendered here, not in the client list, so hydration text matches
-    timing: [
-      b.submittedAt ? `Receipt sent ${relative(b.submittedAt)}` : `Reserved ${relative(b.createdAt)}, no receipt yet`,
-      (b.status === "pending_payment" || b.status === "rejected") && b.expiresAt ? `hold ${b.expiresAt < now ? "lapsed" : `ends ${relative(b.expiresAt)}`}` : null,
-    ].filter(Boolean).join(" · "),
-    reviewed: b.reviewedBy && b.reviewedAt ? `Reviewed by ${reviewers.get(b.reviewedBy) ?? "an admin"}, ${relative(b.reviewedAt)}` : null,
-    booked: fmtDateTime(b.createdAt),
-  }));
+  const data = rows.map((b) => {
+    const mine = history.filter((h) => h.userId === b.userId);
+    const nth = mine.findIndex((h) => h.id === b.id) + 1;
+    const ref = b.paymentRef?.replace(/\s+/g, "");
+    const others = ref ? refUse.filter((r) => r.ref === ref && r.id !== b.id) : [];
+    const holdOpen = (b.status === "pending_payment" || b.status === "rejected" || b.status === "under_review") && b.expiresAt;
+    return {
+      id: b.id,
+      status: b.status,
+      userName: b.user.name,
+      userEmail: b.user.email,
+      totalCents: b.totalCents,
+      paymentRef: b.paymentRef,
+      paymentProofUrl: b.paymentProofUrl,
+      submittedAt: b.submittedAt?.toISOString() ?? null,
+      createdAt: b.createdAt.toISOString(),
+      expiresAt: b.expiresAt?.toISOString() ?? null,
+      reviewNote: b.reviewNote,
+      reviewedBy: b.reviewedBy ? reviewers.get(b.reviewedBy) ?? "an admin" : null,
+      reviewedAt: b.reviewedAt?.toISOString() ?? null,
+      items: b.items.map((i) => `${i.quantity} × ${i.tier.name}`).join(", "),
+      itemNotes: b.items.map((i) => i.tier.description).filter(Boolean).join(" · "),
+      ticketCount: b.tickets.filter((t) => t.status !== "void").length,
+      // Relative times are rendered here, not in the client list, so hydration text matches
+      timing: [
+        b.submittedAt ? `Receipt sent ${relative(b.submittedAt)}` : `Reserved ${relative(b.createdAt)}, no receipt yet`,
+        (b.status === "pending_payment" || b.status === "rejected") && b.expiresAt ? `hold ${b.expiresAt < now ? "lapsed" : `ends ${relative(b.expiresAt)}`}` : null,
+      ].filter(Boolean).join(" · "),
+      age: b.submittedAt ? `Sent ${relative(b.submittedAt)}` : `Reserved ${relative(b.createdAt)}`,
+      stale: !!b.submittedAt && now.getTime() - b.submittedAt.getTime() > 2 * 3600e3,
+      timeline: [
+        `Reserved ${fmtDate(b.createdAt, "MMM d")}`,
+        b.submittedAt ? `receipt sent ${relative(b.submittedAt)}` : "no receipt yet",
+        holdOpen && b.expiresAt ? (b.expiresAt < now ? "hold lapsed" : `hold would end ${relative(b.expiresAt)}`) : null,
+      ].filter(Boolean).join(" · "),
+      history: nth > 1 ? `${ordinal(nth)} booking with us` : "First booking with us",
+      refCheck: !b.paymentRef ? null : others.length ? { ok: false, text: `also on ${others.length === 1 ? `booking ${others[0].id}` : `${others.length} other bookings`}` } : { ok: true, text: "not used on another booking" },
+      reviewed: b.reviewedBy && b.reviewedAt ? `Reviewed by ${reviewers.get(b.reviewedBy) ?? "an admin"}, ${relative(b.reviewedAt)}` : null,
+      booked: fmtDateTime(b.createdAt),
+    };
+  });
 
   return (
-    <div className="space-y-4">
-      <nav aria-label="Filter bookings" className="flex flex-wrap gap-2 text-sm">
-        {(Object.keys(FILTERS) as FilterKey[]).map((k) => (
-          <Link
-            key={k}
-            href={`/admin/events/${id}/bookings?show=${k}`}
-            aria-current={k === key ? "page" : undefined}
-            className={cn("rounded-full border px-3 py-1.5", k === key ? "border-primary bg-primary text-primary-foreground" : "hover:bg-muted")}
-          >
-            {FILTERS[k].label} <span className={cn("ml-1 tabular-nums", k === key ? "opacity-80" : "text-muted-foreground")}>{countFor(k)}</span>
-          </Link>
-        ))}
-      </nav>
+    <div className="space-y-3.5">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <FilterPills
+          label="Filter bookings"
+          value={key}
+          options={(Object.keys(FILTERS) as FilterKey[]).map((k) => ({ value: k, label: FILTERS[k].label, count: countFor(k), href: `/admin/events/${id}/bookings?show=${k}`, tone: k === "review" ? "warn" : undefined }))}
+        />
+        <p className="hidden items-center gap-1.5 text-xs text-muted-foreground lg:flex" aria-hidden>
+          <Kbd>J</Kbd><Kbd>K</Kbd> move · <Kbd>A</Kbd> approve · <Kbd>R</Kbd> reject · <Kbd>Z</Kbd> zoom receipt
+        </p>
+      </div>
       <ReviewList eventId={id} bookings={data} filter={key} />
     </div>
   );
+}
+
+function Kbd({ children }: { children: React.ReactNode }) {
+  return <kbd className="rounded-[5px] border bg-card px-[5px] py-px font-mono text-[10px] text-muted-foreground">{children}</kbd>;
 }

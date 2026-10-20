@@ -1,33 +1,28 @@
-import Link from "next/link";
 import { Logo } from "@/components/brand/logo";
+import { BottomNav } from "@/components/ui/bottom-nav";
 import { getCurrentUser } from "@/lib/session";
+import { NavLinks } from "./nav-links";
 import { ThemeToggle } from "./theme-toggle";
 import { UserMenu } from "./user-menu";
-
-const links = [
-  { href: "/", label: "Events" },
-  { href: "/me", label: "My tickets" },
-  { href: "/about", label: "About" },
-];
 
 export async function SiteHeader() {
   const user = await getCurrentUser();
   return (
-    <header className="sticky top-0 z-40 border-b bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4">
-        <Logo />
-        <nav aria-label="Main" className="hidden items-center gap-6 text-sm font-medium text-muted-foreground sm:flex">
-          {links.map((l) => <Link key={l.href} href={l.href} className="hover:text-foreground">{l.label}</Link>)}
-        </nav>
-        <div className="flex items-center gap-1">
-          <ThemeToggle />
-          <UserMenu user={user ? { name: user.name, email: user.email, role: user.role } : null} />
+    <>
+      <header className="sticky top-0 z-40 border-b bg-background/85 backdrop-blur-md supports-[backdrop-filter]:bg-background/75">
+        <div className="mx-auto flex h-14 max-w-6xl items-center justify-between gap-4 px-4 sm:h-[68px] sm:px-6">
+          <Logo size={38} compactOnPhone />
+          <NavLinks className="hidden sm:flex" />
+          <div className="flex items-center gap-1.5 sm:gap-2">
+            {/* phones get the plain sun/moon icon, the little sky switch needs room */}
+            <ThemeToggle variant="icon" className="sm:hidden" />
+            <ThemeToggle className="hidden sm:block" />
+            <UserMenu user={user ? { name: user.name, email: user.email, role: user.role } : null} />
+          </div>
         </div>
-      </div>
-      {/* Phones: the same links as a compact second row, so My tickets is one tap away */}
-      <nav aria-label="Main" className="flex items-center justify-around border-t text-sm font-medium text-muted-foreground sm:hidden">
-        {links.map((l) => <Link key={l.href} href={l.href} className="flex-1 py-2.5 text-center hover:text-foreground">{l.label}</Link>)}
-      </nav>
-    </header>
+      </header>
+      {/* Phones: a tab bar at the bottom on the top-level pages, so My tickets is one thumb away */}
+      <BottomNav signedIn={!!user} />
+    </>
   );
 }

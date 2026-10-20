@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Typography</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Geist:wght@400..700&family=Geist+Mono:wght@400..700&display=swap">
+<style>
+body{margin:0}
+a{color:#1e6fa3}a:hover{color:#1b5e3b}
+.display{font-family:'Bricolage Grotesque',Geist,system-ui,sans-serif;letter-spacing:-.02em}
+.mono{font-family:'Geist Mono',ui-monospace,monospace}
+.eyebrow{font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase}
+.row{display:grid;grid-template-columns:150px minmax(0,1fr);gap:20px;align-items:baseline;padding:14px 0;border-bottom:1px solid rgba(11,61,46,.1)}
+.meta{font-family:'Geist Mono',ui-monospace,monospace;font-size:11px;color:#5b7060;display:flex;flex-direction:column;gap:2px}
+</style>
+</helmet>
+<div style="width: 1280px; height: 1000px; box-sizing: border-box; background: #f6f4ec; color: #0b3d2e; font-family: Geist, system-ui, sans-serif; padding: 56px 64px; display: flex; flex-direction: column; gap: 28px; overflow: hidden">
+
+  <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 32px">
+    <div style="display: flex; flex-direction: column; gap: 10px">
+      <div class="eyebrow" style="color: #1b5e3b">Typography</div>
+      <h1 class="display" style="margin: 0; font-size: 44px; line-height: 1; font-weight: 800">Bricolage for the shout, Geist for the small print.</h1>
+    </div>
+    <p style="margin: 0; max-width: 380px; font-size: 14px; line-height: 1.5; color: #5b7060">Bricolage Grotesque is a variable face with an optical-size axis, so it gets looser and friendlier at 12px and tighter and punchier at 56px. Geist stays for UI text, Geist Mono for ticket codes and references.</p>
+  </div>
+
+  <div style="display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 48px">
+
+    <div style="display: flex; flex-direction: column">
+      <div class="row" style="border-top: 1px solid rgba(11,61,46,.1)">
+        <div class="meta"><span style="color: #0b3d2e; font-weight: 700">Hero</span><span>Bricolage 800 · 56/1.0</span><span>tracking −2%</span></div>
+        <div class="display" style="font-size: 56px; line-height: 1; font-weight: 800">Gigs, meetups &amp; nights out, up in the pines.</div>
+      </div>
+      <div class="row">
+        <div class="meta"><span style="color: #0b3d2e; font-weight: 700">Display</span><span>Bricolage 800 · 40/1.05</span></div>
+        <div class="display" style="font-size: 40px; line-height: 1.05; font-weight: 800">Base Camp Sessions Vol. 3</div>
+      </div>
+      <div class="row">
+        <div class="meta"><span style="color: #0b3d2e; font-weight: 700">H1</span><span>Bricolage 700 · 32/1.1</span></div>
+        <div class="display" style="font-size: 32px; line-height: 1.1; font-weight: 700">Sunrise Hike: Mt. Yangbew</div>
+      </div>
+      <div class="row">
+        <div class="meta"><span style="color: #0b3d2e; font-weight: 700">H2</span><span>Bricolage 700 · 24/1.15</span></div>
+        <div class="display" style="font-size: 24px; line-height: 1.15; font-weight: 700">Who&#39;s coming?</div>
+      </div>
+      <div class="row">
+        <div class="meta"><span style="color: #0b3d2e; font-weight: 700">H3</span><span>Bricolage 600 · 18/1.25</span></div>
+        <div class="display" style="font-size: 18px; line-height: 1.25; font-weight: 600">Early Bird · first 30 only</div>
+      </div>
+      <div class="row">
+        <div class="meta"><span style="color: #0b3d2e; font-weight: 700">Big number</span><span>Bricolage 800 · 40 · tabular</span></div>
+        <div class="display" style="font-size: 40px; line-height: 1; font-weight: 800; font-variant-numeric: tabular-nums; display: flex; align-items: baseline; gap: 12px">142<span style="font-size: 18px; font-weight: 600; color: #5b7060">/ 170 reserved</span></div>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column">
+      <div class="row" style="border-top: 1px solid rgba(11,61,46,.1); grid-template-columns: 110px minmax(0,1fr)">
+        <div class="meta"><span style="color: #0b3d2e; font-weight: 700">Body</span><span>Geist 400 · 16/1.55</span></div>
+        <div style="font-size: 16px; line-height: 1.55">Browse what&#39;s coming up, grab a ticket, and show the QR at the door. No paper, no printing.</div>
+      </div>
+      <div class="row" style="grid-template-columns: 110px minmax(0,1fr)">
+        <div class="meta"><span style="color: #0b3d2e; font-weight: 700">UI</span><span>Geist 500 · 15/1.4</span></div>
+        <div style="font-size: 15px; line-height: 1.4; font-weight: 500">Book tickets · Pay via GCash · Resend link</div>
+      </div>
+      <div class="row" style="grid-template-columns: 110px minmax(0,1fr)">
+        <div class="meta"><span style="color: #0b3d2e; font-weight: 700">Small</span><span>Geist 400 · 13/1.45</span></div>
+        <div style="font-size: 13px; line-height: 1.45; color: #5b7060">Sat, Nov 1 · 7:00 PM · Canto, Ketchup Food Community</div>
+      </div>
+      <div class="row" style="grid-template-columns: 110px minmax(0,1fr)">
+        <div class="meta"><span style="color: #0b3d2e; font-weight: 700">Eyebrow</span><span>Geist 700 · 11 · caps</span><span>tracking +18%</span></div>
+        <div class="eyebrow" style="color: #1b5e3b">Baguio Base Camp · Trail pass</div>
+      </div>
+      <div class="row" style="grid-template-columns: 110px minmax(0,1fr)">
+        <div class="meta"><span style="color: #0b3d2e; font-weight: 700">Code</span><span>Geist Mono 700 · 20</span><span>tracking +8%</span></div>
+        <div class="mono" style="font-size: 20px; font-weight: 700; letter-spacing: .08em">BBC-7K3M-PX2Q</div>
+      </div>
+      <div class="row" style="grid-template-columns: 110px minmax(0,1fr)">
+        <div class="meta"><span style="color: #0b3d2e; font-weight: 700">Ref</span><span>Geist Mono 400 · 13</span></div>
+        <div class="mono" style="font-size: 13px; color: #5b7060">bk_x8Q2mT9hLp3v · 1234 567 890123</div>
+      </div>
+
+      <div style="margin-top: 24px; border-radius: 18px; background: #0e1c20; color: #e8f0e6; padding: 22px 24px; display: flex; flex-direction: column; gap: 10px">
+        <div class="eyebrow" style="color: #8cc63e">At night</div>
+        <div class="display" style="font-size: 28px; line-height: 1.1; font-weight: 800">Anime Night: Akatsuki Edition</div>
+        <div style="font-size: 14px; color: #a9bfae">Cloaks encouraged. Rain expected. · Baden Powell Hall</div>
+        <div class="mono" style="font-size: 16px; font-weight: 700; letter-spacing: .08em; color: #f5f0a0">BBC-7K3M-PX2Q</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; font-size: 13px; color: #5b7060; line-height: 1.5">
+    <div><span style="font-weight: 600; color: #0b3d2e">Headlines wrap, never truncate.</span> Event titles are the product; give them two lines on cards and as many as they need on the event page.</div>
+    <div><span style="font-weight: 600; color: #0b3d2e">Numbers are tabular</span> everywhere a column of them appears: stats, capacity, prices, countdowns.</div>
+    <div><span style="font-weight: 600; color: #0b3d2e">Minimum sizes:</span> 13px for anything a member reads, 11px only for eyebrows in pine or lime, and 16px inputs on phones so iOS does not zoom.</div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":1000}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

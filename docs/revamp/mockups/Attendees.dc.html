@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Attendees</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Geist:wght@400..700&family=Geist+Mono:wght@400..700&display=swap">
+<style>
+body{margin:0}
+a{color:inherit}a:hover{color:inherit}
+.day{--bg:#f6f4ec;--surface:#ffffff;--surface2:#eef2e8;--fg:#0b3d2e;--fg2:#5b7060;--line:rgba(11,61,46,.14);--primary:#1b5e3b;--on-primary:#ffffff;--accent:#1e6fa3;--hi:#f7e017;--on-hi:#0b3d2e;--ok:#1b5e3b;--ok-bg:rgba(57,181,74,.14);--ok-dot:#39b54a;--warn:#6b4f00;--warn-bg:rgba(247,224,23,.26);--bad:#b4321f;--bad-bg:rgba(180,50,31,.1);--muted:#dfe6d8}
+.display{font-family:'Bricolage Grotesque',Geist,system-ui,sans-serif;letter-spacing:-.02em}
+.mono{font-family:'Geist Mono',ui-monospace,monospace}
+.eyebrow{font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase}
+.btn{font:inherit;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid transparent;font-weight:600;line-height:1;text-decoration:none}
+.side a{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:12px;text-decoration:none;font-size:14px;font-weight:600;color:var(--fg2)}
+.side a[aria-current]{background:var(--surface);color:var(--fg);box-shadow:0 1px 2px rgba(11,61,46,.08)}
+.tabs a{text-decoration:none;font-size:14px;font-weight:600;color:var(--fg2);padding:10px 4px;border-bottom:2px solid transparent;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.tabs a[aria-current]{color:var(--fg);border-bottom-color:var(--primary)}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;font-size:12px;font-weight:600;white-space:nowrap}
+.seg{font:inherit;cursor:pointer;height:32px;padding:0 12px;border-radius:999px;border:0;background:transparent;color:var(--fg2);font-size:13px;font-weight:600}
+.seg[aria-pressed="true"]{background:var(--surface);color:var(--fg);box-shadow:0 1px 2px rgba(11,61,46,.1)}
+table{border-collapse:collapse;width:100%;min-width:860px}
+th{text-align:left;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--fg2);padding:12px 14px;border-bottom:1px solid var(--line)}
+td{padding:12px 14px;border-bottom:1px solid var(--line);font-size:14px;vertical-align:middle}
+tr:last-child td{border-bottom:0}
+.ghost{font:inherit;cursor:pointer;height:32px;padding:0 10px;border-radius:999px;border:1px solid transparent;background:transparent;color:var(--fg2);font-size:12px;font-weight:600}
+</style>
+</helmet>
+<div class="day" style="min-height: 100vh; background: var(--bg); color: var(--fg); font-family: Geist, system-ui, sans-serif; display: flex; flex-wrap: wrap">
+
+  <nav class="side" aria-label="Organiser" style="flex: 1 1 220px; max-width: 250px; padding: 20px 16px; box-sizing: border-box; display: flex; flex-direction: column; gap: 6px; border-right: 1px solid var(--line)">
+    <a href="#" style="padding: 4px 8px 16px; gap: 10px"><img src="/_blob/f5b90c3cd8af5b37d6afb44083aaa6b4" alt="" style="width: 34px; height: 34px"><span style="line-height: 1.1"><span class="display" style="display: block; font-size: 16px; font-weight: 700; color: var(--fg)">Base Camp</span><span style="display: inline-block; margin-top: 3px; font-size: 10px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; padding: 2px 7px; border-radius: 999px; background: var(--ok-bg); color: var(--primary)">Admin</span></span></a>
+    <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>Dashboard</a>
+    <a href="#" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="18" height="18" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Events</a>
+    <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="m9 14 2 2 4-4"/></svg>Review queue</a>
+    <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>Attendees</a>
+    <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2M7 12h10"/></svg>Door scanner</a>
+    <div style="height: 1px; background: var(--line); margin: 8px 4px"></div>
+    <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/></svg>Team</a>
+    <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true"><circle cx="13.5" cy="6.5" r="2.5"/><circle cx="19" cy="12" r="2"/><circle cx="6" cy="12" r="2"/><circle cx="10" cy="18" r="2"/><path d="M12 2a10 10 0 1 0 10 10"/></svg>Ticket lab</a>
+  </nav>
+
+  <main style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column">
+    <div style="display: flex; align-items: center; gap: 8px; padding: 14px 28px; border-bottom: 1px solid var(--line); font-size: 13px; color: var(--fg2); flex-wrap: wrap"><a href="#" style="text-decoration: none">Events</a><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg><a href="#" style="text-decoration: none">Base Camp Sessions Vol. 3</a><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg><span style="color: var(--fg); font-weight: 600">Attendees</span><span class="pill" style="margin-left: 8px; background: var(--ok-bg); color: var(--ok)"><span style="width: 6px; height: 6px; border-radius: 50%; background: var(--ok-dot)"></span>Happening now · doors opened 7:02 PM</span></div>
+
+    <div style="padding: 18px 28px 32px; display: flex; flex-direction: column; gap: 14px; max-width: 1100px; width: 100%; box-sizing: border-box">
+      <nav class="tabs" aria-label="Event sections" style="display: flex; gap: 22px; border-bottom: 1px solid var(--line); overflow-x: auto"><a href="#">Overview</a><a href="#">Bookings</a><a href="#" aria-current="page">Attendees</a><a href="#">Edit</a><a href="#">Door scanner</a></nav>
+
+      <div style="display: flex; gap: 12px; flex-wrap: wrap; align-items: stretch">
+        <form style="flex: 1 1 320px; display: flex; gap: 8px; padding: 10px; border-radius: 16px; background: var(--surface); border: 1px solid var(--line)"><label for="code" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Ticket code</label><input id="code" type="text" placeholder="Check in by code: BBC-XXXX-XXXX" autocomplete="off" style="font-family: 'Geist Mono', monospace; font-size: 15px; letter-spacing: .06em; height: 44px; flex: 1; min-width: 0; padding: 0 14px; border-radius: 12px; border: 1px solid var(--line); background: var(--bg); color: var(--fg)"><button type="submit" class="btn" style="height: 44px; padding: 0 18px; border-radius: 999px; background: var(--primary); color: var(--on-primary); font-size: 14px">Check in</button></form>
+        <div style="flex: 1 1 320px; display: flex; gap: 10px; align-items: center; padding: 10px 14px; border-radius: 16px; background: var(--surface); border: 1px solid var(--line)"><div style="flex: 1; display: flex; flex-direction: column; gap: 6px"><div style="display: flex; justify-content: space-between; font-size: 13px"><span><span class="display" style="font-size: 20px; font-weight: 800">96</span> <span style="color: var(--fg2)">of 118 in</span></span><span style="font-size: 12px; color: var(--fg2)">last scan 14s ago · 3 phones</span></div><div style="height: 6px; border-radius: 999px; background: var(--muted); overflow: hidden"><div style="width: 81%; height: 100%; background: var(--primary); border-radius: 999px"></div></div></div><a href="#" class="btn" style="height: 38px; padding: 0 14px; border-radius: 999px; background: transparent; color: var(--fg); border-color: var(--line); font-size: 13px; flex-shrink: 0"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="15" height="15" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>CSV</a></div>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap">
+        <div role="group" aria-label="Status" style="display: flex; gap: 4px; padding: 4px; border-radius: 999px; background: var(--surface2)"><button type="button" class="seg" aria-pressed="true">All <span style="color: var(--fg2)">118</span></button><button type="button" class="seg" aria-pressed="false">Not in yet <span>22</span></button><button type="button" class="seg" aria-pressed="false">Checked in <span>96</span></button><button type="button" class="seg" aria-pressed="false">Voided <span>0</span></button></div>
+        <label for="tier" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Filter by tier</label>
+        <select id="tier" style="font: inherit; font-size: 13px; font-weight: 600; height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--fg)"><option>All tiers</option><option>Early Bird</option><option>Regular</option><option>Crew / Guest list</option></select>
+        <div style="flex: 1"></div>
+        <label for="q" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Search attendees</label>
+        <div style="position: relative; display: flex; align-items: center"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="16" height="16" aria-hidden="true" style="position: absolute; left: 12px; color: var(--fg2)"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><input id="q" type="search" value="del" placeholder="Name, email, code or tier" style="font: inherit; font-size: 13px; height: 40px; width: 240px; padding: 0 14px 0 36px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--fg)"></div>
+      </div>
+
+      <div style="border-radius: 18px; background: var(--surface); border: 1px solid var(--line); overflow-x: auto">
+        <table>
+          <thead><tr><th>Guest</th><th>Code</th><th>Tier</th><th>Status</th><th>Booking</th><th><span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Actions</span></th></tr></thead>
+          <tbody>
+            <tr><td><div style="font-weight: 600">Mika <mark style="background: var(--warn-bg); color: inherit; border-radius: 3px">Del</mark>a Cruz</div><div style="font-size: 12px; color: var(--fg2)">mika.dc@gmail.com</div></td><td class="mono" style="font-size: 13px; letter-spacing: .04em">BBC-Q9RD-4N7H</td><td>Regular</td><td><span class="pill" style="background: var(--surface2); color: var(--fg2)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" width="12" height="12" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Checked in</span> <span style="font-size: 12px; color: var(--fg2)">8:14 PM</span></td><td><a href="#" class="mono" style="font-size: 12px; color: var(--accent); text-decoration: none">bk_x8Q2mT9h</a></td><td style="text-align: right; white-space: nowrap"><button type="button" class="ghost">Undo</button><button type="button" class="ghost">Resend</button><button type="button" class="ghost" style="color: var(--bad)">Void</button></td></tr>
+            <tr><td><div style="font-weight: 600">Zen Lucas</div><div style="font-size: 12px; color: var(--fg2)">zenolucas@gmail.com</div></td><td class="mono" style="font-size: 13px; letter-spacing: .04em">BBC-7K3M-PX2Q</td><td>Regular</td><td><span class="pill" style="background: var(--ok-bg); color: var(--ok)"><span style="width: 6px; height: 6px; border-radius: 50%; background: var(--ok-dot)"></span>Valid</span> <span style="font-size: 12px; color: var(--fg2)">not in yet</span></td><td><a href="#" class="mono" style="font-size: 12px; color: var(--accent); text-decoration: none">bk_x8Q2mT9h</a></td><td style="text-align: right; white-space: nowrap"><button type="button" class="btn" style="height: 32px; padding: 0 12px; border-radius: 999px; background: transparent; color: var(--fg); border-color: var(--line); font-size: 12px">Check in</button><button type="button" class="ghost">Resend</button><button type="button" class="ghost" style="color: var(--bad)">Void</button></td></tr>
+            <tr><td><div style="font-weight: 600">Paolo <mark style="background: var(--warn-bg); color: inherit; border-radius: 3px">Del</mark>gado</div><div style="font-size: 12px; color: var(--fg2)">pdelgado@proton.me</div></td><td class="mono" style="font-size: 13px; letter-spacing: .04em">BBC-2HJ6-WT8A</td><td>Early Bird</td><td><span class="pill" style="background: var(--surface2); color: var(--fg2)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" width="12" height="12" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Checked in</span> <span style="font-size: 12px; color: var(--fg2)">7:31 PM</span></td><td><a href="#" class="mono" style="font-size: 12px; color: var(--accent); text-decoration: none">bk_r4Nq1KzL7</a></td><td style="text-align: right; white-space: nowrap"><button type="button" class="ghost">Undo</button><button type="button" class="ghost">Resend</button><button type="button" class="ghost" style="color: var(--bad)">Void</button></td></tr>
+            <tr><td><div style="font-weight: 600">A<mark style="background: var(--warn-bg); color: inherit; border-radius: 3px">del</mark>a Ramos</div><div style="font-size: 12px; color: var(--fg2)">adela.r@yahoo.com</div></td><td class="mono" style="font-size: 13px; letter-spacing: .04em">BBC-9VKP-3MD5</td><td>Crew / Guest list</td><td><span class="pill" style="background: var(--ok-bg); color: var(--ok)"><span style="width: 6px; height: 6px; border-radius: 50%; background: var(--ok-dot)"></span>Valid</span> <span style="font-size: 12px; color: var(--fg2)">not in yet</span></td><td><a href="#" class="mono" style="font-size: 12px; color: var(--accent); text-decoration: none">bk_c2Wd8PmX0</a></td><td style="text-align: right; white-space: nowrap"><button type="button" class="btn" style="height: 32px; padding: 0 12px; border-radius: 999px; background: transparent; color: var(--fg); border-color: var(--line); font-size: 12px">Check in</button><button type="button" class="ghost">Resend</button><button type="button" class="ghost" style="color: var(--bad)">Void</button></td></tr>
+            <tr style="opacity: .65"><td><div style="font-weight: 600; text-decoration: line-through">Carlo <mark style="background: var(--warn-bg); color: inherit; border-radius: 3px">Del</mark> Rosario</div><div style="font-size: 12px; color: var(--fg2)">carlo.dr@gmail.com</div></td><td class="mono" style="font-size: 13px; letter-spacing: .04em">BBC-5TNA-Q2R8</td><td>Regular</td><td><span class="pill" style="background: var(--bad-bg); color: var(--bad)"><span style="width: 6px; height: 6px; border-radius: 50%; background: var(--bad)"></span>Voided</span> <span style="font-size: 12px; color: var(--fg2)">refund sent</span></td><td><a href="#" class="mono" style="font-size: 12px; color: var(--accent); text-decoration: none">bk_t9Lm3VcE2</a></td><td style="text-align: right; white-space: nowrap"><span style="font-size: 12px; color: var(--fg2)">no actions</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="font-size: 12px; color: var(--fg2)">5 of 118 match “del”. Door crew see this page without emails or booking links. Undo is for mistakes at the door; Void stops a ticket for good and doesn&#39;t email anyone.</div>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

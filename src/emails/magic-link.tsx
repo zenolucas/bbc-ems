@@ -1,19 +1,23 @@
-import { Button, Text } from "@react-email/components";
 import { render } from "@react-email/components";
-import { EmailLayout, emailStyles } from "./layout";
+import { C, EmailLayout, MONO } from "./layout";
+import { Fine, Note, P, PillButton, Title } from "./parts";
 
+/** One job, one button. Night header, so it doesn't read like a booking email. */
 export function MagicLinkEmail({ url }: { url: string }) {
   return (
-    <EmailLayout preview="Your sign-in link for Baguio Base Camp">
-      <Text style={emailStyles.h1}>Sign in to Baguio Base Camp</Text>
-      <Text style={emailStyles.p}>Tap the button below to sign in. The link works once and expires in 15 minutes.</Text>
-      <Button href={url} style={emailStyles.button}>
-        Sign in
-      </Button>
-      <Text style={{ ...emailStyles.muted, marginTop: 16 }}>
-        If the button does not work, copy this link: {url}
-      </Text>
-      <Text style={emailStyles.muted}>If you did not request this, you can ignore this email.</Text>
+    <EmailLayout preview="Your sign-in link for Baguio Base Camp" scene="night">
+      <Title>Sign in</Title>
+      <P>Tap the button to sign in to Baguio Base Camp. The link works once and expires in 15 minutes.</P>
+      <PillButton href={url} large>
+        Sign in to Base Camp
+      </PillButton>
+      <Note>
+        <strong style={{ color: C.ink }}>Door crew on a phone?</strong> Open this in Safari or Chrome rather than inside your mail app, so the scanner stays signed in.
+      </Note>
+      <Fine size={12}>
+        Button not working? Copy this link: <span style={{ fontFamily: MONO, color: C.link, wordBreak: "break-all" }}>{url}</span>
+      </Fine>
+      <Fine size={12}>Didn&apos;t ask for this? Ignore it; nothing happens unless the link is opened.</Fine>
     </EmailLayout>
   );
 }

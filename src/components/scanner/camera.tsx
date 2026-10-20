@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import { BrowserQRCodeReader, type IScannerControls } from "@zxing/browser";
 import { Flashlight, FlashlightOff, RefreshCw } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { stageClass, ViewfinderFrame } from "./viewfinder";
 
 type CamError = { message: string; retry: boolean };
 
@@ -76,32 +76,36 @@ export function Camera({ onText, paused }: { onText: (text: string) => void; pau
   }, []);
 
   return (
-    <div className="relative aspect-[4/5] w-full overflow-hidden rounded-2xl bg-black sm:aspect-video">
+    <div className={stageClass}>
       <video ref={videoRef} className="h-full w-full object-cover" muted playsInline aria-label="Camera viewfinder" />
-      <div className="pointer-events-none absolute inset-0 grid place-items-center">
-        <div className="size-[62%] max-w-[320px] rounded-2xl border-2 border-white/70 shadow-[0_0_0_9999px_rgba(0,0,0,0.35)]" />
-      </div>
-      {starting && !error && <div className="absolute inset-x-0 top-3 text-center text-sm text-white/80">Starting camera…</div>}
-      {!starting && !error && <div className="pointer-events-none absolute inset-x-0 bottom-3 text-center text-sm text-white/80">Point at the QR code</div>}
+      <ViewfinderFrame scanning={!starting && !error && !paused} />
+      {starting && !error && <div role="status" className="absolute inset-x-0 top-4 text-center text-sm text-fog/85">Starting camera…</div>}
+      {!starting && !error && <div className="pointer-events-none absolute inset-x-0 bottom-3.5 px-4 text-center text-[13px] text-fog/85">Point at the QR code · it scans on its own</div>}
       {torch !== null && (
-        <Button
+        <button
           type="button"
-          size="icon"
-          variant="secondary"
-          className="absolute right-3 top-3 rounded-full"
+          className="absolute right-3 top-3 grid size-11 place-items-center rounded-full bg-night/85 text-fog outline-none backdrop-blur-md hover:bg-slate focus-visible:ring-3 focus-visible:ring-ring/50 aria-pressed:bg-star aria-pressed:text-deep-forest"
           aria-label={torch ? "Turn flashlight off" : "Turn flashlight on"}
           aria-pressed={torch}
           onClick={async () => {
             try { await controlsRef.current?.switchTorch?.(!torch); setTorch(!torch); } catch { setTorch(null); }
           }}
         >
-          {torch ? <FlashlightOff /> : <Flashlight />}
-        </Button>
+          {torch ? <FlashlightOff className="size-5" aria-hidden /> : <Flashlight className="size-5" aria-hidden />}
+        </button>
       )}
       {error && (
-        <div role="alert" className="absolute inset-x-3 bottom-3 space-y-2 rounded-lg bg-destructive/95 p-3 text-sm text-white">
+        <div role="alert" className="absolute inset-x-3 bottom-3 space-y-2.5 rounded-2xl border-l-4 border-l-destructive bg-night/95 p-3.5 text-sm text-fog backdrop-blur-md">
           <p>{error.message}</p>
-          {error.retry && <Button type="button" size="sm" variant="secondary" onClick={() => { setError(null); setStarting(true); setAttempt((a) => a + 1); }}><RefreshCw /> Try again</Button>}
+          {error.retry && (
+            <button
+              type="button"
+              className="inline-flex min-h-11 items-center gap-2 rounded-full bg-primary px-4 text-sm font-semibold text-primary-foreground outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+              onClick={() => { setError(null); setStarting(true); setAttempt((a) => a + 1); }}
+            >
+              <RefreshCw className="size-4" aria-hidden /> Try again
+            </button>
+          )}
         </div>
       )}
     </div>

@@ -14,7 +14,7 @@ export function ProfileForm({ name, email, next, submitLabel }: { name: string; 
   const router = useRouter();
   return (
     <form
-      className="space-y-4 rounded-2xl border bg-card p-5"
+      className="space-y-4 rounded-[20px] border bg-card p-5"
       onSubmit={async (e) => {
         e.preventDefault();
         setBusy(true);
@@ -27,14 +27,14 @@ export function ProfileForm({ name, email, next, submitLabel }: { name: string; 
       }}
     >
       <div className="space-y-1.5">
-        <Label htmlFor="profile-email">Email</Label>
+        <Label htmlFor="profile-email" className="text-[13px] font-semibold">Email</Label>
         <Input id="profile-email" value={email} disabled />
       </div>
       <div className="space-y-1.5">
-        <Label htmlFor="name">Name on tickets</Label>
+        <Label htmlFor="name" className="text-[13px] font-semibold">Name on tickets</Label>
         <Input id="name" value={value} onChange={(e) => setValue(e.target.value)} required minLength={2} maxLength={60} autoComplete="name" />
       </div>
-      <Button type="submit" className="w-full sm:w-auto" disabled={busy}>
+      <Button type="submit" size="lg" className="w-full sm:w-auto" disabled={busy}>
         {busy && <Loader2 className="animate-spin" />}
         {submitLabel}
       </Button>

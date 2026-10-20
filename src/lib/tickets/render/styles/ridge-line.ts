@@ -1,4 +1,4 @@
-import { C, buildMatrix, dateLine, drawQr, text, timeLine, truncate, wrap } from "../helpers";
+import { C, DISPLAY, buildMatrix, dateLine, drawQr, text, timeLine, truncate, wrap } from "../helpers";
 import type { TicketRenderer } from "../types";
 
 /** Dark, scanner-safe bands from the logo's sky down to the deep forest. */
@@ -27,7 +27,7 @@ export const ridgeLine: TicketRenderer = (i) => {
     <linearGradient id="ground" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${C.grass}"/><stop offset="1" stop-color="${C.pine}"/></linearGradient>
   </defs>
   ${text(48, 84, "BAGUIO BASE CAMP", { size: 13, weight: 700, fill: C.skyDeep, spacing: 4 })}
-  ${text(48, 128, truncate(i.event.title, 30), { size: i.event.title.length > 22 ? 28 : 34, weight: 700, fill: fg })}
+  ${text(48, 128, truncate(i.event.title, 30), { size: i.event.title.length > 22 ? 28 : 34, weight: 800, fill: fg, family: DISPLAY })}
   ${text(48, 162, `${dateLine(i.event.startsAt)} · ${timeLine(i.event.startsAt)}`, { size: 16, fill: sub })}
   ${text(48, 188, truncate(i.event.venueName, 44), { size: 16, fill: sub })}
   <path d="${ridgeTop}" fill="url(#sky)"/>
@@ -38,8 +38,8 @@ export const ridgeLine: TicketRenderer = (i) => {
     finderColors: [BANDS[0], BANDS[0], BANDS[4]],
     plate: { color: C.white, radius: 6, quiet: 4 },
   })}
-  ${text(W / 2, 760, i.shortCode, { size: 34, weight: 700, fill: fg, anchor: "middle", spacing: 3 })}
-  ${text(W / 2, 796, truncate(i.holderName, 30), { size: 18, weight: 600, fill: fg, anchor: "middle" })}
+  ${text(W / 2, 760, i.shortCode, { size: 36, weight: 800, fill: fg, anchor: "middle", spacing: 3, family: DISPLAY })}
+  ${text(W / 2, 796, truncate(i.holderName, 30), { size: 22, weight: 700, fill: fg, anchor: "middle", family: DISPLAY })}
   ${text(W / 2, 822, i.tierName, { size: 15, fill: sub, anchor: "middle" })}
   ${text(W / 2, 856, "one scan per ticket · keep brightness up", { size: 12, fill: sub, anchor: "middle" })}`;
   return { svg: wrap(svg, W, H), width: W, height: H };

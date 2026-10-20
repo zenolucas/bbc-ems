@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>OG image and ticket refresh</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Geist:wght@400..700&family=Geist+Mono:wght@400..700&display=swap">
+<style>
+body{margin:0}
+a{color:#1e6fa3}a:hover{color:#1b5e3b}
+.display{font-family:'Bricolage Grotesque',Geist,system-ui,sans-serif;letter-spacing:-.02em}
+.mono{font-family:'Geist Mono',ui-monospace,monospace}
+.eyebrow{font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase}
+.lbl{font-size:13px;font-weight:700;color:#0b3d2e;display:flex;align-items:center;gap:8px;padding:0 0 10px 2px}
+.lbl span{font-weight:500;color:#5b7060}
+</style>
+</helmet>
+<div style="width: 1280px; height: 1000px; box-sizing: border-box; background: #f6f4ec; color: #0b3d2e; font-family: Geist, system-ui, sans-serif; padding: 40px; display: flex; flex-direction: column; gap: 28px; overflow: hidden">
+
+  <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 24px">
+    <div style="display: flex; flex-direction: column; gap: 8px"><div class="eyebrow" style="color: #1b5e3b">Link previews &amp; ticket PNGs</div><h1 class="display" style="margin: 0; font-size: 30px; line-height: 1; font-weight: 800">What travels outside the site</h1></div>
+    <div style="font-size: 13px; color: #5b7060; max-width: 460px; text-align: right">The OG image uses the poster when there is one and the skyline when there isn&#39;t. Tickets get the display face for titles and codes; every QR module, plate and finder stays exactly where it is.</div>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px">
+    <div style="display: flex; flex-direction: column">
+      <div class="lbl">OG image · with poster <span>· 1200×630</span></div>
+      <div style="position: relative; aspect-ratio: 1200 / 630; border-radius: 16px; overflow: hidden; background: #1c2f34; box-shadow: 0 12px 32px rgba(11,61,46,.18)">
+        <svg viewBox="0 0 1200 630" preserveAspectRatio="xMidYMid slice" aria-hidden="true" style="position: absolute; inset: 0; width: 100%; height: 100%; filter: blur(14px); transform: scale(1.1)"><rect width="1200" height="630" fill="#1c2f34"/><circle cx="900" cy="200" r="300" fill="#8cc63e"/><g stroke="#f5f0a0" stroke-width="10" opacity=".9"><path d="M0 460h1200M0 500h1200M0 540h1200"/></g><text x="60" y="400" font-family="Bricolage Grotesque, sans-serif" font-size="260" font-weight="800" fill="#f6f4ec">VOL.3</text></svg>
+        <div style="position: absolute; inset: 0; background: linear-gradient(90deg, rgba(11,22,26,.92) 0%, rgba(11,22,26,.75) 55%, rgba(11,22,26,.3) 100%)"></div>
+        <svg viewBox="0 0 1200 630" preserveAspectRatio="xMidYMid slice" aria-hidden="true" style="position: absolute; left: 58%; top: 10%; width: 42%; height: 80%; border-radius: 12px; overflow: hidden"><rect width="1200" height="630" rx="24" fill="#1c2f34"/><circle cx="900" cy="200" r="300" fill="#8cc63e"/><g stroke="#f5f0a0" stroke-width="10" opacity=".9"><path d="M0 460h1200M0 500h1200M0 540h1200"/></g><text x="60" y="400" font-family="Bricolage Grotesque, sans-serif" font-size="260" font-weight="800" fill="#f6f4ec" letter-spacing="-12">VOL.3</text><text x="64" y="120" font-family="Geist, sans-serif" font-size="34" font-weight="700" fill="#3cc5e8" letter-spacing="10">BASE CAMP SESSIONS</text></svg>
+        <div style="position: absolute; left: 5%; top: 8%; display: flex; align-items: center; gap: 10px; color: #ffffff"><img src="/_blob/f5b90c3cd8af5b37d6afb44083aaa6b4" alt="" style="width: 9%; min-width: 34px; aspect-ratio: 1"><span class="eyebrow" style="font-size: 10px; color: #f5f0a0">Baguio Base Camp</span></div>
+        <div style="position: absolute; left: 5%; right: 44%; bottom: 10%; display: flex; flex-direction: column; gap: 8px; color: #ffffff">
+          <div class="display" style="font-size: 28px; line-height: 1; font-weight: 800">Base Camp Sessions Vol. 3</div>
+          <div style="font-size: 12px; color: rgba(255,255,255,.85)">Sat, Nov 1 · 7:00 PM · Canto, Ketchup Food Community</div>
+          <span style="align-self: flex-start; padding: 5px 12px; border-radius: 999px; background: #f7e017; color: #0b3d2e; font-size: 12px; font-weight: 800" class="display">from ₱250</span>
+        </div>
+      </div>
+    </div>
+    <div style="display: flex; flex-direction: column">
+      <div class="lbl">OG image · no poster <span>· skyline, same lockup</span></div>
+      <div style="position: relative; aspect-ratio: 1200 / 630; border-radius: 16px; overflow: hidden; background: #3cc5e8; box-shadow: 0 12px 32px rgba(11,61,46,.18)">
+        <svg viewBox="0 0 1200 630" preserveAspectRatio="xMidYMax slice" aria-hidden="true" style="position: absolute; inset: 0; width: 100%; height: 100%"><defs><linearGradient id="og" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3cc5e8"/><stop offset=".48" stop-color="#1e6fa3"/><stop offset=".52" stop-color="#27404a"/><stop offset="1" stop-color="#0e1c20"/></linearGradient></defs><rect width="1200" height="630" fill="url(#og)"/><circle cx="170" cy="140" r="44" fill="#f7e017"/><g fill="#f5f0a0"><circle cx="860" cy="90" r="3"/><circle cx="960" cy="160" r="2.4"/><circle cx="1060" cy="70" r="3"/><circle cx="1120" cy="210" r="2"/><circle cx="760" cy="60" r="2"/></g><circle cx="1040" cy="130" r="36" fill="#f5f0a0"/><circle cx="1056" cy="118" r="30" fill="#1c3a4a"/><path d="M0 630V420L210 230L360 360L570 130L780 340L900 250L1200 470V630Z" fill="#8cc63e"/><path d="M0 630V500L180 400L390 480L600 300L810 460L990 380L1200 520V630Z" fill="#39b54a"/><path d="M0 630V570L240 500L480 580L720 480L960 560L1200 520V630Z" fill="#1f9a3e"/></svg>
+        <div style="position: absolute; left: 5%; top: 8%; display: flex; align-items: center; gap: 10px; color: #ffffff"><img src="/_blob/f5b90c3cd8af5b37d6afb44083aaa6b4" alt="" style="width: 9%; min-width: 34px; aspect-ratio: 1"><span class="eyebrow" style="font-size: 10px; color: #ffffff">Baguio Base Camp</span></div>
+        <div style="position: absolute; left: 5%; right: 8%; bottom: 10%; display: flex; flex-direction: column; gap: 8px; color: #ffffff">
+          <div class="display" style="font-size: 28px; line-height: 1; font-weight: 800; text-shadow: 0 2px 12px rgba(11,61,46,.4)">Sunrise Hike: Mt. Yangbew</div>
+          <div style="font-size: 12px; color: rgba(255,255,255,.9)">Sun, Nov 9 · 5:00 AM · Tawang jump-off, La Trinidad</div>
+          <span style="align-self: flex-start; padding: 5px 12px; border-radius: 999px; background: #f7e017; color: #0b3d2e; font-size: 12px; font-weight: 800" class="display">Free</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 10px; flex: 1; min-height: 0">
+    <div class="lbl">Ticket refresh <span>· Summit (light) and Night Sky (dark). Titles and codes in Bricolage, holder name bigger, QR untouched.</span></div>
+    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; align-items: start">
+      <div style="display: flex; gap: 20px; justify-content: center; grid-column: span 2; padding: 20px; border-radius: 18px; background: linear-gradient(90deg, #f6f4ec 50%, #1c2f34 50%); border: 1px solid rgba(11,61,46,.12)">
+        <svg viewBox="0 0 300 440" width="236" height="346" role="img" aria-label="Summit ticket, light" style="filter: drop-shadow(0 12px 24px rgba(11,61,46,.2))">
+          <defs><linearGradient id="t1" x1="0" x2="1"><stop offset="0" stop-color="#3cc5e8"/><stop offset=".5" stop-color="#1e6fa3"/><stop offset="1" stop-color="#1c2f34"/></linearGradient></defs>
+          <rect width="300" height="440" rx="18" fill="#f6f4ec"/>
+          <rect x="0" y="0" width="300" height="8" rx="4" fill="url(#t1)"/>
+          <text x="24" y="46" font-family="Geist, sans-serif" font-size="7.5" font-weight="700" fill="#1b5e3b" letter-spacing="2.2">BAGUIO BASE CAMP</text>
+          <text x="24" y="70" font-family="Bricolage Grotesque, sans-serif" font-size="17" font-weight="800" fill="#0b3d2e" letter-spacing="-.3">Base Camp Sessions Vol. 3</text>
+          <text x="24" y="88" font-family="Geist, sans-serif" font-size="8.5" fill="#5b7060">Sat, Nov 1, 2026 · 7:00 PM</text>
+          <text x="24" y="101" font-family="Geist, sans-serif" font-size="8.5" fill="#5b7060">Canto, Ketchup Food Community</text>
+          <rect x="50" y="120" width="200" height="200" rx="10" fill="#ffffff"/>
+          <path fill="#0b3d2e" d="M130 136h8v8h-8zM146 136h8v8h-8zM154 136h8v8h-8zM170 136h8v8h-8zM138 144h8v8h-8zM162 144h8v8h-8zM170 144h8v8h-8zM130 152h8v8h-8zM154 152h8v8h-8zM170 152h8v8h-8zM138 160h8v8h-8zM146 160h8v8h-8zM170 160h8v8h-8zM130 168h8v8h-8zM162 168h8v8h-8zM146 176h8v8h-8zM154 176h8v8h-8zM170 176h8v8h-8zM130 184h8v8h-8zM138 184h8v8h-8zM162 184h8v8h-8zM66 192h8v8h-8zM82 192h8v8h-8zM90 192h8v8h-8zM106 192h8v8h-8zM122 192h8v8h-8zM138 192h8v8h-8zM154 192h8v8h-8zM170 192h8v8h-8zM178 192h8v8h-8zM194 192h8v8h-8zM210 192h8v8h-8zM226 192h8v8h-8zM74 200h8v8h-8zM98 200h8v8h-8zM114 200h8v8h-8zM122 200h8v8h-8zM170 200h8v8h-8zM186 200h8v8h-8zM202 200h8v8h-8zM218 200h8v8h-8zM66 208h8v8h-8zM90 208h8v8h-8zM106 208h8v8h-8zM122 208h8v8h-8zM178 208h8v8h-8zM194 208h8v8h-8zM210 208h8v8h-8zM226 208h8v8h-8zM82 216h8v8h-8zM98 216h8v8h-8zM114 216h8v8h-8zM122 216h8v8h-8zM170 216h8v8h-8zM186 216h8v8h-8zM202 216h8v8h-8zM218 216h8v8h-8zM74 224h8v8h-8zM90 224h8v8h-8zM106 224h8v8h-8zM122 224h8v8h-8zM178 224h8v8h-8zM186 224h8v8h-8zM210 224h8v8h-8zM226 224h8v8h-8zM66 232h8v8h-8zM82 232h8v8h-8zM114 232h8v8h-8zM122 232h8v8h-8zM170 232h8v8h-8zM194 232h8v8h-8zM218 232h8v8h-8zM74 240h8v8h-8zM98 240h8v8h-8zM106 240h8v8h-8zM122 240h8v8h-8zM130 240h8v8h-8zM146 240h8v8h-8zM154 240h8v8h-8zM178 240h8v8h-8zM202 240h8v8h-8zM226 240h8v8h-8zM130 248h8v8h-8zM138 248h8v8h-8zM162 248h8v8h-8zM170 248h8v8h-8zM186 248h8v8h-8zM210 248h8v8h-8zM218 248h8v8h-8zM146 256h8v8h-8zM154 256h8v8h-8zM178 256h8v8h-8zM194 256h8v8h-8zM226 256h8v8h-8zM130 264h8v8h-8zM162 264h8v8h-8zM170 264h8v8h-8zM186 264h8v8h-8zM202 264h8v8h-8zM218 264h8v8h-8zM138 272h8v8h-8zM146 272h8v8h-8zM178 272h8v8h-8zM210 272h8v8h-8zM226 272h8v8h-8zM130 280h8v8h-8zM154 280h8v8h-8zM170 280h8v8h-8zM194 280h8v8h-8zM202 280h8v8h-8zM146 288h8v8h-8zM162 288h8v8h-8zM178 288h8v8h-8zM186 288h8v8h-8zM218 288h8v8h-8zM130 296h8v8h-8zM138 296h8v8h-8zM170 296h8v8h-8zM194 296h8v8h-8zM210 296h8v8h-8zM226 296h8v8h-8z"/>
+          <g><rect x="66" y="136" width="56" height="56" fill="#1e6fa3"/><rect x="74" y="144" width="40" height="40" fill="#ffffff"/><rect x="82" y="152" width="24" height="24" fill="#1e6fa3"/></g>
+          <g><rect x="178" y="136" width="56" height="56" fill="#39b54a"/><rect x="186" y="144" width="40" height="40" fill="#ffffff"/><rect x="194" y="152" width="24" height="24" fill="#39b54a"/></g>
+          <g><rect x="66" y="248" width="56" height="56" fill="#1b5e3b"/><rect x="74" y="256" width="40" height="40" fill="#ffffff"/><rect x="82" y="264" width="24" height="24" fill="#1b5e3b"/></g>
+          <g transform="translate(128 198)"><circle cx="22" cy="22" r="22" fill="#ffffff"/><circle cx="22" cy="22" r="19" fill="none" stroke="#3cc5e8" stroke-width="2.2"/><path d="M5 31 15 14l5 8 3-4 4 7 4-5 9 11Z" fill="#39b54a"/><path d="M5 31 15 14l5 8-3 4 4 5Z" fill="#8cc63e"/><rect x="5" y="32" width="34" height="2" fill="#1b5e3b"/><circle cx="12" cy="11" r="2.2" fill="#f7e017"/></g>
+          <text x="150" y="354" text-anchor="middle" font-family="Bricolage Grotesque, sans-serif" font-size="19" font-weight="800" fill="#0b3d2e" letter-spacing="2">BBC-7K3M-PX2Q</text>
+          <text x="150" y="376" text-anchor="middle" font-family="Bricolage Grotesque, sans-serif" font-size="13" font-weight="700" fill="#0b3d2e">Zen Lucas</text>
+          <text x="150" y="390" text-anchor="middle" font-family="Geist, sans-serif" font-size="8" fill="#5b7060">Regular · includes one drink</text>
+          <line x1="24" x2="276" y1="406" y2="406" stroke="#d9e0d2" stroke-dasharray="3 5"/>
+          <text x="150" y="425" text-anchor="middle" font-family="Geist, sans-serif" font-size="7" fill="#5b7060">Show this code at the door · one scan per ticket</text>
+        </svg>
+        <svg viewBox="0 0 300 440" width="236" height="346" role="img" aria-label="Night Sky ticket, dark" style="filter: drop-shadow(0 12px 24px rgba(0,0,0,.4))">
+          <defs><linearGradient id="t2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3cc5e8"/><stop offset="1" stop-color="#1e6fa3"/></linearGradient><clipPath id="t2c"><rect width="300" height="440" rx="18"/></clipPath></defs>
+          <g clip-path="url(#t2c)"><rect width="300" height="440" fill="#1c2f34"/><polygon points="0,0 186,0 0,200" fill="url(#t2)"/><circle cx="43" cy="48" r="13" fill="#f7e017"/><circle cx="43" cy="48" r="17" fill="none" stroke="#f7e017" stroke-width="1.5" stroke-dasharray="3 5"/><g fill="#f5f0a0"><circle cx="220" cy="30" r="1.2"/><circle cx="262" cy="70" r=".9"/><circle cx="240" cy="110" r="1.1"/><circle cx="285" cy="150" r=".8"/><circle cx="60" cy="300" r="1"/><circle cx="30" cy="360" r="1.2"/><circle cx="270" cy="340" r=".9"/><circle cx="200" cy="380" r="1.1"/><circle cx="90" cy="400" r=".8"/></g><circle cx="252" cy="60" r="17" fill="#f5f0a0"/><circle cx="259" cy="55" r="15" fill="#1c2f34"/></g>
+          <text x="24" y="88" font-family="Geist, sans-serif" font-size="7.5" font-weight="700" fill="#f5f0a0" letter-spacing="2.2">BAGUIO BASE CAMP</text>
+          <text x="24" y="110" font-family="Bricolage Grotesque, sans-serif" font-size="17" font-weight="800" fill="#ffffff" letter-spacing="-.3">Anime Night: Akatsuki Edition</text>
+          <rect x="55" y="128" width="190" height="190" rx="14" fill="#f6f4ec"/>
+          <path fill="#1c2f34" d="M130 140h8v8h-8zM146 140h8v8h-8zM154 140h8v8h-8zM170 140h8v8h-8zM138 148h8v8h-8zM162 148h8v8h-8zM170 148h8v8h-8zM130 156h8v8h-8zM154 156h8v8h-8zM170 156h8v8h-8zM138 164h8v8h-8zM146 164h8v8h-8zM170 164h8v8h-8zM130 172h8v8h-8zM162 172h8v8h-8zM146 180h8v8h-8zM154 180h8v8h-8zM170 180h8v8h-8zM130 188h8v8h-8zM138 188h8v8h-8zM162 188h8v8h-8zM70 196h8v8h-8zM86 196h8v8h-8zM94 196h8v8h-8zM110 196h8v8h-8zM122 196h8v8h-8zM138 196h8v8h-8zM154 196h8v8h-8zM170 196h8v8h-8zM178 196h8v8h-8zM194 196h8v8h-8zM210 196h8v8h-8zM226 196h8v8h-8zM78 204h8v8h-8zM102 204h8v8h-8zM118 204h8v8h-8zM170 204h8v8h-8zM186 204h8v8h-8zM202 204h8v8h-8zM218 204h8v8h-8zM70 212h8v8h-8zM94 212h8v8h-8zM110 212h8v8h-8zM178 212h8v8h-8zM194 212h8v8h-8zM210 212h8v8h-8zM226 212h8v8h-8zM86 220h8v8h-8zM102 220h8v8h-8zM118 220h8v8h-8zM170 220h8v8h-8zM186 220h8v8h-8zM202 220h8v8h-8zM218 220h8v8h-8zM78 228h8v8h-8zM94 228h8v8h-8zM110 228h8v8h-8zM178 228h8v8h-8zM186 228h8v8h-8zM210 228h8v8h-8zM226 228h8v8h-8zM70 236h8v8h-8zM86 236h8v8h-8zM118 236h8v8h-8zM170 236h8v8h-8zM194 236h8v8h-8zM218 236h8v8h-8zM78 244h8v8h-8zM102 244h8v8h-8zM110 244h8v8h-8zM130 244h8v8h-8zM146 244h8v8h-8zM154 244h8v8h-8zM178 244h8v8h-8zM202 244h8v8h-8zM226 244h8v8h-8zM130 252h8v8h-8zM138 252h8v8h-8zM162 252h8v8h-8zM170 252h8v8h-8zM186 252h8v8h-8zM210 252h8v8h-8zM218 252h8v8h-8zM146 260h8v8h-8zM154 260h8v8h-8zM178 260h8v8h-8zM194 260h8v8h-8zM226 260h8v8h-8zM130 268h8v8h-8zM162 268h8v8h-8zM170 268h8v8h-8zM186 268h8v8h-8zM202 268h8v8h-8zM218 268h8v8h-8zM138 276h8v8h-8zM146 276h8v8h-8zM178 276h8v8h-8zM210 276h8v8h-8zM226 276h8v8h-8zM130 284h8v8h-8zM154 284h8v8h-8zM170 284h8v8h-8zM194 284h8v8h-8zM202 284h8v8h-8zM146 292h8v8h-8zM162 292h8v8h-8zM178 292h8v8h-8zM186 292h8v8h-8zM218 292h8v8h-8zM130 300h8v8h-8zM138 300h8v8h-8zM170 300h8v8h-8zM194 300h8v8h-8zM210 300h8v8h-8zM226 300h8v8h-8z"/>
+          <g><rect x="70" y="140" width="56" height="56" rx="10" fill="#1c2f34"/><rect x="78" y="148" width="40" height="40" rx="7" fill="#f6f4ec"/><rect x="86" y="156" width="24" height="24" rx="5" fill="#1e6fa3"/></g>
+          <g><rect x="178" y="140" width="56" height="56" rx="10" fill="#1c2f34"/><rect x="186" y="148" width="40" height="40" rx="7" fill="#f6f4ec"/><rect x="194" y="156" width="24" height="24" rx="5" fill="#1e6fa3"/></g>
+          <g><rect x="70" y="252" width="56" height="56" rx="10" fill="#1c2f34"/><rect x="78" y="260" width="40" height="40" rx="7" fill="#f6f4ec"/><rect x="86" y="268" width="24" height="24" rx="5" fill="#1e6fa3"/></g>
+          <text x="150" y="350" text-anchor="middle" font-family="Bricolage Grotesque, sans-serif" font-size="19" font-weight="800" fill="#f5f0a0" letter-spacing="2">BBC-M2VT-8KQ1</text>
+          <text x="150" y="372" text-anchor="middle" font-family="Bricolage Grotesque, sans-serif" font-size="13" font-weight="700" fill="#ffffff">Zen Lucas</text>
+          <text x="150" y="386" text-anchor="middle" font-family="Geist, sans-serif" font-size="7.5" fill="#a9bfae">Entry · Sat, Nov 22, 2026 · 6:00 PM</text>
+          <text x="150" y="398" text-anchor="middle" font-family="Geist, sans-serif" font-size="7.5" fill="#a9bfae">Baden Powell Hall</text>
+          <path d="M0 420 35 404 65 415 105 399 145 413 180 402 220 417 260 406 300 418V440H0Z" fill="#1b5e3b" clip-path="url(#t2c)"/>
+          <path d="M0 430 45 418 90 427 140 415 190 426 240 417 300 428V440H0Z" fill="#0b3d2e" clip-path="url(#t2c)"/>
+        </svg>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 10px; font-size: 13px; line-height: 1.5; color: #5b7060">
+        <div style="padding: 14px 16px; border-radius: 14px; background: #ffffff; border: 1px solid rgba(11,61,46,.12)"><span style="font-weight: 700; color: #0b3d2e">Kept exactly:</span> QR size, plate, quiet zone, finder colours, centre mark, token URL. Re-verified with the scan smoke test after the font swap.</div>
+        <div style="padding: 14px 16px; border-radius: 14px; background: #ffffff; border: 1px solid rgba(11,61,46,.12)"><span style="font-weight: 700; color: #0b3d2e">Changed:</span> title and short code in Bricolage 800, holder name 13px bold instead of 11px, eyebrow in pine on light tickets (was grass, 2.4:1), tier line stays Geist.</div>
+        <div style="padding: 14px 16px; border-radius: 14px; background: #ffffff; border: 1px solid rgba(11,61,46,.12)"><span style="font-weight: 700; color: #0b3d2e">Same treatment</span> for Trail Pass, Ridge Line and Campfire Stamp; Ticket lab shows all five side by side with a style switcher.</div>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":1000}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

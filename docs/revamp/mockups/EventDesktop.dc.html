@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Event detail on desktop</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Geist:wght@400..700&family=Geist+Mono:wght@400..700&display=swap">
+<style>
+body{margin:0}
+a{color:inherit}a:hover{color:inherit}
+.night{--bg:#0e1c20;--surface:#1c2f34;--surface2:#27404a;--fg:#e8f0e6;--fg2:#a9bfae;--line:rgba(232,240,230,.16);--primary:#8cc63e;--on-primary:#0b3d2e;--accent:#7fd8f0;--hi:#f5f0a0;--on-hi:#0b3d2e;--ok:#a6d85a;--ok-bg:rgba(140,198,62,.16);--ok-dot:#8cc63e;--warn:#f5f0a0;--muted:#27404a}
+.display{font-family:'Bricolage Grotesque',Geist,system-ui,sans-serif;letter-spacing:-.02em}
+.eyebrow{font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase}
+.btn{font:inherit;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid transparent;font-weight:600;line-height:1;text-decoration:none}
+.nav a{text-decoration:none;font-size:14px;font-weight:600;color:var(--fg2);padding:8px 12px;border-radius:999px}
+.nav a[aria-current]{color:var(--fg);background:var(--surface2)}
+.wrap{max-width:1200px;margin:0 auto;padding:0 24px;box-sizing:border-box}
+.prose h3{font-family:'Bricolage Grotesque',sans-serif;font-size:20px;font-weight:700;margin:22px 0 8px}
+.prose ul{margin:0;padding-left:20px;font-size:15px;line-height:1.7;color:var(--fg2)}
+.tier{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 0;border-top:1px solid var(--line)}
+</style>
+</helmet>
+<div class="night" style="min-height: 100%; background: var(--bg); color: var(--fg); font-family: Geist, system-ui, sans-serif; display: flex; flex-direction: column">
+
+  <header style="position: sticky; top: 0; z-index: 5; background: rgba(14,28,32,.92); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line)">
+    <div class="wrap" style="height: 68px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap">
+      <a href="#" style="display: flex; align-items: center; gap: 10px; text-decoration: none"><img src="/_blob/f5b90c3cd8af5b37d6afb44083aaa6b4" alt="" style="width: 38px; height: 38px"><span style="line-height: 1.05"><span class="eyebrow" style="display: block; font-size: 10px; color: var(--fg2)">Baguio</span><span class="display" style="display: block; font-size: 18px; font-weight: 700">Base Camp</span></span></a>
+      <nav class="nav" aria-label="Main" style="display: flex; align-items: center; gap: 4px"><a href="#" aria-current="page">Events</a><a href="#">My tickets</a><a href="#">About</a></nav>
+      <div style="display: flex; align-items: center; gap: 8px">
+        <button type="button" aria-label="Switch to day mode" style="font: inherit; cursor: pointer; width: 64px; height: 34px; border-radius: 999px; border: 1px solid var(--line); background: linear-gradient(180deg, #0b161a, #1f4a5c); position: relative; overflow: hidden"><svg viewBox="0 0 64 34" aria-hidden="true" style="position: absolute; inset: 0; width: 100%; height: 100%"><g fill="#f5f0a0"><circle cx="8" cy="8" r="1"/><circle cx="20" cy="5" r=".8"/><circle cx="30" cy="11" r="1.1"/></g><path d="M0 34V26L10 20L20 27L32 16L44 26L54 20L64 28V34Z" fill="#17422f"/></svg><span style="position: absolute; right: 5px; top: 5px; width: 24px; height: 24px; border-radius: 50%; background: #f5f0a0; box-shadow: inset -7px -3px 0 0 #0e1c20"></span></button>
+        <button type="button" class="btn" aria-label="Account menu for Zen Lucas" style="height: 38px; padding: 0 12px 0 4px; border-radius: 999px; background: var(--surface); color: var(--fg); border-color: var(--line); font-size: 13px"><span style="width: 30px; height: 30px; border-radius: 50%; background: var(--primary); color: var(--on-primary); display: grid; place-items: center; font-size: 11px; font-weight: 700">ZL</span>Zen Lucas</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap" style="width: 100%; padding-top: 24px; padding-bottom: 64px; display: flex; flex-direction: column; gap: 20px">
+    <a href="#" style="display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: var(--fg2); text-decoration: none; align-self: flex-start"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>All events</a>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 32px; align-items: flex-start">
+      <article style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 24px">
+        <div style="position: relative; aspect-ratio: 16 / 9; border-radius: 24px; overflow: hidden; background: #1c2f34; border: 1px solid var(--line)">
+          <svg viewBox="0 0 800 450" preserveAspectRatio="xMidYMid slice" aria-hidden="true" style="position: absolute; inset: 0; width: 100%; height: 100%"><rect width="800" height="450" fill="#1c2f34"/><circle cx="600" cy="150" r="200" fill="#8cc63e"/><g stroke="#f5f0a0" stroke-width="6" opacity=".9"><path d="M0 330h800M0 356h800M0 382h800"/></g><text x="40" y="280" font-family="Bricolage Grotesque, sans-serif" font-size="180" font-weight="800" fill="#f6f4ec" letter-spacing="-9">VOL.3</text><text x="44" y="90" font-family="Geist, sans-serif" font-size="20" font-weight="700" fill="#3cc5e8" letter-spacing="6">BASE CAMP SESSIONS</text><text x="44" y="430" font-family="Geist, sans-serif" font-size="16" font-weight="600" fill="#0b3d2e" letter-spacing="2">NOV 1 · CANTO · DOORS 7PM</text></svg>
+          <div style="position: absolute; left: 16px; top: 16px; background: var(--surface); border-radius: 14px; padding: 8px 12px; text-align: center; line-height: 1; box-shadow: 0 2px 8px rgba(0,0,0,.35)"><div class="eyebrow" style="font-size: 10px; color: var(--fg2)">Nov</div><div class="display" style="font-size: 28px; font-weight: 800">1</div></div>
+          <span style="position: absolute; right: 16px; top: 16px; padding: 7px 13px; border-radius: 999px; background: var(--hi); color: var(--on-hi); font-size: 13px; font-weight: 700">Few left</span>
+        </div>
+        <header style="display: flex; flex-direction: column; gap: 12px">
+          <div class="eyebrow" style="color: var(--primary)">Gig · Sat, Nov 1</div>
+          <h1 class="display" style="margin: 0; font-size: clamp(32px, 4vw, 48px); line-height: 1; font-weight: 800">Base Camp Sessions Vol. 3</h1>
+          <p style="margin: 0; font-size: 18px; color: var(--fg2)">Live sets, cold nights, warm people.</p>
+          <div style="display: flex; flex-wrap: wrap; gap: 24px; font-size: 15px; margin-top: 4px">
+            <span style="display: flex; align-items: center; gap: 10px"><svg viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" width="20" height="20" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><span><span style="font-weight: 600">Sat, Nov 1, 2026</span> <span style="color: var(--fg2)">· 7:00 PM – 11:00 PM</span></span></span>
+            <span style="display: flex; align-items: center; gap: 10px"><svg viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" width="20" height="20" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg><span><span style="font-weight: 600">Canto, Ketchup Food Community</span> <span style="color: var(--fg2)">· Romulo Dr</span> · <a href="#" style="color: var(--accent); font-weight: 600; text-decoration: none">Map ↗</a></span></span>
+          </div>
+        </header>
+        <section class="prose">
+          <h3 style="margin-top: 0">Lineup</h3>
+          <ul><li>Last Set Syndrome</li><li>The Pine Needles</li><li>DJ Fogline</li></ul>
+          <h3>House rules</h3>
+          <ul><li>Doors 7 PM, first act 8 PM</li><li>Bring a jacket, it&#39;s Baguio</li><li>Tickets are per person and scanned once at the door</li></ul>
+        </section>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px">
+          <div style="border-radius: 18px; background: var(--surface); border: 1px solid var(--line); padding: 16px; display: flex; gap: 14px; align-items: center"><div style="width: 48px; height: 48px; border-radius: 12px; background: var(--ok-bg); color: var(--primary); display: grid; place-items: center; flex-shrink: 0"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></div><div style="font-size: 14px; line-height: 1.45"><span style="font-weight: 600">Bringing friends?</span> <span style="color: var(--fg2)">Book up to 4, name each ticket, send them their QR.</span></div></div>
+          <div style="border-radius: 18px; background: var(--surface); border: 1px solid var(--line); padding: 16px; display: flex; gap: 14px; align-items: center"><div style="width: 48px; height: 48px; border-radius: 12px; background: var(--ok-bg); color: var(--primary); display: grid; place-items: center; flex-shrink: 0"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3M21 14v3M14 21h3M21 21h.01"/></svg></div><div style="font-size: 14px; line-height: 1.45"><span style="font-weight: 600">Paperless.</span> <span style="color: var(--fg2)">Your QR lives under My tickets and in your inbox. Works without signal.</span></div></div>
+        </div>
+      </article>
+
+      <aside style="flex: 1 1 340px; max-width: 400px; position: sticky; top: 92px; display: flex; flex-direction: column; gap: 12px">
+        <div style="border-radius: 24px; background: var(--surface); border: 1px solid var(--line); padding: 20px; display: flex; flex-direction: column">
+          <div style="display: flex; align-items: center; justify-content: space-between; padding-bottom: 10px"><h2 class="display" style="margin: 0; font-size: 22px; font-weight: 800; display: flex; align-items: center; gap: 8px"><svg viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22" aria-hidden="true"><path d="M2 9a3 3 0 0 1 0 6v3a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-3a3 3 0 0 1 0-6V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M13 5v2M13 17v2M13 11v2"/></svg>Tickets</h2><span style="font-size: 12px; color: var(--fg2)">max 4 per order</span></div>
+          <div style="padding: 12px 14px; border-radius: 14px; background: var(--ok-bg); display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 4px"><div style="font-size: 13px; line-height: 1.4"><span style="font-weight: 700; color: var(--ok)">You have 2 tickets</span><br><span style="color: var(--fg2)">Confirmed · Zen, Mika</span></div><a href="#" class="btn" style="height: 36px; padding: 0 14px; border-radius: 999px; background: var(--primary); color: var(--on-primary); font-size: 13px; flex-shrink: 0">View tickets</a></div>
+          <div class="tier"><div style="min-width: 0; flex: 1"><div style="font-weight: 600; color: var(--fg2); text-decoration: line-through">Early Bird</div><div style="font-size: 12px; color: var(--fg2)">First 30 only · sold out</div></div><div class="display" style="font-size: 18px; font-weight: 800; color: var(--fg2); text-decoration: line-through">₱250</div></div>
+          <div class="tier"><div style="min-width: 0; flex: 1; display: flex; flex-direction: column; gap: 6px"><div><div style="font-weight: 600">Regular</div><div style="font-size: 12px; color: var(--fg2)">Includes one drink</div></div><div style="display: flex; align-items: center; gap: 8px"><div style="flex: 1; max-width: 160px; height: 5px; border-radius: 999px; background: var(--muted); overflow: hidden"><div style="width: 90%; height: 100%; background: var(--hi); border-radius: 999px"></div></div><span style="font-size: 12px; font-weight: 600; color: var(--warn)">12 left</span></div></div><div class="display" style="font-size: 18px; font-weight: 800">₱350</div></div>
+          <div class="tier"><div style="min-width: 0; flex: 1"><div style="font-weight: 600">Crew / Guest list</div><div style="font-size: 12px; color: var(--fg2)">Invite only</div></div><div class="display" style="font-size: 18px; font-weight: 800; color: var(--primary)">Free</div></div>
+          <a href="#" class="btn" style="margin-top: 14px; height: 50px; border-radius: 999px; background: transparent; color: var(--fg); border-color: var(--line); font-size: 15px">Book more tickets</a>
+          <div style="text-align: center; font-size: 12px; color: var(--fg2); margin-top: 10px">Paperless. You&#39;ll get a QR to show at the door.</div>
+        </div>
+        <div style="border-radius: 18px; background: var(--surface); border: 1px solid var(--line); padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px; font-size: 13px"><div><div style="font-weight: 600">Share this event</div><div style="color: var(--fg2)">basecamp.ph/events/sessions-vol-3</div></div><div style="display: flex; gap: 6px"><button type="button" class="btn" aria-label="Copy link" style="width: 38px; height: 38px; border-radius: 999px; background: transparent; color: var(--fg); border-color: var(--line)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg></button><button type="button" class="btn" aria-label="Share" style="width: 38px; height: 38px; border-radius: 999px; background: transparent; color: var(--fg); border-color: var(--line)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" aria-hidden="true"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8M16 6l-4-4-4 4M12 2v13"/></svg></button></div></div>
+      </aside>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":1300}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

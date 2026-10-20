@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Verify page</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Geist:wght@400..700&family=Geist+Mono:wght@400..700&display=swap">
+<style>
+body{margin:0}
+a{color:inherit}a:hover{color:inherit}
+.day{--bg:#f6f4ec;--surface:#ffffff;--surface2:#eef2e8;--fg:#0b3d2e;--fg2:#5b7060;--line:rgba(11,61,46,.14);--primary:#1b5e3b;--on-primary:#ffffff;--accent:#1e6fa3;--ok:#1b5e3b;--ok-bg:rgba(57,181,74,.14);--ok-dot:#39b54a;--warn:#6b4f00;--warn-bg:rgba(247,224,23,.26);--warn-dot:#d4b800;--bad:#b4321f;--bad-bg:rgba(180,50,31,.1)}
+.night{--bg:#0e1c20;--surface:#1c2f34;--surface2:#27404a;--fg:#e8f0e6;--fg2:#a9bfae;--line:rgba(232,240,230,.16);--primary:#8cc63e;--on-primary:#0b3d2e;--accent:#7fd8f0;--ok:#a6d85a;--ok-bg:rgba(140,198,62,.16);--ok-dot:#8cc63e;--warn:#f5f0a0;--warn-bg:rgba(245,240,160,.14);--warn-dot:#f5f0a0;--bad:#ff9a88;--bad-bg:rgba(255,138,118,.14)}
+.display{font-family:'Bricolage Grotesque',Geist,system-ui,sans-serif;letter-spacing:-.02em}
+.mono{font-family:'Geist Mono',ui-monospace,monospace}
+.eyebrow{font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase}
+.btn{font:inherit;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid transparent;font-weight:600;line-height:1;text-decoration:none}
+.phone{width:390px;height:844px;border-radius:40px;overflow:hidden;position:relative;display:flex;flex-direction:column;font-family:Geist,system-ui,sans-serif;background:var(--bg);color:var(--fg);box-shadow:0 24px 60px rgba(11,61,46,.2)}
+.seal{width:148px;height:148px;border-radius:50%;display:grid;place-items:center;position:relative}
+.seal::after{content:"";position:absolute;inset:8px;border-radius:50%;border:3px double currentColor;opacity:.7}
+.lbl{font-size:13px;font-weight:700;color:#0b3d2e;display:flex;align-items:center;gap:8px;padding:0 0 10px 6px}
+.lbl span{font-weight:500;color:#5b7060}
+</style>
+</helmet>
+<div style="width: 1250px; height: 900px; box-sizing: border-box; background: #e6eae1; padding: 20px 10px; display: flex; gap: 30px; justify-content: center; overflow: hidden; font-family: Geist, system-ui, sans-serif">
+
+  <div style="display: flex; flex-direction: column">
+    <div class="lbl">Valid <span>· not yet checked in</span></div>
+    <div class="day phone">
+      <header style="height: 56px; display: flex; align-items: center; justify-content: center; gap: 10px; flex-shrink: 0"><img src="/_blob/f5b90c3cd8af5b37d6afb44083aaa6b4" alt="" style="width: 30px; height: 30px"><span class="display" style="font-size: 16px; font-weight: 700">Baguio Base Camp</span></header>
+      <div role="status" style="flex: 1; display: flex; flex-direction: column; align-items: center; padding: 36px 24px 0; gap: 18px; text-align: center">
+        <div class="seal" style="background: var(--ok-bg); color: var(--ok)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" width="64" height="64" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></div>
+        <div style="display: flex; flex-direction: column; gap: 8px"><div class="eyebrow" style="color: var(--ok)">Ticket check</div><h1 class="display" style="margin: 0; font-size: 32px; line-height: 1; font-weight: 800">Valid ticket</h1><p style="margin: 0; font-size: 15px; line-height: 1.5; color: var(--fg2)">Not checked in yet. Only the door scanner can mark it used, so this page never changes anything.</p></div>
+        <div style="width: 100%; border-radius: 18px; background: var(--surface); border: 1px solid var(--line); padding: 14px 16px; display: flex; flex-direction: column; gap: 6px; text-align: left">
+          <div class="display" style="font-size: 17px; font-weight: 700">Base Camp Sessions Vol. 3</div>
+          <div style="font-size: 13px; color: var(--fg2)">Sat, Nov 1, 2026 · 7:00 PM – 11:00 PM</div>
+          <div style="font-size: 13px; color: var(--fg2)">Canto, Ketchup Food Community</div>
+          <div style="margin-top: 6px; padding-top: 10px; border-top: 1px dashed var(--line); display: flex; align-items: center; justify-content: space-between; font-size: 13px"><span>Regular · <span style="font-weight: 600">Zen</span></span><span class="mono" style="font-weight: 700; letter-spacing: .06em">BBC-7K3M-PX2Q</span></div>
+        </div>
+        <a href="#" style="font-size: 13px; font-weight: 600; color: var(--accent); text-decoration: none">This is mine — open it in My tickets</a>
+      </div>
+      <div style="padding: 0 24px 28px; font-size: 12px; color: var(--fg2); text-align: center; line-height: 1.5">Signed with the organiser&#39;s key. Forged codes fail this check, even offline.</div>
+    </div>
+  </div>
+
+  <div style="display: flex; flex-direction: column">
+    <div class="lbl">Already checked in</div>
+    <div class="night phone">
+      <header style="height: 56px; display: flex; align-items: center; justify-content: center; gap: 10px; flex-shrink: 0"><img src="/_blob/f5b90c3cd8af5b37d6afb44083aaa6b4" alt="" style="width: 30px; height: 30px"><span class="display" style="font-size: 16px; font-weight: 700">Baguio Base Camp</span></header>
+      <div role="status" style="flex: 1; display: flex; flex-direction: column; align-items: center; padding: 36px 24px 0; gap: 18px; text-align: center">
+        <div class="seal" style="background: var(--warn-bg); color: var(--warn)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="60" height="60" aria-hidden="true"><path d="M2 9a3 3 0 0 1 0 6v3a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-3a3 3 0 0 1 0-6V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M13 5v2M13 17v2M13 11v2"/></svg></div>
+        <div style="display: flex; flex-direction: column; gap: 8px"><div class="eyebrow" style="color: var(--warn)">Ticket check</div><h1 class="display" style="margin: 0; font-size: 32px; line-height: 1; font-weight: 800">Already checked in</h1><p style="margin: 0; font-size: 15px; line-height: 1.5; color: var(--fg2)">Scanned Sat, Nov 1 · 8:14 PM. A second scan at the door will be turned away.</p></div>
+        <div style="width: 100%; border-radius: 18px; background: var(--surface); border: 1px solid var(--line); padding: 14px 16px; display: flex; flex-direction: column; gap: 6px; text-align: left">
+          <div class="display" style="font-size: 17px; font-weight: 700">Base Camp Sessions Vol. 3</div>
+          <div style="font-size: 13px; color: var(--fg2)">Sat, Nov 1, 2026 · 7:00 PM – 11:00 PM</div>
+          <div style="font-size: 13px; color: var(--fg2)">Canto, Ketchup Food Community</div>
+          <div style="margin-top: 6px; padding-top: 10px; border-top: 1px dashed var(--line); display: flex; align-items: center; justify-content: space-between; font-size: 13px"><span>Regular · <span style="font-weight: 600">Zen</span></span><span class="mono" style="font-weight: 700; letter-spacing: .06em">BBC-7K3M-PX2Q</span></div>
+        </div>
+      </div>
+      <div style="padding: 0 24px 28px; font-size: 12px; color: var(--fg2); text-align: center; line-height: 1.5">Think this is a mistake? Find the door crew; they can undo a check-in.</div>
+    </div>
+  </div>
+
+  <div style="display: flex; flex-direction: column">
+    <div class="lbl">Invalid <span>· signature fails</span></div>
+    <div class="day phone">
+      <header style="height: 56px; display: flex; align-items: center; justify-content: center; gap: 10px; flex-shrink: 0"><img src="/_blob/f5b90c3cd8af5b37d6afb44083aaa6b4" alt="" style="width: 30px; height: 30px"><span class="display" style="font-size: 16px; font-weight: 700">Baguio Base Camp</span></header>
+      <div role="alert" style="flex: 1; display: flex; flex-direction: column; align-items: center; padding: 36px 24px 0; gap: 18px; text-align: center">
+        <div class="seal" style="background: var(--bad-bg); color: var(--bad)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="60" height="60" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="M12 8v4M12 16h.01"/></svg></div>
+        <div style="display: flex; flex-direction: column; gap: 8px"><div class="eyebrow" style="color: var(--bad)">Ticket check</div><h1 class="display" style="margin: 0; font-size: 30px; line-height: 1.02; font-weight: 800">Not a Baguio Base Camp ticket</h1><p style="margin: 0; font-size: 15px; line-height: 1.5; color: var(--fg2)">The signature doesn&#39;t match. This code may have been altered, or it isn&#39;t one of ours.</p></div>
+        <div style="width: 100%; border-radius: 18px; background: var(--surface); border: 1px dashed var(--bad); padding: 14px 16px; display: flex; flex-direction: column; gap: 8px; text-align: left; font-size: 13px; line-height: 1.5; color: var(--fg2)"><span style="font-weight: 600; color: var(--fg)">Bought this from someone?</span> Real tickets come from this site, under My tickets, with a code like <span class="mono" style="color: var(--fg)">BBC-XXXX-XXXX</span>. Ask the seller to transfer it by naming you on the ticket.</div>
+        <a href="#" class="btn" style="height: 44px; padding: 0 20px; border-radius: 999px; background: var(--primary); color: var(--on-primary); font-size: 14px">See what&#39;s on</a>
+      </div>
+      <div style="padding: 0 24px 28px; font-size: 12px; color: var(--fg2); text-align: center; line-height: 1.5">Nothing was recorded. This page never checks anyone in.</div>
+    </div>
+  </div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1250,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

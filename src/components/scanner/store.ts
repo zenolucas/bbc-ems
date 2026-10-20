@@ -1,5 +1,5 @@
 "use client";
-import { del, get, set } from "idb-keyval";
+import { del, get, set, update } from "idb-keyval";
 import type { LocalResult, Manifest } from "@/lib/checkins";
 
 export type QueuedCheckin = {
@@ -16,6 +16,17 @@ export type RecentScan = { at: number; kind: string; holder?: string; code?: str
 
 const k = (eventId: string, name: string) => `bbc:${name}:${eventId}`;
 
+/**
+ * Read-modify-write in one IndexedDB transaction. A scan recorded while another
+ * scan or a sync is mid-write would otherwise be overwritten and never sent.
+ * Resolves to the value it stored.
+ */
+async function change<T>(key: string, fallback: T, fn: (current: T) => T) {
+  let next = fallback;
+  await update<T>(key, (current) => (next = fn(current ?? fallback)));
+  return next;
+}
+
 export const store = {
   manifest: {
     get: (eventId: string) => get<Manifest>(k(eventId, "manifest")),
@@ -23,15 +34,15 @@ export const store = {
   },
   queue: {
     get: async (eventId: string) => (await get<QueuedCheckin[]>(k(eventId, "queue"))) ?? [],
-    set: (eventId: string, q: QueuedCheckin[]) => set(k(eventId, "queue"), q),
+    update: (eventId: string, fn: (q: QueuedCheckin[]) => QueuedCheckin[]) => change<QueuedCheckin[]>(k(eventId, "queue"), [], fn),
   },
   used: {
     get: async (eventId: string) => (await get<LocalUsed>(k(eventId, "used"))) ?? {},
-    set: (eventId: string, u: LocalUsed) => set(k(eventId, "used"), u),
+    update: (eventId: string, fn: (u: LocalUsed) => LocalUsed) => change<LocalUsed>(k(eventId, "used"), {}, fn),
   },
   recent: {
     get: async (eventId: string) => (await get<RecentScan[]>(k(eventId, "recent"))) ?? [],
-    set: (eventId: string, r: RecentScan[]) => set(k(eventId, "recent"), r.slice(0, 10)),
+    update: (eventId: string, fn: (r: RecentScan[]) => RecentScan[]) => change<RecentScan[]>(k(eventId, "recent"), [], (r) => fn(r).slice(0, 10)),
   },
   muted: {
     get: async () => (await get<boolean>("bbc:muted")) ?? false,

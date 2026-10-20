@@ -1,0 +1,65 @@
+{
+  "v": 3,
+  "createdOnFiles": { "v": 1, "at": "2026-10-20T12:00:00Z" },
+  "title": "BBC EMS Revamp",
+  "launch": { "view": "canvas" },
+  "pages": [],
+  "boards": {
+    "Main.dc.html": { "x": 0, "y": 0, "w": 1280, "h": 1500, "title": "Brand & colour" },
+    "Type.dc.html": { "x": 1360, "y": 0, "w": 1280, "h": 1000, "title": "Typography" },
+    "Components.dc.html": { "x": 2720, "y": 0, "w": 1280, "h": 1900, "title": "Components", "is_interactive": true },
+
+    "HomeMobile.dc.html": { "x": 0, "y": 2400, "w": 860, "h": 1500, "title": "Home — phone, day & night" },
+    "EventCards.dc.html": { "x": 940, "y": 2400, "w": 1280, "h": 800, "title": "Event card variants" },
+    "EventMobile.dc.html": { "x": 2300, "y": 2400, "w": 860, "h": 1600, "title": "Event detail — phone" },
+    "BookMobile.dc.html": { "x": 3240, "y": 2400, "w": 390, "h": 1100, "title": "Book: pick tiers", "is_interactive": true },
+    "PayMobile.dc.html": { "x": 3710, "y": 2400, "w": 390, "h": 1500, "title": "Booking: pay" },
+    "BookingStates.dc.html": { "x": 4180, "y": 2400, "w": 1720, "h": 1300, "title": "Booking states" },
+
+    "Wallet.dc.html": { "x": 0, "y": 4420, "w": 860, "h": 900, "title": "Ticket wallet" },
+    "MyTickets.dc.html": { "x": 940, "y": 4420, "w": 390, "h": 1400, "title": "My tickets" },
+    "SignIn.dc.html": { "x": 1410, "y": 4420, "w": 860, "h": 900, "title": "Sign in — phone" },
+    "Verify.dc.html": { "x": 2350, "y": 4420, "w": 1250, "h": 900, "title": "Verify page /t/" },
+    "NavEmpty.dc.html": { "x": 3680, "y": 4420, "w": 1280, "h": 1000, "title": "Nav, footer & empties" },
+
+    "HomeDesktop.dc.html": { "x": 0, "y": 6240, "w": 1280, "h": 1700, "title": "Home — desktop", "expand": "fill" },
+    "EventDesktop.dc.html": { "x": 1360, "y": 6240, "w": 1280, "h": 1300, "title": "Event detail — desktop", "expand": "fill" },
+    "SignInDesktop.dc.html": { "x": 2720, "y": 6240, "w": 1280, "h": 800, "title": "Sign in — desktop", "expand": "fill" },
+
+    "Dashboard.dc.html": { "x": 0, "y": 8360, "w": 1280, "h": 1150, "title": "Admin dashboard", "expand": "fill" },
+    "EventsList.dc.html": { "x": 1360, "y": 8360, "w": 1280, "h": 900, "title": "Admin events", "expand": "fill" },
+    "EventOverview.dc.html": { "x": 2720, "y": 8360, "w": 1280, "h": 1150, "title": "Event overview", "expand": "fill" },
+    "ReviewQueue.dc.html": { "x": 0, "y": 9630, "w": 1280, "h": 900, "title": "Review queue", "expand": "fill" },
+    "Attendees.dc.html": { "x": 1360, "y": 9630, "w": 1280, "h": 900, "title": "Attendees", "expand": "fill" },
+    "EventForm.dc.html": { "x": 2720, "y": 9630, "w": 1280, "h": 1300, "title": "Event form + live preview", "expand": "fill" },
+
+    "AdminMobile.dc.html": { "x": 0, "y": 11350, "w": 390, "h": 844, "title": "Admin on a phone" },
+    "ScanIndex.dc.html": { "x": 470, "y": 11350, "w": 390, "h": 844, "title": "Scanner: pick event" },
+    "DoorMode.dc.html": { "x": 940, "y": 11350, "w": 390, "h": 844, "title": "Door mode: camera" },
+    "ScanResults.dc.html": { "x": 1410, "y": 11350, "w": 1720, "h": 900, "title": "Scan results" },
+    "ScanCodeList.dc.html": { "x": 3210, "y": 11350, "w": 860, "h": 844, "title": "Type code & guest list" },
+
+    "Emails.dc.html": { "x": 0, "y": 12670, "w": 1300, "h": 1100, "title": "Emails" },
+    "OgTickets.dc.html": { "x": 1380, "y": 12670, "w": 1280, "h": 1000, "title": "OG image & ticket refresh" }
+  },
+  "order": [
+    "Main.dc.html", "Type.dc.html", "Components.dc.html",
+    "HomeMobile.dc.html", "EventCards.dc.html", "EventMobile.dc.html", "BookMobile.dc.html", "PayMobile.dc.html", "BookingStates.dc.html",
+    "Wallet.dc.html", "MyTickets.dc.html", "SignIn.dc.html", "Verify.dc.html", "NavEmpty.dc.html",
+    "HomeDesktop.dc.html", "EventDesktop.dc.html", "SignInDesktop.dc.html",
+    "Dashboard.dc.html", "EventsList.dc.html", "EventOverview.dc.html", "ReviewQueue.dc.html", "Attendees.dc.html", "EventForm.dc.html",
+    "AdminMobile.dc.html", "ScanIndex.dc.html", "DoorMode.dc.html", "ScanResults.dc.html", "ScanCodeList.dc.html",
+    "Emails.dc.html", "OgTickets.dc.html"
+  ],
+  "notes": {
+    "t1": { "x": 0, "y": -300, "text": "01 · Foundations — Alpine Day / Starlit Night", "kind": "title1", "maxW": 4000 },
+    "t2": { "x": 0, "y": 2100, "text": "02 · Member — browse & book", "kind": "title1", "maxW": 5900 },
+    "t3": { "x": 0, "y": 4120, "text": "03 · Member — tickets & account", "kind": "title1", "maxW": 4960 },
+    "t4": { "x": 0, "y": 5940, "text": "04 · Member — desktop", "kind": "title1", "maxW": 4000 },
+    "t5": { "x": 0, "y": 8060, "text": "05 · Organiser", "kind": "title1", "maxW": 4000 },
+    "t6": { "x": 0, "y": 11050, "text": "06 · Door crew", "kind": "title1", "maxW": 4070 },
+    "t7": { "x": 0, "y": 12370, "text": "07 · Comms & ticket assets", "kind": "title1", "maxW": 2660 },
+    "s1": { "x": 4080, "y": 0, "w": 380, "text": "The logo is split day / night. So is the product now: light mode is a pine morning (cream, sky, lime, sun), dark mode is a starlit ridge (midnight, slate, lime, star-yellow). Bricolage Grotesque for headlines, Geist for UI, Geist Mono for codes. Motifs come from the tickets: skyline, contours, stub notches, rubber stamps.", "fill": "green" }
+  },
+  "designSystems": []
+}

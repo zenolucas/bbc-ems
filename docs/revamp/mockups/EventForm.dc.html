@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Event form with live preview</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Geist:wght@400..700&family=Geist+Mono:wght@400..700&display=swap">
+<style>
+body{margin:0}
+a{color:inherit}a:hover{color:inherit}
+.day{--bg:#f6f4ec;--surface:#ffffff;--surface2:#eef2e8;--fg:#0b3d2e;--fg2:#5b7060;--line:rgba(11,61,46,.14);--primary:#1b5e3b;--on-primary:#ffffff;--accent:#1e6fa3;--hi:#f7e017;--on-hi:#0b3d2e;--ok:#1b5e3b;--ok-bg:rgba(57,181,74,.14);--ok-dot:#39b54a;--warn:#6b4f00;--warn-bg:rgba(247,224,23,.26);--warn-dot:#d4b800;--bad:#b4321f;--bad-bg:rgba(180,50,31,.1);--muted:#dfe6d8}
+.display{font-family:'Bricolage Grotesque',Geist,system-ui,sans-serif;letter-spacing:-.02em}
+.mono{font-family:'Geist Mono',ui-monospace,monospace}
+.eyebrow{font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase}
+.btn{font:inherit;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid transparent;font-weight:600;line-height:1;text-decoration:none}
+.side a{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:12px;text-decoration:none;font-size:14px;font-weight:600;color:var(--fg2)}
+.side a[aria-current]{background:var(--surface);color:var(--fg);box-shadow:0 1px 2px rgba(11,61,46,.08)}
+.outline a{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:10px;text-decoration:none;font-size:13px;font-weight:600;color:var(--fg2)}
+.outline a[aria-current]{background:var(--surface);color:var(--fg)}
+.card{border-radius:18px;background:var(--surface);border:1px solid var(--line)}
+label.l{font-size:13px;font-weight:600;display:block;margin-bottom:6px}
+.in{font:inherit;font-size:14px;height:42px;width:100%;box-sizing:border-box;padding:0 12px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--fg)}
+.hint{font-size:12px;color:var(--fg2);margin-top:5px}
+.stub{position:relative}
+.stub::before,.stub::after{content:"";position:absolute;width:18px;height:18px;border-radius:50%;background:var(--bg);top:var(--notch);transform:translateY(-50%)}
+.stub::before{left:-9px}.stub::after{right:-9px}
+</style>
+</helmet>
+<div class="day" style="min-height: 100vh; background: var(--bg); color: var(--fg); font-family: Geist, system-ui, sans-serif; display: flex; flex-wrap: wrap">
+
+  <nav class="side" aria-label="Organiser" style="flex: 1 1 220px; max-width: 250px; padding: 20px 16px; box-sizing: border-box; display: flex; flex-direction: column; gap: 6px; border-right: 1px solid var(--line)">
+    <a href="#" style="padding: 4px 8px 16px; gap: 10px"><img src="/_blob/f5b90c3cd8af5b37d6afb44083aaa6b4" alt="" style="width: 34px; height: 34px"><span style="line-height: 1.1"><span class="display" style="display: block; font-size: 16px; font-weight: 700; color: var(--fg)">Base Camp</span><span style="display: inline-block; margin-top: 3px; font-size: 10px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; padding: 2px 7px; border-radius: 999px; background: var(--ok-bg); color: var(--primary)">Admin</span></span></a>
+    <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>Dashboard</a>
+    <a href="#" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="18" height="18" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Events</a>
+    <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="m9 14 2 2 4-4"/></svg>Review queue</a>
+    <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>Attendees</a>
+    <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2M7 12h10"/></svg>Door scanner</a>
+    <div style="height: 1px; background: var(--line); margin: 8px 4px"></div>
+    <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/></svg>Team</a>
+    <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true"><circle cx="13.5" cy="6.5" r="2.5"/><circle cx="19" cy="12" r="2"/><circle cx="6" cy="12" r="2"/><circle cx="10" cy="18" r="2"/><path d="M12 2a10 10 0 1 0 10 10"/></svg>Ticket lab</a>
+  </nav>
+
+  <main style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; position: relative">
+    <div style="display: flex; align-items: center; gap: 8px; padding: 14px 28px; border-bottom: 1px solid var(--line); font-size: 13px; color: var(--fg2); flex-wrap: wrap"><a href="#" style="text-decoration: none">Events</a><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg><a href="#" style="text-decoration: none">Anime Night: Akatsuki Edition</a><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg><span style="color: var(--fg); font-weight: 600">Edit</span><span style="margin-left: 8px; display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px; background: var(--surface2); color: var(--fg2); font-size: 12px; font-weight: 600"><span style="width: 6px; height: 6px; border-radius: 50%; background: var(--fg2)"></span>Draft</span></div>
+
+    <form style="padding: 22px 28px 110px; display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; max-width: 1140px; width: 100%; box-sizing: border-box">
+      <nav class="outline" aria-label="Form sections" style="flex: 1 1 150px; max-width: 180px; display: flex; flex-direction: column; gap: 2px; position: sticky; top: 20px">
+        <div class="eyebrow" style="color: var(--fg2); padding: 0 10px 8px">Sections</div>
+        <a href="#basics" aria-current="true"><svg viewBox="0 0 24 24" fill="none" stroke="var(--ok-dot)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" width="14" height="14" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Basics</a>
+        <a href="#tiers"><svg viewBox="0 0 24 24" fill="none" stroke="var(--ok-dot)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" width="14" height="14" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Tiers</a>
+        <a href="#payment"><svg viewBox="0 0 24 24" fill="none" stroke="var(--ok-dot)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" width="14" height="14" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Payment</a>
+        <a href="#settings"><svg viewBox="0 0 24 24" fill="none" stroke="var(--ok-dot)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" width="14" height="14" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Settings</a>
+        <a href="#poster"><svg viewBox="0 0 24 24" fill="none" stroke="var(--warn-dot)" stroke-width="2.4" stroke-linecap="round" width="14" height="14" aria-hidden="true"><circle cx="12" cy="12" r="9"/></svg>Poster <span style="margin-left: auto; font-size: 10px; color: var(--warn); font-weight: 700">missing</span></a>
+      </nav>
+
+      <div style="flex: 999 1 420px; min-width: 0; display: flex; flex-direction: column; gap: 16px">
+        <section id="basics" class="card" style="padding: 18px 20px; display: flex; flex-direction: column; gap: 14px">
+          <div style="display: flex; align-items: center; justify-content: space-between"><h2 class="display" style="margin: 0; font-size: 18px; font-weight: 800">Basics</h2><button type="button" aria-expanded="true" aria-label="Collapse Basics" style="font: inherit; cursor: pointer; background: transparent; border: 0; color: var(--fg2); display: grid; place-items: center; width: 32px; height: 32px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true"><path d="m18 15-6-6-6 6"/></svg></button></div>
+          <div><label class="l" for="title">Title</label><input id="title" class="in" type="text" value="Anime Night: Akatsuki Edition"></div>
+          <div><label class="l" for="tag">Tagline</label><input id="tag" class="in" type="text" value="Cloaks encouraged. Rain expected."><div class="hint">One line on cards and link previews.</div></div>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px">
+            <div><label class="l" for="starts">Starts <span style="font-weight: 500; color: var(--fg2)">· Manila time</span></label><input id="starts" class="in" type="datetime-local" value="2026-11-22T18:00"></div>
+            <div><label class="l" for="ends">Ends <span style="font-weight: 500; color: var(--fg2)">· optional</span></label><input id="ends" class="in" type="datetime-local" value="2026-11-22T22:00"></div>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px">
+            <div><label class="l" for="venue">Venue</label><input id="venue" class="in" type="text" value="Baden Powell Hall"></div>
+            <div><label class="l" for="addr">Address</label><input id="addr" class="in" type="text" value="Gov. Pack Rd, Baguio City"></div>
+          </div>
+          <div><label class="l" for="desc">Description <span style="font-weight: 500; color: var(--fg2)">· Markdown</span></label><textarea id="desc" class="in" rows="4" style="height: auto; padding: 10px 12px; line-height: 1.5; resize: vertical">Screening, cosplay walk, and a very serious trivia round.</textarea></div>
+        </section>
+
+        <section id="tiers" class="card" style="padding: 18px 20px; display: flex; flex-direction: column; gap: 12px">
+          <div style="display: flex; align-items: center; justify-content: space-between"><h2 class="display" style="margin: 0; font-size: 18px; font-weight: 800">Ticket tiers</h2><button type="button" class="btn" style="height: 34px; padding: 0 12px; border-radius: 999px; background: transparent; color: var(--fg); border-color: var(--line); font-size: 13px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" width="14" height="14" aria-hidden="true"><path d="M5 12h14M12 5v14"/></svg>Add tier</button></div>
+          <div class="stub" style="--notch: 50%; border-radius: 14px; border: 1px solid var(--line); background: var(--bg); padding: 14px 16px; display: flex; flex-direction: column; gap: 10px">
+            <div style="display: flex; align-items: center; justify-content: space-between"><span class="eyebrow" style="color: var(--fg2)">Tier 1</span><button type="button" aria-label="Remove tier Entry" style="font: inherit; cursor: pointer; background: transparent; border: 0; color: var(--fg2); width: 28px; height: 28px; display: grid; place-items: center"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" aria-hidden="true"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg></button></div>
+            <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 10px">
+              <div><label class="l" for="t1n">Name</label><input id="t1n" class="in" type="text" value="Entry"></div>
+              <div><label class="l" for="t1p">Price ₱</label><input id="t1p" class="in" type="number" value="150"></div>
+              <div><label class="l" for="t1q">Quantity</label><input id="t1q" class="in" type="number" value="80"></div>
+              <div><label class="l" for="t1l">Per order</label><input id="t1l" class="in" type="number" value="4"></div>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px"><div><label class="l" for="t1d">Description</label><input id="t1d" class="in" type="text" placeholder="Includes one drink"></div><div><label class="l" for="t1s">Sales window <span style="font-weight: 500; color: var(--fg2)">· optional</span></label><input id="t1s" class="in" type="text" placeholder="Opens now · closes at doors"></div></div>
+          </div>
+        </section>
+
+        <section id="payment" class="card" style="padding: 18px 20px; display: flex; flex-direction: column; gap: 12px">
+          <div style="display: flex; align-items: center; justify-content: space-between"><h2 class="display" style="margin: 0; font-size: 18px; font-weight: 800">Payment <span style="font-size: 13px; font-weight: 600; color: var(--fg2)">· GCash / Maya</span></h2><button type="button" aria-expanded="false" aria-label="Expand Payment" style="font: inherit; cursor: pointer; background: transparent; border: 0; color: var(--fg2); display: grid; place-items: center; width: 32px; height: 32px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button></div>
+          <div style="display: flex; align-items: center; gap: 12px; font-size: 13px; color: var(--fg2)"><span style="display: inline-flex; align-items: center; gap: 6px; color: var(--ok); font-weight: 600"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" width="14" height="14" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Complete</span>Baguio Base Camp · 0917 000 0000 · QR uploaded · 24-hour holds</div>
+        </section>
+
+        <section id="settings" class="card" style="padding: 18px 20px; display: flex; flex-direction: column; gap: 12px">
+          <div style="display: flex; align-items: center; justify-content: space-between"><h2 class="display" style="margin: 0; font-size: 18px; font-weight: 800">Settings</h2><button type="button" aria-expanded="false" aria-label="Expand Settings" style="font: inherit; cursor: pointer; background: transparent; border: 0; color: var(--fg2); display: grid; place-items: center; width: 32px; height: 32px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button></div>
+          <div style="display: flex; align-items: center; gap: 12px; font-size: 13px; color: var(--fg2); flex-wrap: wrap"><span class="mono" style="color: var(--fg)">basecamp.ph/events/anime-night-akatsuki-edition</span><span>·</span><span>Ticket style <span style="font-weight: 600; color: var(--fg)">Night Sky</span></span></div>
+        </section>
+      </div>
+
+      <aside style="flex: 1 1 290px; max-width: 330px; display: flex; flex-direction: column; gap: 14px; position: sticky; top: 20px">
+        <div style="display: flex; align-items: center; justify-content: space-between; padding: 0 4px"><span class="eyebrow" style="color: var(--fg2)">Live preview · public card</span><span style="font-size: 11px; color: var(--fg2)">updates as you type</span></div>
+        <div class="stub" style="--notch: 263px; display: flex; flex-direction: column; border-radius: 20px; background: var(--surface); border: 1px solid var(--line); overflow: hidden">
+          <div id="poster" style="position: relative; height: 170px; background: var(--surface2); border-bottom: 1px dashed var(--line); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; color: var(--fg2); font-size: 12px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="26" height="26" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.1-3.1a2 2 0 0 0-2.8 0L6 21"/></svg><span style="font-weight: 600; color: var(--fg)">No poster yet</span><span>Skyline fallback shows until you add one</span><button type="button" class="btn" style="margin-top: 4px; height: 32px; padding: 0 12px; border-radius: 999px; background: var(--primary); color: var(--on-primary); font-size: 12px">Upload poster</button><div style="position: absolute; left: 10px; top: 10px; background: var(--bg); border-radius: 10px; padding: 5px 9px; text-align: center; line-height: 1; box-shadow: 0 2px 8px rgba(0,0,0,.12)"><div class="eyebrow" style="font-size: 9px; color: var(--fg2)">Nov</div><div class="display" style="font-size: 20px; font-weight: 800; color: var(--fg)">22</div></div></div>
+          <div style="padding: 12px 14px 10px; display: flex; flex-direction: column; gap: 5px"><div class="display" style="font-size: 17px; font-weight: 700; line-height: 1.15">Anime Night: Akatsuki Edition</div><div style="font-size: 12px; color: var(--fg2)">Cloaks encouraged. Rain expected.</div><div style="font-size: 12px; color: var(--fg2)">Sat, Nov 22 · 6:00 PM · Baden Powell Hall</div></div>
+          <div style="border-top: 2px dashed var(--line); padding: 10px 14px; display: flex; justify-content: space-between; align-items: center"><span style="font-size: 12px; color: var(--fg2)">Entry</span><span class="display" style="font-size: 17px; font-weight: 800; color: var(--primary)">₱150</span></div>
+        </div>
+        <div class="card" style="padding: 14px 16px; display: flex; flex-direction: column; gap: 8px">
+          <div style="display: flex; align-items: center; justify-content: space-between"><span class="display" style="font-size: 15px; font-weight: 800">Publish checklist</span><span style="font-size: 12px; color: var(--fg2)">3 of 5</span></div>
+          <div style="height: 6px; border-radius: 999px; background: var(--muted); overflow: hidden"><div style="width: 60%; height: 100%; background: var(--primary); border-radius: 999px"></div></div>
+          <ul style="list-style: none; margin: 4px 0 0; padding: 0; display: flex; flex-direction: column; gap: 6px; font-size: 13px">
+            <li style="display: flex; align-items: center; gap: 8px"><svg viewBox="0 0 24 24" fill="none" stroke="var(--ok-dot)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" width="14" height="14" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>At least one ticket tier</li>
+            <li style="display: flex; align-items: center; gap: 8px"><svg viewBox="0 0 24 24" fill="none" stroke="var(--ok-dot)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" width="14" height="14" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Starts in the future</li>
+            <li style="display: flex; align-items: center; gap: 8px"><svg viewBox="0 0 24 24" fill="none" stroke="var(--ok-dot)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" width="14" height="14" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>GCash details for paid tiers</li>
+            <li style="display: flex; align-items: center; gap: 8px; color: var(--fg2)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--warn-dot)" stroke-width="2.4" width="14" height="14" aria-hidden="true"><circle cx="12" cy="12" r="9"/></svg>Poster image <span style="font-size: 11px">(recommended)</span></li>
+            <li style="display: flex; align-items: center; gap: 8px; color: var(--fg2)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--warn-dot)" stroke-width="2.4" width="14" height="14" aria-hidden="true"><circle cx="12" cy="12" r="9"/></svg>Description over 20 characters <span style="font-size: 11px">(recommended)</span></li>
+          </ul>
+          <button type="button" class="btn" style="margin-top: 6px; height: 40px; border-radius: 999px; background: var(--primary); color: var(--on-primary); font-size: 13px">Publish event</button>
+          <div style="font-size: 11px; color: var(--fg2); text-align: center">Required items are green. Publish is on; the two yellow ones just make it look better.</div>
+        </div>
+      </aside>
+    </form>
+
+    <div style="position: sticky; bottom: 0; margin-top: auto; padding: 12px 28px; background: rgba(246,244,236,.94); border-top: 1px solid var(--line); backdrop-filter: blur(10px); display: flex; align-items: center; gap: 12px; flex-wrap: wrap"><span style="display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--warn); font-weight: 600"><span style="width: 7px; height: 7px; border-radius: 50%; background: var(--warn-dot)"></span>Unsaved changes</span><span style="font-size: 12px; color: var(--fg2)">Last saved 4 minutes ago by you</span><div style="flex: 1"></div><a href="#" class="btn" style="height: 40px; padding: 0 16px; border-radius: 999px; background: transparent; color: var(--fg2); font-size: 14px">Cancel</a><button type="submit" class="btn" style="height: 40px; padding: 0 20px; border-radius: 999px; background: var(--primary); color: var(--on-primary); font-size: 14px">Save changes</button></div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":1300}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

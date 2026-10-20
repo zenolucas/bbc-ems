@@ -27,6 +27,7 @@ async function load(bookingId: string) {
       venueAddress: b.event.venueAddress,
       mapUrl: b.event.mapUrl,
       bookingId: b.id,
+      recipient: b.user.email,
     },
   };
 }
@@ -95,7 +96,7 @@ export async function notifyApproved(bookingId: string) {
     })),
   );
   const { html, text } = await renderEmail(
-    <BookingApprovedEmail {...common} tickets={live.map((t) => ({ shortCode: t.shortCode, tier: t.tier.name, holder: t.holderName }))} />,
+    <BookingApprovedEmail {...common} tickets={live.map((t) => ({ id: t.id, shortCode: t.shortCode, tier: t.tier.name, holder: t.holderName }))} />,
   );
   await sendEmail({ to: b.user.email, subject: `Your tickets · ${b.event.title}`, html, text, attachments });
 }

@@ -8,7 +8,14 @@ import { renderTicketSvg } from "./index";
 import type { TicketRenderInput } from "./types";
 
 const FONT_DIR = path.join(process.cwd(), "src", "assets", "fonts");
-const FONT_FILES = ["Geist-Regular.ttf", "Geist-SemiBold.ttf", "Geist-Bold.ttf"].map((f) => path.join(FONT_DIR, f));
+const FONT_FILES = [
+  "Geist-Regular.ttf",
+  "Geist-SemiBold.ttf",
+  "Geist-Bold.ttf",
+  "BricolageGrotesque-SemiBold.ttf",
+  "BricolageGrotesque-Bold.ttf",
+  "BricolageGrotesque-ExtraBold.ttf",
+].map((f) => path.join(FONT_DIR, f));
 let fontsChecked: Promise<void> | null = null;
 function ensureFonts() {
   // Touching the files keeps them in Vercel's output file trace.

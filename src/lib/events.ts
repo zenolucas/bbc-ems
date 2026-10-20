@@ -36,7 +36,9 @@ export async function listPublishedEvents() {
     const remaining = open.reduce((n, t) => n + Math.max(0, t.quantity - (held.get(t.id) ?? 0)), 0);
     const availability: "sold-out" | "few-left" | "available" | "not-on-sale" =
       e.tiers.length > 0 && open.length === 0 ? "not-on-sale" : remaining === 0 ? "sold-out" : remaining <= 10 ? "few-left" : "available";
-    return { ...e, availability };
+    // capacity of the tiers on sale now, so cards can say "18 of 40 spots left"
+    const capacity = open.reduce((n, t) => n + t.quantity, 0);
+    return { ...e, availability, remaining, capacity };
   });
   return { upcoming: withAvailability, past };
 }
@@ -148,4 +150,26 @@ export async function pendingReviewByEvent() {
 
 export function eventEndsAt(e: { startsAt: Date; endsAt: Date | null }) {
   return e.endsAt ?? new Date(e.startsAt.getTime() + 6 * 3600e3);
+}
+
+/**
+ * Tickets issued per Manila calendar day for the last `days` days, today
+ * included, zero-filled so a sparkline has one point per day. Voided tickets
+ * don't count. `previous` is the total for the `days` before that, for a delta.
+ */
+export async function ticketsPerDay(days = 14) {
+  const rows = await db.execute<{ day: string; n: number }>(sql`
+    select to_char(d, 'YYYY-MM-DD') as day, count(${tickets.id})::int as n
+    from generate_series((now() at time zone 'Asia/Manila')::date - ${days - 1}::int, (now() at time zone 'Asia/Manila')::date, interval '1 day') as d
+    left join ${tickets} on (${tickets.createdAt} at time zone 'Asia/Manila')::date = d::date and ${tickets.status} <> 'void'
+    group by d
+    order by d`);
+  const [prev] = await db
+    .select({ n: sql<number>`count(*)::int` })
+    .from(tickets)
+    .where(sql`${tickets.status} <> 'void'
+      and (${tickets.createdAt} at time zone 'Asia/Manila')::date >= (now() at time zone 'Asia/Manila')::date - ${days * 2 - 1}::int
+      and (${tickets.createdAt} at time zone 'Asia/Manila')::date < (now() at time zone 'Asia/Manila')::date - ${days - 1}::int`);
+  const series = rows.rows.map((r) => ({ day: r.day, n: Number(r.n) }));
+  return { series, total: series.reduce((n, d) => n + d.n, 0), previous: prev?.n ?? 0 };
 }

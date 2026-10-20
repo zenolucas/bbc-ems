@@ -1,19 +1,31 @@
+import { Check } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
-const styles: Record<string, string> = {
-  draft: "bg-muted text-muted-foreground",
-  published: "bg-grass/15 text-forest dark:text-lime border-grass/30",
-  cancelled: "bg-destructive/10 text-destructive border-destructive/30",
-  ended: "bg-slate/10 text-muted-foreground",
-  pending_payment: "bg-sun/20 text-yellow-800 dark:text-star border-sun/40",
-  under_review: "bg-sky/15 text-sky-deep dark:text-sky border-sky/30",
-  approved: "bg-grass/15 text-forest dark:text-lime border-grass/30",
-  rejected: "bg-destructive/10 text-destructive border-destructive/30",
-  expired: "bg-muted text-muted-foreground",
-  valid: "bg-grass/15 text-forest dark:text-lime border-grass/30",
-  used: "bg-muted text-muted-foreground",
-  void: "bg-destructive/10 text-destructive border-destructive/30",
+type Tone = "success" | "warning" | "info" | "danger" | "muted";
+
+/** A dot carries the colour so the label still reads when colour is lost. "used" gets a check instead. */
+const tones: Record<string, Tone> = {
+  draft: "muted",
+  published: "success",
+  cancelled: "danger",
+  ended: "muted",
+  pending_payment: "warning",
+  under_review: "info",
+  approved: "success",
+  rejected: "danger",
+  expired: "muted",
+  valid: "success",
+  used: "muted",
+  void: "danger",
+};
+
+const dots: Record<Tone, string> = {
+  success: "bg-success",
+  warning: "bg-warning",
+  info: "bg-info",
+  danger: "bg-destructive",
+  muted: "bg-muted-foreground",
 };
 
 /** Member-facing labels. Admin surfaces pass `admin` to keep the terse internal names. */
@@ -46,8 +58,14 @@ export function statusLabel(status: string, admin = false) {
 }
 
 export function StatusBadge({ status, admin, className }: { status: string; admin?: boolean; className?: string }) {
+  const tone = tones[status] ?? "muted";
   return (
-    <Badge variant="outline" className={cn(styles[status], className)}>
+    <Badge variant={tone} className={cn("h-auto gap-1.5 px-2.5 py-1 font-semibold", className)}>
+      {status === "used" ? (
+        <Check className="size-3 stroke-[2.5]" aria-hidden />
+      ) : (
+        <span className={cn("size-1.5 shrink-0 rounded-full", dots[tone])} aria-hidden />
+      )}
       {statusLabel(status, admin)}
     </Badge>
   );
