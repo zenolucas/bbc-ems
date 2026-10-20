@@ -2,11 +2,12 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import { BookingError, cancelBooking, createBooking, submitPayment } from "@/lib/bookings";
-import { notifyPaymentSubmitted } from "@/lib/notifications";
+import { BookingError, cancelBooking, createBooking, renameTicket, submitPayment } from "@/lib/bookings";
+import { notifyApproved, notifyBookingCancelled, notifyLater, notifyPaymentSubmitted, notifyReserved } from "@/lib/notifications";
 import { requireUser } from "@/lib/session";
+import type { ActionResult } from "@/lib/action-result";
 
-export type ActionState = { error?: string } | null;
+export type ActionState = { error?: string; ok?: boolean } | null;
 
 export async function bookAction(_prev: ActionState, formData: FormData): Promise<ActionState> {
   const eventId = String(formData.get("eventId") ?? "");
@@ -23,8 +24,14 @@ export async function bookAction(_prev: ActionState, formData: FormData): Promis
     if (e instanceof BookingError) return { error: e.message };
     throw e;
   }
+  // Free: tickets are issued now, so send them. Paid: send the hold + payment details,
+  // so a member who closes the tab still has the link and the deadline.
+  const bookingId = result.id;
+  if (result.free) notifyLater("approved (free)", () => notifyApproved(bookingId));
+  else notifyLater("reserved", () => notifyReserved(bookingId));
   revalidatePath(`/events/${slug}`);
-  redirect(`/bookings/${result.id}${result.free ? "?confirmed=1" : ""}`);
+  revalidatePath("/me");
+  redirect(`/bookings/${result.id}?${result.free ? "confirmed=1" : "reserved=1"}`);
 }
 
 const paySchema = z.object({
@@ -43,13 +50,15 @@ export async function submitPaymentAction(_prev: ActionState, formData: FormData
     if (e instanceof BookingError) return { error: e.message };
     throw e;
   }
-  notifyPaymentSubmitted(parsed.data.bookingId).catch((e) => console.error("[email] payment submitted", e));
-  revalidatePath(`/bookings/${parsed.data.bookingId}`);
-  revalidatePath("/admin");
-  return null;
+  const bookingId = parsed.data.bookingId;
+  notifyLater("payment submitted", () => notifyPaymentSubmitted(bookingId));
+  revalidatePath(`/bookings/${bookingId}`);
+  revalidatePath("/me");
+  revalidatePath("/admin", "layout");
+  return { ok: true };
 }
 
-export async function cancelBookingAction(bookingId: string) {
+export async function cancelBookingAction(bookingId: string): Promise<ActionResult> {
   const user = await requireUser();
   try {
     await cancelBooking(user.id, bookingId);
@@ -57,7 +66,23 @@ export async function cancelBookingAction(bookingId: string) {
     if (e instanceof BookingError) return { error: e.message };
     throw e;
   }
+  notifyLater("cancelled by member", () => notifyBookingCancelled(bookingId, { byOrganiser: false }));
   revalidatePath(`/bookings/${bookingId}`);
   revalidatePath("/me");
-  return null;
+  revalidatePath("/admin", "layout");
+  return { ok: true };
+}
+
+export async function renameTicketAction(ticketId: string, name: string): Promise<ActionResult> {
+  const user = await requireUser();
+  try {
+    const { bookingId } = await renameTicket(user.id, ticketId, name);
+    revalidatePath(`/bookings/${bookingId}`);
+    revalidatePath(`/tickets/${ticketId}`);
+    revalidatePath("/me");
+  } catch (e) {
+    if (e instanceof BookingError) return { error: e.message };
+    throw e;
+  }
+  return { ok: true };
 }

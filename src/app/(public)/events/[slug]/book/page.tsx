@@ -9,10 +9,23 @@ import { BookForm } from "./book-form";
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Book tickets" };
 
-export default async function BookPage({ params }: PageProps<"/events/[slug]/book">) {
+/** `?q=tierId:2,tierId:1`, written by "Book again" on an expired booking. */
+function parseInitial(q: unknown) {
+  const out: Record<string, number> = {};
+  if (typeof q !== "string") return out;
+  for (const part of q.split(",")) {
+    const [id, n] = part.split(":");
+    const v = Number(n);
+    if (id && Number.isInteger(v) && v > 0) out[id] = v;
+  }
+  return out;
+}
+
+export default async function BookPage({ params, searchParams }: PageProps<"/events/[slug]/book">) {
   const { slug } = await params;
+  const { q } = await searchParams;
   const user = await getCurrentUser();
-  if (!user) redirect(`/login?next=${encodeURIComponent(`/events/${slug}/book`)}`);
+  if (!user) redirect(`/login?next=${encodeURIComponent(`/events/${slug}/book${typeof q === "string" ? `?q=${encodeURIComponent(q)}` : ""}`)}`);
   const event = await getEventBySlug(slug);
   if (!event || event.status !== "published") notFound();
   const avail = await tierAvailability(event.id);
@@ -33,7 +46,7 @@ export default async function BookPage({ params }: PageProps<"/events/[slug]/boo
         <h1 className="text-2xl font-semibold tracking-tight">{event.title}</h1>
         <p className="text-sm text-muted-foreground">{fmtRange(event.startsAt, event.endsAt)} · {event.venueName}</p>
       </div>
-      <BookForm eventId={event.id} slug={slug} tiers={tiers} holdHours={event.bookingHoldHours} hasPayment={Boolean(event.gcashNumber || event.gcashQrUrl)} />
+      <BookForm eventId={event.id} slug={slug} tiers={tiers} holdHours={event.bookingHoldHours} hasPayment={Boolean(event.gcashNumber || event.gcashQrUrl)} initial={parseInitial(q)} />
     </div>
   );
 }

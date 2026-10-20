@@ -26,7 +26,7 @@ export function UserMenu({ user }: { user: { name: string; email: string; role: 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="sm" className="gap-2 rounded-full pl-1.5">
+        <Button variant="outline" size="sm" className="gap-2 rounded-full pl-1.5" aria-label={`Account menu for ${user.name || user.email}`}>
           <span className="size-6 rounded-full bg-primary text-primary-foreground grid place-items-center text-[11px] font-semibold">
             {initials}
           </span>
@@ -42,12 +42,14 @@ export function UserMenu({ user }: { user: { name: string; email: string; role: 
         <DropdownMenuItem asChild>
           <Link href="/me/profile"><UserRound className="size-4" /> Profile</Link>
         </DropdownMenuItem>
-        {user.role === "admin" && (
+        {(user.role === "admin" || user.role === "staff") && (
           <>
             <DropdownMenuSeparator />
-            <DropdownMenuItem asChild>
-              <Link href="/admin"><Shield className="size-4" /> Admin</Link>
-            </DropdownMenuItem>
+            {user.role === "admin" && (
+              <DropdownMenuItem asChild>
+                <Link href="/admin"><Shield className="size-4" /> Admin</Link>
+              </DropdownMenuItem>
+            )}
             <DropdownMenuItem asChild>
               <Link href="/admin/scan"><ScanLine className="size-4" /> Scanner</Link>
             </DropdownMenuItem>

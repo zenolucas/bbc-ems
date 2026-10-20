@@ -11,7 +11,7 @@ import {
 } from "drizzle-orm/pg-core";
 
 // ---------- enums ----------
-export const userRole = pgEnum("user_role", ["member", "admin"]);
+export const userRole = pgEnum("user_role", ["member", "staff", "admin"]);
 export const eventStatus = pgEnum("event_status", ["draft", "published", "cancelled", "ended"]);
 export const bookingStatus = pgEnum("booking_status", [
   "pending_payment",
@@ -234,6 +234,17 @@ export const checkins = pgTable(
   ],
 );
 
+/**
+ * Access granted by email before (or after) someone signs up. Applied when the
+ * account is created, so organisers can invite door volunteers ahead of time.
+ */
+export const roleGrants = pgTable("role_grants", {
+  email: text("email").primaryKey(),
+  role: userRole("role").notNull(),
+  createdBy: text("created_by").references(() => users.id, { onDelete: "set null" }),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
 // ---------- relations ----------
 export const usersRelations = relations(users, ({ many }) => ({
   bookings: many(bookings),
@@ -278,5 +289,7 @@ export type Booking = typeof bookings.$inferSelect;
 export type BookingItem = typeof bookingItems.$inferSelect;
 export type Ticket = typeof tickets.$inferSelect;
 export type Checkin = typeof checkins.$inferSelect;
+export type RoleGrant = typeof roleGrants.$inferSelect;
+export type UserRole = (typeof userRole.enumValues)[number];
 export type TicketStyle = (typeof ticketStyle.enumValues)[number];
 export const TICKET_STYLES = ticketStyle.enumValues;

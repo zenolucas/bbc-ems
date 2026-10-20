@@ -1,7 +1,9 @@
 import { Body, Container, Head, Html, Img, Preview, Section, Text } from "@react-email/components";
 import type { ReactNode } from "react";
 
-const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
+import { env } from "@/lib/env";
+
+const appUrl = env.appUrl;
 
 export function EmailLayout({ preview, children }: { preview: string; children: ReactNode }) {
   return (

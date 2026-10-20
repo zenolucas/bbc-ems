@@ -5,8 +5,17 @@ import type { Event, TicketTier } from "@/db/schema";
 import { fmtDate, fmtTime, peso } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
-export function EventCard({ event, past }: { event: Event & { tiers: TicketTier[] }; past?: boolean }) {
+type Availability = "sold-out" | "few-left" | "available" | "not-on-sale";
+
+const availabilityChip: Partial<Record<Availability, { label: string; cls: string }>> = {
+  "sold-out": { label: "Sold out", cls: "bg-foreground/85 text-background" },
+  "few-left": { label: "Few left", cls: "bg-sun text-deep-forest" },
+  "not-on-sale": { label: "Sales not open", cls: "bg-background/90 text-foreground" },
+};
+
+export function EventCard({ event, past }: { event: Event & { tiers: TicketTier[]; availability?: Availability }; past?: boolean }) {
   const priceLabel = priceSummary(event.tiers);
+  const chip = !past && event.status !== "cancelled" && event.availability ? availabilityChip[event.availability] : undefined;
   return (
     <Link href={`/events/${event.slug}`} className={cn("group overflow-hidden rounded-2xl border bg-card transition-shadow hover:shadow-lg", past && "opacity-75")}>
       <div className="relative aspect-[4/3] overflow-hidden">
@@ -22,6 +31,7 @@ export function EventCard({ event, past }: { event: Event & { tiers: TicketTier[
           <div className="-mt-0.5 text-lg font-bold leading-none">{fmtDate(event.startsAt, "d")}</div>
         </div>
         {event.status === "cancelled" && <span className="absolute right-3 top-3 rounded-md bg-destructive px-2 py-1 text-xs font-semibold text-white">Cancelled</span>}
+        {chip && <span className={cn("absolute right-3 top-3 rounded-md px-2 py-1 text-xs font-semibold shadow", chip.cls)}>{chip.label}</span>}
       </div>
       <div className="space-y-2 p-4">
         <h3 className="line-clamp-2 text-lg font-semibold leading-tight tracking-tight">{event.title}</h3>

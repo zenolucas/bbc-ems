@@ -1,5 +1,6 @@
 import "server-only";
 import { betterAuth } from "better-auth";
+import { eq } from "drizzle-orm";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
 import { magicLink } from "better-auth/plugins";
@@ -29,13 +30,22 @@ export const auth = betterAuth({
   databaseHooks: {
     user: {
       create: {
-        before: async (user) => ({
-          data: {
-            ...user,
-            name: user.name || user.email.split("@")[0],
-            role: isAdminEmail(user.email) ? "admin" : "member",
-          },
-        }),
+        before: async (user) => {
+          const email = user.email.toLowerCase();
+          // ADMIN_EMAILS wins; otherwise an invite from the Team page decides the role.
+          const grant = await db.query.roleGrants.findFirst({ where: eq(schema.roleGrants.email, email) });
+          return {
+            data: {
+              ...user,
+              name: user.name || email.split("@")[0],
+              role: isAdminEmail(email) ? "admin" : (grant?.role ?? "member"),
+            },
+          };
+        },
+        after: async (user) => {
+          // The invite has done its job once the account exists
+          await db.delete(schema.roleGrants).where(eq(schema.roleGrants.email, user.email.toLowerCase()));
+        },
       },
     },
   },

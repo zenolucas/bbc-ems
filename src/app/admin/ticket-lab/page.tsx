@@ -1,6 +1,7 @@
 import { TICKET_STYLES } from "@/db/schema";
 import { Button } from "@/components/ui/button";
 import { env } from "@/lib/env";
+import { requireAdmin } from "@/lib/session";
 import { STYLE_META } from "@/lib/tickets/render";
 import { renderTicket } from "@/lib/tickets/render/server";
 import { sampleTicket } from "@/lib/tickets/sample";
@@ -8,14 +9,15 @@ import { TicketSvg } from "@/components/ticket/ticket-svg";
 
 export const metadata = { title: "Ticket lab" };
 
-export default function TicketLabPage() {
+export default async function TicketLabPage() {
+  await requireAdmin();
   return (
     <div className="space-y-8">
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">Ticket lab</h1>
         <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
           Five candidate ticket styles rendered from the same signed sample token. Download the PNGs and scan each with a phone camera.
-          Pick a default here, then override per event in the event form.
+          The default for new events is Summit; choose a style per event under Settings in the event form.
         </p>
       </div>
       {TICKET_STYLES.map((style) => {

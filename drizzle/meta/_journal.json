@@ -8,6 +8,13 @@
       "when": 1792488394888,
       "tag": "0000_init",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1792507410669,
+      "tag": "0001_staff_role",
+      "breakpoints": true
     }
   ]
 }

@@ -15,7 +15,7 @@
     "smoke:flow": "tsx --conditions=react-server --env-file=.env.local scripts/flow-smoke.ts",
     "smoke:tokens": "tsx --env-file=.env.local scripts/token-smoke.ts",
     "smoke:scan": "tsx scripts/scan-check.ts",
-    "e2e:scanner": "tsx scripts/e2e-scanner.ts"
+    "e2e:scanner": "tsx --env-file=.env.local scripts/e2e-scanner.ts"
   },
   "dependencies": {
     "@date-fns/tz": "^1.5.0",

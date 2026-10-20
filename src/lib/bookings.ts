@@ -3,11 +3,20 @@ import { and, eq, inArray, lt, sql } from "drizzle-orm";
 import { nanoid } from "nanoid";
 import { db } from "@/db/client";
 import { bookingItems, bookings, events, ticketTiers, tickets, users } from "@/db/schema";
-import { tierIsOnSale } from "./events";
+import { holdingCondition, tierIsOnSale } from "./events";
 import { generateShortCode } from "./tickets/shortcode";
 import { issueSignature, newTicketId } from "./tickets/server";
 
 export class BookingError extends Error {}
+
+/**
+ * The status a member should see. Overdue holds read as expired before the
+ * cron sweeps them, so the booking page and /me never disagree.
+ */
+export function effectiveStatus(b: { status: string; expiresAt: Date | null }) {
+  if ((b.status === "pending_payment" || b.status === "rejected") && b.expiresAt && b.expiresAt < new Date()) return "expired" as const;
+  return b.status as (typeof bookings.$inferSelect)["status"];
+}
 
 export type BookingRequest = { eventId: string; items: { tierId: string; quantity: number }[] };
 
@@ -40,10 +49,7 @@ export async function createBooking(userId: string, req: BookingRequest) {
       .from(bookingItems)
       .innerJoin(bookings, eq(bookings.id, bookingItems.bookingId))
       .where(
-        and(
-          eq(bookings.eventId, event.id),
-          sql`(${bookings.status} = 'approved' or ${bookings.status} = 'under_review' or (${bookings.status} = 'pending_payment' and (${bookings.expiresAt} is null or ${bookings.expiresAt} > ${now})))`,
-        ),
+        and(eq(bookings.eventId, event.id), holdingCondition(now)),
       )
       .groupBy(bookingItems.tierId);
     const heldMap = new Map(held.map((h) => [h.tierId, h.held]));
@@ -112,7 +118,7 @@ async function issueTicketsTx(tx: Tx, bookingId: string) {
 export async function submitPayment(userId: string, bookingId: string, data: { paymentRef: string; paymentProofUrl: string }) {
   const b = await db.query.bookings.findFirst({ where: and(eq(bookings.id, bookingId), eq(bookings.userId, userId)) });
   if (!b) throw new BookingError("Booking not found");
-  if (b.status === "expired" || (b.status === "pending_payment" && b.expiresAt && b.expiresAt < new Date())) {
+  if (effectiveStatus(b) === "expired") {
     throw new BookingError("This reservation has expired. Please book again.");
   }
   if (b.status !== "pending_payment" && b.status !== "rejected") throw new BookingError("This booking is not awaiting payment");
@@ -124,38 +130,64 @@ export async function submitPayment(userId: string, bookingId: string, data: { p
 
 export async function approveBooking(adminId: string, bookingId: string) {
   return db.transaction(async (tx) => {
-    const b = await tx.query.bookings.findFirst({ where: eq(bookings.id, bookingId) });
+    const b = await tx.query.bookings.findFirst({ where: eq(bookings.id, bookingId), with: { event: true, items: true } });
     if (!b) throw new BookingError("Booking not found");
     if (b.status === "approved") return;
-    if (b.status !== "under_review" && b.status !== "pending_payment") throw new BookingError(`Cannot approve a ${b.status} booking`);
+    // Rejected is allowed so a mistaken rejection can be undone.
+    if (!["under_review", "pending_payment", "rejected"].includes(b.status)) throw new BookingError(`Can't approve a booking that is ${b.status.replace("_", " ")}`);
+    if (b.event.status === "cancelled") throw new BookingError("This event was cancelled");
+    if (b.event.status === "draft") throw new BookingError("Publish the event before approving bookings");
+
+    // A lapsed hold (expired but not yet swept, or a rejection past its window) no longer
+    // reserves seats, so check there's still room before turning it into tickets.
+    if (effectiveStatus(b) === "expired") {
+      const tiers = await tx.select().from(ticketTiers).where(eq(ticketTiers.eventId, b.eventId)).for("update");
+      const held = await tx
+        .select({ tierId: bookingItems.tierId, held: sql<number>`coalesce(sum(${bookingItems.quantity}), 0)::int` })
+        .from(bookingItems)
+        .innerJoin(bookings, eq(bookings.id, bookingItems.bookingId))
+        .where(and(eq(bookings.eventId, b.eventId), holdingCondition()))
+        .groupBy(bookingItems.tierId);
+      const heldMap = new Map(held.map((h) => [h.tierId, h.held]));
+      for (const item of b.items) {
+        const tier = tiers.find((t) => t.id === item.tierId);
+        const left = (tier?.quantity ?? 0) - (heldMap.get(item.tierId) ?? 0);
+        if (item.quantity > left) throw new BookingError(`This hold lapsed and ${tier?.name ?? "the tier"} only has ${Math.max(0, left)} left. Raise the quantity first or ask them to rebook.`);
+      }
+    }
     await tx.update(bookings).set({ status: "approved", reviewedBy: adminId, reviewedAt: new Date(), reviewNote: null, updatedAt: new Date() }).where(eq(bookings.id, bookingId));
     await issueTicketsTx(tx, bookingId);
   });
 }
 
 export async function rejectBooking(adminId: string, bookingId: string, note: string) {
-  const b = await db.query.bookings.findFirst({ where: eq(bookings.id, bookingId) });
+  if (!note.trim()) throw new BookingError("Tell the member what to fix");
+  const b = await db.query.bookings.findFirst({ where: eq(bookings.id, bookingId), with: { event: true } });
   if (!b) throw new BookingError("Booking not found");
   if (b.status !== "under_review" && b.status !== "pending_payment") throw new BookingError(`Cannot reject a ${b.status} booking`);
+  // A fresh hold window: the seats stay reserved while the member fixes the payment.
+  const expiresAt = new Date(Date.now() + b.event.bookingHoldHours * 3600e3);
   await db
     .update(bookings)
-    .set({ status: "rejected", reviewedBy: adminId, reviewedAt: new Date(), reviewNote: note || null, updatedAt: new Date() })
+    .set({ status: "rejected", reviewedBy: adminId, reviewedAt: new Date(), reviewNote: note || null, expiresAt, updatedAt: new Date() })
     .where(eq(bookings.id, bookingId));
 }
 
 export async function cancelBooking(userId: string, bookingId: string) {
   const b = await db.query.bookings.findFirst({ where: and(eq(bookings.id, bookingId), eq(bookings.userId, userId)) });
   if (!b) throw new BookingError("Booking not found");
-  if (!["pending_payment", "under_review"].includes(b.status)) throw new BookingError("Only unpaid bookings can be cancelled");
+  if (!["pending_payment", "under_review", "rejected"].includes(b.status)) {
+    throw new BookingError(b.status === "approved" ? "Confirmed bookings can't be cancelled here. Message the organisers for a refund." : "This booking can no longer be cancelled");
+  }
   await db.update(bookings).set({ status: "cancelled", updatedAt: new Date() }).where(eq(bookings.id, bookingId));
 }
 
-/** Expires overdue holds. Returns how many were expired. */
+/** Expires overdue unpaid and rejected holds. Returns how many were expired. */
 export async function expireOverdueBookings() {
   const rows = await db
     .update(bookings)
     .set({ status: "expired", updatedAt: new Date() })
-    .where(and(eq(bookings.status, "pending_payment"), lt(bookings.expiresAt, new Date())))
+    .where(and(inArray(bookings.status, ["pending_payment", "rejected"]), lt(bookings.expiresAt, new Date())))
     .returning({ id: bookings.id });
   return rows.length;
 }
@@ -166,7 +198,8 @@ export async function getBookingForUser(bookingId: string, userId: string, isAdm
     with: {
       event: true,
       items: { with: { tier: true } },
-      tickets: { with: { tier: true } },
+      // Same order as the ticket page's "2 of 3" navigation
+      tickets: { with: { tier: true }, orderBy: (t, { asc }) => [asc(t.createdAt), asc(t.id)] },
       user: true,
     },
   });
@@ -177,8 +210,19 @@ export async function listUserBookings(userId: string) {
   return db.query.bookings.findMany({
     where: eq(bookings.userId, userId),
     orderBy: (b, { desc }) => desc(b.createdAt),
-    with: { event: true, items: { with: { tier: true } }, tickets: { with: { tier: true } } },
+    with: { event: true, items: { with: { tier: true } }, tickets: { with: { tier: true }, orderBy: (t, { asc }) => [asc(t.createdAt), asc(t.id)] } },
   });
+}
+
+/** Lets the booker put a guest's name on one of their tickets. */
+export async function renameTicket(userId: string, ticketId: string, name: string) {
+  const clean = name.replace(/\s+/g, " ").trim();
+  if (clean.length < 1 || clean.length > 60) throw new BookingError("Names must be 1 to 60 characters");
+  const t = await db.query.tickets.findFirst({ where: and(eq(tickets.id, ticketId), eq(tickets.userId, userId)) });
+  if (!t) throw new BookingError("Ticket not found");
+  if (t.status !== "valid") throw new BookingError(t.status === "used" ? "This ticket was already checked in" : "This ticket is voided");
+  await db.update(tickets).set({ holderName: clean }).where(eq(tickets.id, ticketId));
+  return { bookingId: t.bookingId };
 }
 
 export async function voidTicket(ticketId: string) {

@@ -17,7 +17,9 @@ export type ManifestTicket = {
 export type Manifest = {
   eventId: string;
   title: string;
+  status: "draft" | "published" | "cancelled" | "ended";
   startsAt: string;
+  endsAt: string | null;
   venue: string;
   publicKey: string;
   version: string;
@@ -43,7 +45,9 @@ export async function buildManifest(eventId: string): Promise<Manifest | null> {
   return {
     eventId,
     title: ev.title,
+    status: ev.status,
     startsAt: ev.startsAt.toISOString(),
+    endsAt: ev.endsAt?.toISOString() ?? null,
     venue: ev.venueName,
     publicKey: publicKeyJwkB64(),
     version: new Date().toISOString(),
@@ -51,11 +55,15 @@ export async function buildManifest(eventId: string): Promise<Manifest | null> {
   };
 }
 
+export type LocalResult = "ok" | "duplicate" | "invalid" | "void";
+
 export type IncomingCheckin = {
   clientId: string;
   ticketId: string | null;
   rawPayload: string | null;
   scannedAt: string;
+  /** What the door saw. Anything but "ok" is recorded for the audit trail and never admits. Missing = "ok" (older clients). */
+  localResult?: LocalResult;
 };
 
 export type CheckinOutcome = {
@@ -86,6 +94,24 @@ export async function applyCheckins(eventId: string, scannerUserId: string, devi
       let result: CheckinOutcome["result"] = "invalid";
       let checkedInAt: Date | null = null;
       let holder: string | undefined;
+      const local = c.localResult ?? "ok";
+      if (local !== "ok") {
+        // The door turned this person away. Log it, but never flip the ticket to used:
+        // e.g. a ticket issued after the manifest download, or one an admin un-checked.
+        const t = c.ticketId ? await tx.query.tickets.findFirst({ where: and(eq(tickets.id, c.ticketId), eq(tickets.eventId, eventId)) }) : null;
+        await tx.insert(checkins).values({
+          id: nanoid(14),
+          ticketId: t?.id ?? null,
+          eventId,
+          scannerUserId,
+          deviceId,
+          clientCheckinId: c.clientId,
+          rawPayload: c.rawPayload?.slice(0, 500) ?? null,
+          scannedAt: safeScannedAt,
+          result: local,
+        });
+        return { clientId: c.clientId, ticketId: t?.id ?? null, result: local, checkedInAt: t?.checkedInAt?.toISOString() ?? null, holder: t?.holderName } satisfies CheckinOutcome;
+      }
       if (c.ticketId) {
         const [t] = await tx
           .select()

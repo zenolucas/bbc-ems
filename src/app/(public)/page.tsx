@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { EventCard, Ridge } from "@/components/event/event-card";
+import { EmptyState } from "@/components/ui/empty-state";
 import { listPublishedEvents } from "@/lib/events";
 
 export const dynamic = "force-dynamic";
@@ -23,7 +24,7 @@ export default async function Home() {
       <section className="space-y-4">
         <h2 className="text-2xl font-semibold tracking-tight">Upcoming</h2>
         {upcoming.length === 0 ? (
-          <div className="rounded-2xl border border-dashed p-10 text-center text-muted-foreground">Nothing on the calendar yet. Check back soon.</div>
+          <EmptyState>Nothing on the calendar yet. Check back soon.</EmptyState>
         ) : (
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{upcoming.map((e) => <EventCard key={e.id} event={e} />)}</div>
         )}

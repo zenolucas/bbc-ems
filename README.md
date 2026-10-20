@@ -6,6 +6,7 @@ Events, gigs and paperless QR tickets for the Baguio Base Camp community.
 - Members sign in with an email magic link, book tickets, and pay via GCash/Maya proof-of-payment.
 - Tickets are ECDSA-signed QR codes in one of five brand styles, delivered in-app and by email.
 - Door staff scan with their phone. The scanner works offline and syncs when signal returns.
+- Organisers give volunteers **door crew** access from `/admin/team`: scanner and check-in only, no emails, payments or event editing.
 
 ## Stack
 
@@ -31,7 +32,7 @@ Without `RESEND_API_KEY`, emails (including the magic link) are printed to the d
 | `DATABASE_URL` | Postgres connection string |
 | `BETTER_AUTH_SECRET` | `openssl rand -base64 32` |
 | `BETTER_AUTH_URL`, `NEXT_PUBLIC_APP_URL` | Public site URL (used in magic links, ticket QR URLs, emails) |
-| `ADMIN_EMAILS` | Comma-separated emails that become admins on first sign-in |
+| `ADMIN_EMAILS` | Comma-separated emails that become admins on first sign-in. Promote or invite anyone else from `/admin/team`. |
 | `RESEND_API_KEY`, `EMAIL_FROM` | Email delivery |
 | `BLOB_READ_WRITE_TOKEN` | Vercel Blob for posters, GCash QR images and payment receipts |
 | `CRON_SECRET` | Protects `/api/cron/expire-bookings` |
@@ -57,7 +58,7 @@ console.log("TICKET_SIGNING_PUBLIC_KEY=" + b64(publicKey.export({ format: "jwk" 
 | `pnpm smoke:flow` | Books, pays, approves, rejects and expires bookings against the local DB |
 | `pnpm smoke:tokens` | Sign/verify round trip for ticket tokens |
 | `pnpm smoke:scan <png…>` | Decodes ticket PNGs to confirm they scan |
-| `pnpm e2e:scanner <cookies.txt> <eventId> <code1> <code2>` | Drives the scanner page in Chromium: online, offline queue, resync, cached reload |
+| `pnpm e2e:scanner <cookies.txt or magic-link URL> <eventId>` | Drives the scanner in Chromium against the dev server (or `E2E_BASE`): online, duplicates, offline queue, resync, conflicts, cached reload. Picks unused tickets from the DB. Offline reload only works against a production build (`next start`). |
 
 ## How ticketing works
 
@@ -65,7 +66,7 @@ console.log("TICKET_SIGNING_PUBLIC_KEY=" + b64(publicKey.export({ format: "jwk" 
 - Signature: ECDSA P-256 over `ticketId|eventId`. The scanner verifies it locally with the public key from the event manifest, so forged QR codes are rejected even offline.
 - Short code (`BBC-XXXX-XXXX`, Crockford base32) is printed on every ticket for manual entry.
 - Styles: Summit, Night Sky, Trail Pass, Ridge Line, Campfire Stamp. Compare them at `/admin/ticket-lab`; set the default per event in the event form.
-- Check-in: `/admin/scan/<eventId>` downloads the ticket list to IndexedDB, verifies and marks tickets locally, queues check-ins, and POSTs them to `/api/scan/sync` when online. First scan wins; conflicts surface as "already scanned on another device".
+- Check-in: `/admin/scan/<eventId>` (admins and door crew) downloads the ticket list to IndexedDB, verifies and marks tickets locally, queues check-ins, and POSTs them to `/api/scan/sync` when online. First scan wins; conflicts surface as "already scanned on another device". Scans the door turned away are logged but never mark a ticket used on sync.
 
 ## Deploying to Vercel
 
