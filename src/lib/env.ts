@@ -10,6 +10,10 @@ export const env = {
   cronSecret: process.env.CRON_SECRET ?? "",
   signingPrivateKey: process.env.TICKET_SIGNING_PRIVATE_KEY ?? "",
   signingPublicKey: process.env.TICKET_SIGNING_PUBLIC_KEY ?? "",
+  expoAccessToken: process.env.EXPO_ACCESS_TOKEN || undefined,
+  /** App-store review account: signs in with REVIEW_OTP and is never emailed. */
+  reviewAccountEmail: process.env.REVIEW_ACCOUNT_EMAIL?.trim().toLowerCase() || undefined,
+  reviewOtp: process.env.REVIEW_OTP?.trim() || undefined,
 };
 
 export function isAdminEmail(email: string) {

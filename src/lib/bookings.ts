@@ -233,3 +233,21 @@ export async function usersByIds(ids: string[]) {
   if (!ids.length) return [];
   return db.select().from(users).where(inArray(users.id, ids));
 }
+
+/** The member's live tickets (valid or used, never void), soonest event first. */
+export async function listUserTickets(userId: string) {
+  const rows = await db.query.tickets.findMany({
+    where: and(eq(tickets.userId, userId), inArray(tickets.status, ["valid", "used"])),
+    with: { tier: true, event: true },
+    orderBy: (t, { asc }) => [asc(t.createdAt), asc(t.id)],
+  });
+  return rows.sort((a, b) => a.event.startsAt.getTime() - b.event.startsAt.getTime());
+}
+
+export async function getTicketForUser(ticketId: string, userId: string) {
+  const t = await db.query.tickets.findFirst({
+    where: and(eq(tickets.id, ticketId), eq(tickets.userId, userId)),
+    with: { tier: true, event: true },
+  });
+  return t ?? null;
+}

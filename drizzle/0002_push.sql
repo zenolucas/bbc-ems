@@ -1,0 +1,23 @@
+CREATE TABLE "notification_log" (
+	"id" text PRIMARY KEY NOT NULL,
+	"user_id" text NOT NULL,
+	"kind" text NOT NULL,
+	"ref_id" text NOT NULL,
+	"sent_at" timestamp with time zone DEFAULT now() NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE "push_tokens" (
+	"id" text PRIMARY KEY NOT NULL,
+	"user_id" text NOT NULL,
+	"token" text NOT NULL,
+	"platform" text NOT NULL,
+	"device_id" text,
+	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
+	"last_seen_at" timestamp with time zone DEFAULT now() NOT NULL,
+	CONSTRAINT "push_tokens_token_unique" UNIQUE("token")
+);
+--> statement-breakpoint
+ALTER TABLE "notification_log" ADD CONSTRAINT "notification_log_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "push_tokens" ADD CONSTRAINT "push_tokens_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+CREATE UNIQUE INDEX "notification_log_once_idx" ON "notification_log" USING btree ("kind","ref_id","user_id");--> statement-breakpoint
+CREATE INDEX "push_tokens_user_idx" ON "push_tokens" USING btree ("user_id");

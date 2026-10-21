@@ -44,6 +44,8 @@ Without `RESEND_API_KEY`, emails (including the magic link) are printed to the d
 | `BLOB_READ_WRITE_TOKEN` | Vercel Blob for posters, GCash QR images and payment receipts |
 | `CRON_SECRET` | Protects `/api/cron/expire-bookings` |
 | `TICKET_SIGNING_PRIVATE_KEY`, `TICKET_SIGNING_PUBLIC_KEY` | ECDSA P-256 JWKs, base64url-encoded. Generate once and never rotate casually: old tickets stop verifying. |
+| `EXPO_ACCESS_TOKEN` | Optional. Expo push access token, if "enhanced push security" is on for the Expo project |
+| `REVIEW_ACCOUNT_EMAIL`, `REVIEW_OTP` | Optional. One app-store review account that signs in with a fixed 6-digit code and is never emailed. Leave empty except while an app is in review. |
 
 Generate signing keys:
 
@@ -66,6 +68,7 @@ console.log("TICKET_SIGNING_PUBLIC_KEY=" + b64(publicKey.export({ format: "jwk" 
 | `pnpm smoke:tokens` | Sign/verify round trip for ticket tokens |
 | `pnpm smoke:scan <png…>` | Decodes ticket PNGs to confirm they scan |
 | `pnpm smoke:tickets` | Renders all ten ticket variants to `.smoke/tickets/` and decodes them the way the door scanner does (no inversion). Run after any change to the ticket renderers. |
+| `pnpm smoke:api` | The mobile app's API over HTTP: email-code sign-in, bearer tokens, the `/api/v1` booking flow, receipt upload, tickets, push tokens, door access, the WebView handoff. Run the dev server with `RESEND_API_KEY=` (codes print to its log) and pass the log: `DEV_LOG=dev.log pnpm smoke:api`. |
 | `pnpm e2e:scanner <cookies.txt or magic-link URL> <eventId>` | Drives the scanner in Chromium against the dev server (or `E2E_BASE`): online, duplicates, offline queue, resync, conflicts, cached reload. Picks unused tickets from the DB. Offline reload only works against a production build (`next start`). |
 
 ## How ticketing works
@@ -76,12 +79,23 @@ console.log("TICKET_SIGNING_PUBLIC_KEY=" + b64(publicKey.export({ format: "jwk" 
 - Styles: Summit, Night Sky, Trail Pass, Ridge Line, Campfire Stamp. Compare them at `/admin/ticket-lab`; set the default per event in the event form.
 - Check-in: `/admin/scan/<eventId>` (admins and door crew) downloads the ticket list to IndexedDB, verifies and marks tickets locally, queues check-ins, and POSTs them to `/api/scan/sync` when online. First scan wins; conflicts surface as "already scanned on another device". Scans the door turned away are logged but never mark a ticket used on sync.
 
+## Mobile app API
+
+The Expo app (Android first, then iOS) uses the same accounts and data as the site:
+
+- Sign-in is a 6-digit email code (better-auth `emailOTP`), since mail apps open magic links in the browser. The sign-in response carries a `set-auth-token` header; the app sends it back as `Authorization: Bearer <token>`, and sends `Origin: bbcems://` (trusted in `src/lib/auth.ts`).
+- `/api/v1/*` is JSON for the member flows (events, bookings, payment, tickets, profile, push tokens) and door crew (`scan/events`, `scan/undo`). The routes are thin: booking side effects live in `src/lib/flows/bookings.ts`, which the web's Server Actions call too. Response types are in `packages/shared/src/api-types.ts`.
+- The existing `/api/scan/*`, `/api/upload` and `/api/tickets/[id]/png` accept the bearer token as well.
+- Organiser tools open the web admin in a WebView: the app fetches a one-time token (`/api/auth/one-time-token/generate`) and loads `/app/handoff?ott=…`, which swaps it for the session cookie. A `BBCApp/` user agent hides the account menu and theme toggle.
+- Push notifications go out next to the booking emails (`src/lib/notifications.tsx`), plus reminders from the 15-minute cron (hold ending in two hours, event within a day).
+- `packages/shared` (`@bbc/shared`) holds the React-free code both apps use: ticket tokens, short codes, request schemas, API types.
+
 ## Deploying to Vercel
 
 1. `npm i -g vercel && vercel link`
 2. Provision Neon Postgres, Resend and Blob from the Vercel Marketplace (`vercel integration add …`) or paste existing credentials with `vercel env add`.
 3. Add the remaining env vars above (`vercel env add`), then `vercel env pull .env.local`.
-4. Run migrations against the production database: `DATABASE_URL=… pnpm db:migrate`.
+4. Run migrations against the production database: `DATABASE_URL=… pnpm db:migrate`. (`0001_staff_role` and `0002_push` must be applied before deploying code that uses them.)
 5. `vercel deploy --prod`. The cron in `vercel.json` expires unpaid holds every 15 minutes. If a deploy looks half-styled (new colours or utilities missing), redeploy without the build cache: Turbopack has reused a stale stylesheet from `.next/cache/turbopack` after a branch switch. Locally, `rm -rf .next/cache/turbopack` before `pnpm build`.
 6. Verify the Resend sending domain so magic links do not land in spam.
 

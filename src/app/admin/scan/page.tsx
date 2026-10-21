@@ -1,10 +1,8 @@
 import Link from "next/link";
-import { asc, eq, inArray, sql } from "drizzle-orm";
 import { Check, ChevronRight, Info, ScanLine } from "lucide-react";
-import { db } from "@/db/client";
-import { events, tickets } from "@/db/schema";
 import { DeviceStatus } from "@/components/scanner/device-status";
 import { EmptyState } from "@/components/ui/empty-state";
+import { listDoorEvents } from "@/lib/checkins";
 import { fmtDateTime, relative } from "@/lib/format";
 import { requireStaff } from "@/lib/session";
 import { cn } from "@/lib/utils";
@@ -12,35 +10,11 @@ import { cn } from "@/lib/utils";
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Scanner" };
 
-/** Published events that haven't been over for more than a day. */
-function scannableEvents() {
-  const endsAt = sql`coalesce(${events.endsAt}, ${events.startsAt} + interval '6 hours')`;
-  // A join rather than correlated subqueries: drizzle leaves columns unqualified in
-  // single-table selects, so a subquery's "id" would bind to the ticket, not the event.
-  return db
-    .select({
-      id: events.id,
-      title: events.title,
-      startsAt: events.startsAt,
-      venue: events.venueName,
-      total: sql<number>`(count(${tickets.id}) filter (where ${tickets.status} <> 'void'))::int`,
-      used: sql<number>`(count(${tickets.id}) filter (where ${tickets.status} = 'used'))::int`,
-      live: sql<boolean>`${events.startsAt} <= now()`,
-      ended: sql<boolean>`${endsAt} < now()`,
-      endsAt: sql<Date>`${endsAt}`.mapWith(events.startsAt),
-    })
-    .from(events)
-    .leftJoin(tickets, eq(tickets.eventId, events.id))
-    .where(sql`${inArray(events.status, ["published", "ended"])} and ${endsAt} > now() - interval '1 day'`)
-    .groupBy(events.id)
-    .orderBy(asc(events.startsAt));
-}
-
-type Row = Awaited<ReturnType<typeof scannableEvents>>[number];
+type Row = Awaited<ReturnType<typeof listDoorEvents>>[number];
 
 export default async function ScanIndex() {
   const user = await requireStaff();
-  const rows = await scannableEvents();
+  const rows = await listDoorEvents();
   // Doors that are open get the big card; with none open, the next event does.
   const open = rows.filter((e) => e.live && !e.ended);
   const featured = open.length ? open : rows.filter((e) => !e.live).slice(0, 1);

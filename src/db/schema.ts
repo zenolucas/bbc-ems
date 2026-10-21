@@ -245,6 +245,38 @@ export const roleGrants = pgTable("role_grants", {
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
+/** Expo push tokens, one per installed app. Deleted when Expo reports the device gone. */
+export const pushTokens = pgTable(
+  "push_tokens",
+  {
+    id: text("id").primaryKey(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    token: text("token").notNull().unique(),
+    platform: text("platform").notNull(),
+    deviceId: text("device_id"),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    lastSeenAt: timestamp("last_seen_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [index("push_tokens_user_idx").on(t.userId)],
+);
+
+/** Reminders already sent, so the 15-minute cron sends each one once. */
+export const notificationLog = pgTable(
+  "notification_log",
+  {
+    id: text("id").primaryKey(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    kind: text("kind").notNull(),
+    refId: text("ref_id").notNull(),
+    sentAt: timestamp("sent_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [uniqueIndex("notification_log_once_idx").on(t.kind, t.refId, t.userId)],
+);
+
 // ---------- relations ----------
 export const usersRelations = relations(users, ({ many }) => ({
   bookings: many(bookings),

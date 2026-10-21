@@ -1,30 +1,36 @@
 import "server-only";
-import { and, asc, eq } from "drizzle-orm";
+import { and, asc, eq, inArray, sql } from "drizzle-orm";
 import { nanoid } from "nanoid";
 import { db } from "@/db/client";
 import { checkins, events, tickets, ticketTiers } from "@/db/schema";
+import type { CheckinOutcome, IncomingCheckin, Manifest } from "@bbc/shared/scan-types";
 import { publicKeyJwkB64 } from "./tickets/server";
 
-export type ManifestTicket = {
-  id: string;
-  code: string;
-  holder: string;
-  tier: string;
-  status: "valid" | "used" | "void";
-  checkedInAt: string | null;
-};
+export type { CheckinOutcome, IncomingCheckin, LocalResult, Manifest, ManifestTicket } from "@bbc/shared/scan-types";
 
-export type Manifest = {
-  eventId: string;
-  title: string;
-  status: "draft" | "published" | "cancelled" | "ended";
-  startsAt: string;
-  endsAt: string | null;
-  venue: string;
-  publicKey: string;
-  version: string;
-  tickets: ManifestTicket[];
-};
+/** Published events that haven't been over for more than a day. */
+export function listDoorEvents() {
+  const endsAt = sql`coalesce(${events.endsAt}, ${events.startsAt} + interval '6 hours')`;
+  // A join rather than correlated subqueries: drizzle leaves columns unqualified in
+  // single-table selects, so a subquery's "id" would bind to the ticket, not the event.
+  return db
+    .select({
+      id: events.id,
+      title: events.title,
+      startsAt: events.startsAt,
+      venue: events.venueName,
+      total: sql<number>`(count(${tickets.id}) filter (where ${tickets.status} <> 'void'))::int`,
+      used: sql<number>`(count(${tickets.id}) filter (where ${tickets.status} = 'used'))::int`,
+      live: sql<boolean>`${events.startsAt} <= now()`,
+      ended: sql<boolean>`${endsAt} < now()`,
+      endsAt: sql<Date>`${endsAt}`.mapWith(events.startsAt),
+    })
+    .from(events)
+    .leftJoin(tickets, eq(tickets.eventId, events.id))
+    .where(sql`${inArray(events.status, ["published", "ended"])} and ${endsAt} > now() - interval '1 day'`)
+    .groupBy(events.id)
+    .orderBy(asc(events.startsAt));
+}
 
 export async function buildManifest(eventId: string): Promise<Manifest | null> {
   const ev = await db.query.events.findFirst({ where: eq(events.id, eventId) });
@@ -54,25 +60,6 @@ export async function buildManifest(eventId: string): Promise<Manifest | null> {
     tickets: rows.map((r) => ({ ...r, checkedInAt: r.checkedInAt?.toISOString() ?? null })),
   };
 }
-
-export type LocalResult = "ok" | "duplicate" | "invalid" | "void";
-
-export type IncomingCheckin = {
-  clientId: string;
-  ticketId: string | null;
-  rawPayload: string | null;
-  scannedAt: string;
-  /** What the door saw. Anything but "ok" is recorded for the audit trail and never admits. Missing = "ok" (older clients). */
-  localResult?: LocalResult;
-};
-
-export type CheckinOutcome = {
-  clientId: string;
-  ticketId: string | null;
-  result: "ok" | "duplicate" | "invalid" | "void";
-  checkedInAt: string | null;
-  holder?: string;
-};
 
 /**
  * Applies queued check-ins. First scan wins: a ticket already `used` on the

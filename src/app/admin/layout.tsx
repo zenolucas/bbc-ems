@@ -1,4 +1,5 @@
 import { desc } from "drizzle-orm";
+import { headers } from "next/headers";
 import { db } from "@/db/client";
 import { events } from "@/db/schema";
 import { AdminShell } from "@/components/admin/shell";
@@ -14,8 +15,11 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     isAdmin ? pendingReviewByEvent() : Promise.resolve(new Map<string, number>()),
   ]);
   const reviewCount = [...pending.values()].reduce((n, v) => n + v, 0);
+  // The mobile app's WebView adds "BBCApp/<version>" to its user agent
+  const embed = /\bBBCApp\//.test((await headers()).get("user-agent") ?? "");
   return (
     <AdminShell
+      embed={embed}
       user={{ name: user.name, email: user.email, role: user.role === "admin" ? "admin" : "staff" }}
       reviewCount={reviewCount}
       events={list.map((e) => ({ id: e.id, title: e.title, status: e.status, startsAt: e.startsAt.toISOString() }))}

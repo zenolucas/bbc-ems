@@ -50,7 +50,8 @@ function crumbsFor(path: string, events: AdminEventRef[], user: AdminUser): Crum
  * Door mode (/admin/scan/[eventId]) gets none of it, so the scanner can own the
  * whole screen with its own always-dark chrome.
  */
-export function AdminShell({ user, reviewCount, events, children }: { user: AdminUser; reviewCount: number; events: AdminEventRef[]; children: React.ReactNode }) {
+/** `embed`: rendered inside the mobile app's WebView, which owns the account menu and theme. */
+export function AdminShell({ user, reviewCount, events, embed = false, children }: { user: AdminUser; reviewCount: number; events: AdminEventRef[]; embed?: boolean; children: React.ReactNode }) {
   const path = usePathname();
   const [palette, setPalette] = useState(false);
   const isAdmin = user.role === "admin";
@@ -122,13 +123,15 @@ export function AdminShell({ user, reviewCount, events, children }: { user: Admi
                 <Search className="size-5" />
               </Button>
             ) : (
-              <ThemeToggle className="mr-1" />
+              !embed && <ThemeToggle className="mr-1" />
             )}
-            <AccountMenu user={user}>
-              <button type="button" className="grid size-10 place-items-center rounded-full outline-none focus-visible:ring-3 focus-visible:ring-ring/50" aria-label={`Account menu for ${user.name || user.email}`}>
-                <Avatar user={user} className="size-9 text-xs" />
-              </button>
-            </AccountMenu>
+            {!embed && (
+              <AccountMenu user={user}>
+                <button type="button" className="grid size-10 place-items-center rounded-full outline-none focus-visible:ring-3 focus-visible:ring-ring/50" aria-label={`Account menu for ${user.name || user.email}`}>
+                  <Avatar user={user} className="size-9 text-xs" />
+                </button>
+              </AccountMenu>
+            )}
           </div>
         </header>
 
