@@ -1,5 +1,5 @@
 import "server-only";
-import { betterAuth } from "better-auth";
+import { APIError, betterAuth } from "better-auth";
 import { eq } from "drizzle-orm";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
@@ -10,6 +10,22 @@ import { env, isAdminEmail } from "./env";
 import { sendEmail } from "./email";
 import { renderMagicLinkEmail } from "@/emails/magic-link";
 import { renderOtpEmail } from "@/emails/otp";
+
+/**
+ * Sends a sign-in email, turning a provider failure into a message members can act on.
+ * The real cause (e.g. Resend's test sender refusing anyone but the account owner, or an
+ * unverified domain) goes to the server log, not the sign-in screen.
+ */
+async function sendSignInEmail(kind: string, input: Parameters<typeof sendEmail>[0]) {
+  try {
+    await sendEmail(input);
+  } catch (e) {
+    console.error(`[auth] ${kind} email to ${input.to} failed`, e);
+    throw new APIError("SERVICE_UNAVAILABLE", {
+      message: "We couldn't send the email just now. Check the address and try again in a minute; if it keeps failing, message the organisers.",
+    });
+  }
+}
 
 export const auth = betterAuth({
   baseURL: env.appUrl,
@@ -63,7 +79,7 @@ export const auth = betterAuth({
       expiresIn: 60 * 15,
       sendMagicLink: async ({ email, url }) => {
         const { html, text } = await renderMagicLinkEmail({ url });
-        await sendEmail({ to: email, subject: "Your Baguio Base Camp sign-in link", html, text });
+        await sendSignInEmail("magic link", { to: email, subject: "Your Baguio Base Camp sign-in link", html, text });
       },
     }),
     // The mobile app signs in with a 6-digit code (mail apps open links in the browser, not
@@ -79,7 +95,7 @@ export const auth = betterAuth({
       sendVerificationOTP: async ({ email, otp }) => {
         if (env.reviewAccountEmail && email.toLowerCase() === env.reviewAccountEmail) return;
         const { html, text } = await renderOtpEmail({ otp });
-        await sendEmail({ to: email, subject: `${otp} is your Baguio Base Camp code`, html, text });
+        await sendSignInEmail("sign-in code", { to: email, subject: `${otp} is your Baguio Base Camp code`, html, text });
       },
     }),
     bearer(),

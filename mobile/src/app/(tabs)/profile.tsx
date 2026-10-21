@@ -1,15 +1,16 @@
 import type { MeDTO } from "@bbc/shared/api-types";
 import { profileSchema } from "@bbc/shared/schemas";
 import * as Linking from "expo-linking";
-import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
+import { router, useFocusEffect, useLocalSearchParams, type Href } from "expo-router";
 import * as WebBrowser from "expo-web-browser";
-import { Bell, ChevronRight, LayoutDashboard, ScanLine, Shield } from "lucide-react-native";
+import { Bell, ChevronRight, LayoutDashboard, ReceiptText, ScanLine, Shield } from "lucide-react-native";
 import { useCallback, useState } from "react";
 import { Alert, Pressable, View } from "react-native";
 import { Button, Card, Divider, Field, Notice, Pill, Row, Screen, SignInPrompt, Text } from "@/components/ui";
 import { api } from "@/lib/api";
 import { API_URL, APP_VERSION } from "@/lib/config";
 import { enablePush, pushPermission, type PushState } from "@/lib/push";
+import { useReviewQueue } from "@/lib/review";
 import { useSession } from "@/lib/session";
 import { space, useTheme } from "@/theme";
 
@@ -29,6 +30,8 @@ export default function Profile() {
 
 function SignedIn({ me }: { me: MeDTO }) {
   const { setMe, signOut, isAdmin, isStaff } = useSession();
+  // Admins only (the hook is disabled otherwise); shown on the Review receipts row
+  const waiting = useReviewQueue().data?.length;
   const { c } = useTheme();
   const { welcome } = useLocalSearchParams<{ welcome?: string }>();
   const [name, setName] = useState(me.name);
@@ -116,7 +119,15 @@ function SignedIn({ me }: { me: MeDTO }) {
       </Card>
 
       {isAdmin && (
-        <LinkRow icon={<LayoutDashboard color={c.primary} size={22} />} title="Organiser tools" subtitle="Events, receipts to review, attendees and team" onPress={() => router.push("/organiser")} />
+        <LinkRow
+          icon={<ReceiptText color={c.primary} size={22} />}
+          title="Review receipts"
+          subtitle={waiting === undefined ? "Approve or reject GCash and Maya payments" : waiting === 0 ? "Queue is clear" : `${waiting} waiting, oldest first`}
+          onPress={() => router.push("/review" as Href)}
+        />
+      )}
+      {isAdmin && (
+        <LinkRow icon={<LayoutDashboard color={c.primary} size={22} />} title="Organiser tools" subtitle="Events, attendees, team and everything else" onPress={() => router.push("/organiser")} />
       )}
       {isStaff && !isAdmin && (
         <LinkRow icon={<ScanLine color={c.primary} size={22} />} title="Door crew" subtitle="Scan tickets from the Door tab" onPress={() => router.push("/door")} />

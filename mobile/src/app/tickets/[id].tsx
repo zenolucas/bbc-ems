@@ -6,11 +6,14 @@ import * as Sharing from "expo-sharing";
 import { ChevronLeft, ChevronRight, ShieldCheck } from "lucide-react-native";
 import { useCallback, useEffect, useState } from "react";
 import { Alert, Platform, Pressable, StyleSheet, View } from "react-native";
+import { AddToCalendarButton } from "@/components/event/add-to-calendar";
 import { CopyRow } from "@/components/ticket/copy-row";
+import { LargeQr } from "@/components/ticket/large-qr";
 import { TicketImage } from "@/components/ticket/ticket-image";
 import { Button, Card, EmptyState, Field, Loading, Notice, Row, Screen, Text } from "@/components/ui";
 import { api, ApiError } from "@/lib/api";
 import { useRenameTicket } from "@/lib/attendee";
+import { API_URL } from "@/lib/config";
 import { ensurePng, upsertTicket, useCachedTicket, useTickets } from "@/lib/tickets-cache";
 import { radius, space, useTheme } from "@/theme";
 
@@ -120,6 +123,8 @@ function TicketView({ t }: { t: TicketDTO }) {
       {t.status === "used" && <Notice tone="success" title="Checked in">{t.checkedInAt ? `Scanned at the door ${fmtDateTime(t.checkedInAt)}.` : "Scanned at the door."}</Notice>}
 
       <TicketImage ticket={t} stamp />
+      {/* Trail Pass is landscape: its QR is tiny at phone width, so the door gets a big plain one too */}
+      {t.status === "valid" && t.ticketStyle === "trail-pass" && <LargeQr data={t.qrUrl} code={t.shortCode} />}
 
       <Row gap={6} style={{ justifyContent: "center" }}>
         <ShieldCheck size={14} color={c.successForeground} />
@@ -170,6 +175,7 @@ function TicketView({ t }: { t: TicketDTO }) {
       {t.status !== "void" && (
         <Button title={siblings.length > 1 && index > 0 ? `Send ${t.holderName.split(" ")[0]} their ticket` : "Share ticket image"} variant="secondary" onPress={share} />
       )}
+      {t.status === "valid" && <AddToCalendarButton event={t.event} link={`${API_URL}/tickets/${t.id}`} />}
       <Button title="View booking" variant="ghost" onPress={() => router.push(`/bookings/${t.bookingId}`)} />
     </Screen>
   );

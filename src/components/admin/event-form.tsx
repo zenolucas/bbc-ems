@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import type { Event, TicketTier } from "@/db/schema";
-import { TICKET_STYLES } from "@/db/schema";
+import { EVENT_CATEGORIES, TICKET_STYLES } from "@/db/schema";
 import { toLocalInput } from "@/lib/format";
 import { runAction } from "@/lib/run-action";
 import { cn } from "@/lib/utils";
@@ -28,6 +28,8 @@ type TierDraft = {
   salesStart: string;
   salesEnd: string;
 };
+
+const CATEGORY_LABELS: Record<(typeof EVENT_CATEGORIES)[number], string> = { gig: "Gig", outdoors: "Outdoors", other: "Something else" };
 
 const STYLE_LABELS: Record<(typeof TICKET_STYLES)[number], string> = {
   summit: "Summit",
@@ -50,7 +52,7 @@ type SectionId = (typeof SECTIONS)[number]["id"];
 function sectionOf(field: string): SectionId {
   if (field.startsWith("tiers")) return "tiers";
   if (["gcashNumber", "gcashName", "gcashQrUrl", "bookingHoldHours", "paymentInstructions"].includes(field)) return "payment";
-  if (["slug", "ticketStyle"].includes(field)) return "settings";
+  if (["slug", "ticketStyle", "category"].includes(field)) return "settings";
   if (field === "coverImageUrl") return "poster";
   return "basics";
 }
@@ -94,6 +96,7 @@ export function EventForm({ event, tiers, appUrl, now, savedLabel }: { event?: E
   const [slug, setSlug] = useState(event?.slug ?? "");
   const [title, setTitle] = useState(event?.title ?? "");
   const [ticketStyle, setTicketStyle] = useState<string>(event?.ticketStyle ?? "summit");
+  const [category, setCategory] = useState<string>(event?.category ?? "other");
   const [snap, setSnap] = useState<Snap>(() => ({
     tagline: event?.tagline ?? "",
     startsAt: toLocalInput(event?.startsAt),
@@ -108,8 +111,8 @@ export function EventForm({ event, tiers, appUrl, now, savedLabel }: { event?: E
     gcashQrUrl: event?.gcashQrUrl ?? "",
   }));
   const fingerprint = (s: Snap, t: TierDraft[], extra: string[]) => JSON.stringify([s, t.map((r) => ({ ...r, key: undefined })), extra]);
-  const [baseline] = useState(() => fingerprint(snap, tierRows, [slug, title, ticketStyle]));
-  const dirty = fingerprint(snap, tierRows, [slug, title, ticketStyle]) !== baseline;
+  const [baseline] = useState(() => fingerprint(snap, tierRows, [slug, title, ticketStyle, category]));
+  const dirty = fingerprint(snap, tierRows, [slug, title, ticketStyle, category]) !== baseline;
 
   // React resets uncontrolled fields to the echoed values after a failed save; follow along
   const [seenState, setSeenState] = useState(state);
@@ -217,7 +220,7 @@ export function EventForm({ event, tiers, appUrl, now, savedLabel }: { event?: E
       : paymentOk
         ? <><Done>Complete</Done>{[snap.gcashName, snap.gcashNumber, snap.gcashQrUrl ? "QR uploaded" : null, `${snap.bookingHoldHours}-hour holds`].filter(Boolean).join(" · ")}</>
         : <span className="font-semibold text-destructive">Paid tiers need a GCash number or QR</span>,
-    settings: <><span className="font-mono text-foreground">{host}/events/{slugPreview || "…"}</span> · Ticket style <span className="font-semibold text-foreground">{STYLE_LABELS[ticketStyle as keyof typeof STYLE_LABELS]}</span></>,
+    settings: <><span className="font-mono text-foreground">{host}/events/{slugPreview || "…"}</span> · {CATEGORY_LABELS[category as keyof typeof CATEGORY_LABELS]} · Ticket style <span className="font-semibold text-foreground">{STYLE_LABELS[ticketStyle as keyof typeof STYLE_LABELS]}</span></>,
     poster: snap.coverImageUrl ? <Done>Uploaded</Done> : "No poster yet. The skyline shows until you add one.",
   };
 
@@ -392,6 +395,15 @@ export function EventForm({ event, tiers, appUrl, now, savedLabel }: { event?: E
                 <Input id="slug" name="slug" value={slug} onChange={(e) => setSlug(e.target.value)} placeholder="generated from the title" className={inputCls} {...invalid(err("slug"), "slug")} />
                 <p className="mt-1.5 text-xs break-all text-muted-foreground">{host}/events/<span className="text-foreground">{slugPreview || "…"}</span></p>
                 {slugChanged && <p className="mt-1 text-xs font-semibold text-warning-foreground">This event is live. Changing the link breaks links already shared.</p>}
+              </Field>
+              <Field id="category" label="Category">
+                <Select name="category" value={category} onValueChange={setCategory}>
+                  <SelectTrigger id="category" className="h-11 w-full rounded-xl md:h-10"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    {EVENT_CATEGORIES.map((c) => <SelectItem key={c} value={c}>{CATEGORY_LABELS[c]}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+                <p className="mt-1.5 text-xs text-muted-foreground">Sorts the event into the Gigs and Outdoors filters on the home page and in the app. Free events get their own filter automatically.</p>
               </Field>
               <Field id="ticketStyle" label="Ticket style">
                 <Select name="ticketStyle" value={ticketStyle} onValueChange={setTicketStyle}>

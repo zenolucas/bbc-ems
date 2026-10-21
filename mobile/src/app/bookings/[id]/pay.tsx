@@ -11,6 +11,7 @@ import { Alert, KeyboardAvoidingView, Linking, Platform, Pressable, StyleSheet, 
 import { Button, ErrorView, Field, Loading, Notice, Screen, Text } from "@/components/ui";
 import { api, ApiError } from "@/lib/api";
 import { useBooking, useSubmitPayment } from "@/lib/attendee";
+import { offerPush } from "@/lib/push";
 import { radius, space, useTheme } from "@/theme";
 
 const MAX_WIDTH = 1600;
@@ -78,7 +79,8 @@ export default function PayScreen() {
       form.append("file", new FSFile(image.uri) as unknown as Blob);
       const { url } = await api<{ url: string }>("/api/upload", { form, timeoutMs: 60_000 });
       await submit.mutateAsync({ paymentRef: refCheck.data, paymentProofUrl: url });
-      Alert.alert("Receipt sent", "We'll notify you once it's confirmed.");
+      // The best moment to offer notifications; offerPush's own alert says "Receipt sent" too
+      if (!(await offerPush("receipt"))) Alert.alert("Receipt sent", "We'll let you know once it's confirmed.");
       // Opened straight from a notification or link there is nothing behind this screen
       if (router.canGoBack()) router.back();
       else router.replace(`/bookings/${b.id}`);

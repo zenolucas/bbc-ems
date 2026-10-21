@@ -33,7 +33,7 @@ export function TicketImage({ ticket, style, stamp }: { ticket: TicketDTO; style
       {stamp && ticket.status === "used" && (
         <View style={styles.stampWrap} pointerEvents="none">
           <View style={styles.stamp}>
-            <Text style={{ fontFamily: fonts.displayHeavy, color: brand.lime, fontSize: 22, letterSpacing: 2 }}>CHECKED IN</Text>
+            <Text maxFontSizeMultiplier={1.4} style={{ fontFamily: fonts.displayHeavy, color: brand.lime, fontSize: 22, letterSpacing: 2 }}>CHECKED IN</Text>
           </View>
         </View>
       )}

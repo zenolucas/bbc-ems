@@ -10,6 +10,7 @@ import { CopyButton } from "@/components/ui/copy-button";
 import { Notice } from "@/components/ui/notice";
 import { AvailabilityChip, DateTab, EventPoster, priceSummary, type CardState } from "@/components/event/event-card";
 import { ShareButton } from "@/components/event/share-button";
+import { WaitlistButton } from "@/components/event/waitlist-button";
 import { statusLabel } from "@/components/event/status-badge";
 import { Badge } from "@/components/ui/badge";
 import { db } from "@/db/client";
@@ -18,6 +19,7 @@ import { env } from "@/lib/env";
 import { activeBookingFor, getEventBySlug, tierAvailability, tierIsOnSale } from "@/lib/events";
 import { fmtDate, fmtDateTime, fmtRange, fmtTime, peso } from "@/lib/format";
 import { getCurrentUser } from "@/lib/session";
+import { isOnWaitlist } from "@/lib/waitlist";
 import { cn } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
@@ -62,6 +64,9 @@ export default async function EventPage({ params }: PageProps<"/events/[slug]">)
   const closedLabel =
     event.status === "cancelled" ? "Event cancelled" : isOver ? "Event has ended" : event.status !== "published" ? "Not open yet" : nextSale && !anyOnSale ? "Sales open soon" : "Sold out";
   const priceFrom = priceSummary(event.tiers);
+  // Sold out (not "not on sale yet", ended or cancelled): offer the waitlist instead of a dead button
+  const soldOut = event.status === "published" && !isOver && !canBook && !nextSale && event.tiers.length > 0;
+  const onWaitlist = soldOut && user ? await isOnWaitlist(user.id, event.id) : false;
 
   // Names on a confirmed booking's tickets, for "Confirmed · Zen, Mika"
   const holders =
@@ -251,6 +256,12 @@ export default async function EventPage({ params }: PageProps<"/events/[slug]">)
               <Button asChild size="lg" className="mt-3 h-12 w-full text-[15px] font-semibold md:h-12 lg:h-[50px]" variant={existing ? "outline" : "default"}>
                 <Link href={`/events/${event.slug}/book`}>{existing ? "Book more tickets" : "Book tickets"}</Link>
               </Button>
+            ) : soldOut && !existing ? (
+              <>
+                <Button size="lg" className="mt-3 h-12 w-full text-[15px] md:h-12 lg:h-[50px]" disabled>{closedLabel}</Button>
+                <WaitlistButton eventId={event.id} slug={event.slug} onList={onWaitlist} signedIn={!!user} className="mt-2 h-12 w-full text-[15px] font-semibold md:h-12" />
+                <p className="mt-2 text-center text-xs text-muted-foreground">Holds lapse and plans change. Everyone on the list hears at once when seats free up.</p>
+              </>
             ) : (
               <Button size="lg" className="mt-3 h-12 w-full text-[15px] md:h-12 lg:h-[50px]" disabled>{closedLabel}</Button>
             )}
@@ -309,6 +320,8 @@ export default async function EventPage({ params }: PageProps<"/events/[slug]">)
             <Button asChild size="lg" className="h-12 shrink-0 px-[22px] text-[15px] font-semibold md:h-12">
               <Link href={`/events/${event.slug}/book`}>Book tickets</Link>
             </Button>
+          ) : soldOut ? (
+            <WaitlistButton compact eventId={event.id} slug={event.slug} onList={onWaitlist} signedIn={!!user} className="h-12 shrink-0 px-4 text-sm font-semibold md:h-12" />
           ) : (
             <Button size="lg" className="h-12 shrink-0 md:h-12" disabled>{closedLabel}</Button>
           )}

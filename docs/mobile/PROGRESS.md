@@ -2,7 +2,7 @@
 
 Where the Android (then iPhone) app stands. How to run and release it is in [`mobile/README.md`](../../mobile/README.md); the server side is the root README's **Mobile app API** section.
 
-**Status (2026-10-21):** phases 0–3 are built on branch `mobile-app` and tested in an Android emulator. Not merged into `master`, not pushed. Phases 4–5 (store releases) are scaffolded but need accounts only the owner can create.
+**Status (2026-10-21):** phases 0–3 are built on branch `mobile-app`, and a round of UX improvements for the app and the website on branch `ux-improvements` (on top of `mobile-app`). Both are tested in an Android emulator and in headless Chromium. Neither is merged into `master` or pushed. Phases 4–5 (store releases) are scaffolded but need accounts only the owner can create.
 
 | Phase | Scope | State |
 |---|---|---|
@@ -59,12 +59,42 @@ Made with the owner when planning:
 - **Release builds** may warn about Expo enums and R8 (seen in the debug log for `expo-haptics` and `expo-sqlite`). A release build should be tried on a phone before the first store upload.
 - **Vercel installs the whole workspace**, including Expo, because hoisted installs ignore `--filter`. Deploys are slower but unaffected.
 
+## UX improvements (branch `ux-improvements`)
+
+Asked for after phases 0–3. Each item says where it was checked.
+
+**Website**
+- **Home filters** All / Gigs / Outdoors / Free (`?show=`), from the revamp spec. Events got a `category` (migration `0003`), set in the event form's Settings. Pills only appear when they'd show something. Checked at 390 and 1280, light and dark.
+- **Waitlist** on sold-out events: "Notify me if tickets free up" (sign-in first when signed out). `src/lib/waitlist.ts` emails and pushes everyone waiting once seats are open, from the cron and right after a member cancels; each person is told once until they join again. Checked end to end: nobody told while sold out, told once after seats opened, not told twice.
+- **Missing events return 404** (`src/proxy.ts` checks the slug before the page streams; real events unaffected).
+- **Sign-in email failures** show a plain message instead of a provider error (magic links). The app's code endpoint can't show it: better-auth reports success for codes regardless, to avoid revealing which emails exist; the server log has the cause.
+- **Door mode toasts** are dark. **"Edit event"** is hidden on the edit page. **The ticket wallet** meets the footer on phones (no cream band).
+- **Trail Pass** tickets get a large plain QR under the ticket on phones (the ticket's own QR was ~80px wide). Decoded from a screenshot.
+- **Approving twice no longer emails the tickets twice** (a double tap, or two organisers at once).
+
+**App**
+- **Native receipt review queue** for organisers (Profile → Review receipts, with the waiting count; also from the organiser WebView's review links): oldest first, the same hints as the web, approve with confirmation, reject with a required note and quick reasons. Android zoom is Fit/2×/3× with panning (pinch would need a gesture library); iOS pinches. Checked on the emulator (list and item); approve and reject checked over HTTP on bookings made for the test.
+- **Notification permission at useful moments** (after a receipt, a free booking, joining a waitlist), with an in-app explanation first and at most one ask a week after "Not now"; no prompt at sign-in.
+- **Offline wallet** keeps the bookings that need action (Pay now / Fix payment / Being reviewed), not just tickets.
+- **Sign-in:** "Open Gmail/Outlook" for those addresses, and a spam/junk hint.
+- **Add to calendar** on approved bookings and tickets (opens the phone's own new-event form; no calendar permission on Android). Checked: opens Google Calendar.
+- **Filters and waitlist** as on the web. Checked: join, "You're on the list", leave.
+- **Door crew:** check-ins waiting to sync now also send in the background (expo-background-task; Android runs it about every 15 minutes with signal), from one shared sync function the scanner uses too; the Door tab bar is dark. Checked: tab bar; the sync function with 13 Node checks. Background execution itself needs a phone.
+- **Large text:** fixed-size elements now grow or fit (code boxes, pills, steppers, stamps, scanner tiles and code input); tab labels cap at 1.3×. Worked out from the code, not tried at 2× on a device.
+- **Trail Pass** large QR, as on the web. Decoded from an emulator screenshot.
+- Android no longer asks for calendar or system-settings permissions.
+
+**Not done, and why**
+- **Real sign-in emails for everyone** needs a verified sending domain in Resend (DNS, the owner's account).
+- **Google Wallet / Apple Wallet passes** need issuer accounts with Google and Apple.
+- **The default ticket style** is the owner's pick (`/admin/ticket-lab`).
+
 ## Before the first store release
 
 1. Confirm the package/bundle id `ph.baguiobasecamp.app` (it can't change after publishing).
 2. Put the production URL in `mobile/eas.json` (now a placeholder).
 3. Review the draft privacy page at `/privacy` and add a contact address.
-4. Apply migrations `0001_staff_role` and `0002_push` to production, then deploy the site.
+4. Apply migrations `0001_staff_role`, `0002_push` and `0003_categories_waitlist` to production, then deploy the site. Set categories on existing events (they default to "other").
 5. Expo account and `eas init` (turns push on), Firebase `google-services.json` and FCM key, Google Play Console ($25; new personal accounts need 12 testers opted in for 14 days before production).
 6. Later, for iPhone: Apple Developer Program ($99/year), TestFlight, and the review account.
 
@@ -75,5 +105,6 @@ Added during this work, local only:
 - User `api.smoke@example.com` (created by `pnpm smoke:api`; each run books and cancels a ticket on ZZ Test: Tonight at Base Camp).
 - A cancelled booking `8mvVDkmMIBtr` for `door.p4@example.com` and its receipt at `public/uploads/payments/UEMVNcnve7M5.jpg` (gitignored).
 - Ticket `BBC-5EVP-P74E` was checked in and undone several times while testing; it ends as unused.
+- From the UX round: categories set on the local events; an approved booking `dTK1hLT2YkDL` (one ticket) for `api.smoke@example.com` on ZZ Test: Open Mic, from the approve test; a cancelled booking `NG6D9FzIGCy-` with receipt `public/uploads/payments/fneEHKLGzjMk.png`, from the reject test. The trail run's tier quantity and `door.p4`'s role were changed for tests and put back.
 
 `pnpm smoke:flow` currently fails on local data only: Early Bird on Base Camp Sessions Vol. 3 is down to one seat from earlier runs.

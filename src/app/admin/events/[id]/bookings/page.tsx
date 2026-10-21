@@ -1,11 +1,12 @@
 import { notFound } from "next/navigation";
-import { and, asc, eq, inArray, ne, sql } from "drizzle-orm";
+import { and, asc, eq, inArray, sql } from "drizzle-orm";
 import { db } from "@/db/client";
 import { bookings } from "@/db/schema";
 import { FilterPills } from "@/components/admin/filter-pills";
 import { getEventById } from "@/lib/events";
 import { fmtDate, fmtDateTime, relative } from "@/lib/format";
 import { usersByIds } from "@/lib/bookings";
+import { reviewHints } from "@/lib/review";
 import { requireAdmin } from "@/lib/session";
 import { ReviewList } from "./review-list";
 
@@ -19,11 +20,6 @@ const FILTERS = {
   all: { label: "All", statuses: ["pending_payment", "under_review", "approved", "rejected", "expired", "cancelled"] },
 } as const;
 type FilterKey = keyof typeof FILTERS;
-
-function ordinal(n: number) {
-  const s = ["th", "st", "nd", "rd"], v = n % 100;
-  return n + (s[(v - 20) % 10] || s[v] || s[0]);
-}
 
 export default async function BookingsReviewPage({ params, searchParams }: PageProps<"/admin/events/[id]/bookings">) {
   const { id } = await params;
@@ -49,27 +45,15 @@ export default async function BookingsReviewPage({ params, searchParams }: PageP
     with: { user: true, items: { with: { tier: true } }, tickets: { columns: { id: true, status: true } } },
   });
   if (key === "all" || key === "confirmed") rows.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
-  const userIds = [...new Set(rows.map((r) => r.userId))];
-  const refs = [...new Set(rows.map((r) => r.paymentRef?.replace(/\s+/g, "")).filter((x): x is string => !!x))];
-  const [reviewerList, history, refUse] = await Promise.all([
+  const [reviewerList, hints] = await Promise.all([
     usersByIds([...new Set(rows.map((r) => r.reviewedBy).filter((x): x is string => !!x))]),
-    // How many bookings each member has made with us, oldest first, to say "2nd booking with us"
-    userIds.length
-      ? db.select({ id: bookings.id, userId: bookings.userId }).from(bookings).where(and(inArray(bookings.userId, userIds), ne(bookings.status, "expired"))).orderBy(asc(bookings.createdAt))
-      : Promise.resolve([]),
-    // The same GCash reference on two bookings is the duplicate-receipt tell
-    refs.length
-      ? db.select({ id: bookings.id, ref: sql<string>`replace(${bookings.paymentRef}, ' ', '')` }).from(bookings).where(and(sql`replace(${bookings.paymentRef}, ' ', '') in ${refs}`, ne(bookings.status, "cancelled")))
-      : Promise.resolve([]),
+    reviewHints(rows),
   ]);
   const reviewers = new Map(reviewerList.map((u) => [u.id, u.name || u.email]));
 
   const now = new Date();
   const data = rows.map((b) => {
-    const mine = history.filter((h) => h.userId === b.userId);
-    const nth = mine.findIndex((h) => h.id === b.id) + 1;
-    const ref = b.paymentRef?.replace(/\s+/g, "");
-    const others = ref ? refUse.filter((r) => r.ref === ref && r.id !== b.id) : [];
+    const hint = hints.get(b.id)!;
     const holdOpen = (b.status === "pending_payment" || b.status === "rejected" || b.status === "under_review") && b.expiresAt;
     return {
       id: b.id,
@@ -100,8 +84,8 @@ export default async function BookingsReviewPage({ params, searchParams }: PageP
         b.submittedAt ? `receipt sent ${relative(b.submittedAt)}` : "no receipt yet",
         holdOpen && b.expiresAt ? (b.expiresAt < now ? "hold lapsed" : `hold would end ${relative(b.expiresAt)}`) : null,
       ].filter(Boolean).join(" · "),
-      history: nth > 1 ? `${ordinal(nth)} booking with us` : "First booking with us",
-      refCheck: !b.paymentRef ? null : others.length ? { ok: false, text: `also on ${others.length === 1 ? `booking ${others[0].id}` : `${others.length} other bookings`}` } : { ok: true, text: "not used on another booking" },
+      history: hint.history,
+      refCheck: hint.refCheck,
       reviewed: b.reviewedBy && b.reviewedAt ? `Reviewed by ${reviewers.get(b.reviewedBy) ?? "an admin"}, ${relative(b.reviewedAt)}` : null,
       booked: fmtDateTime(b.createdAt),
     };

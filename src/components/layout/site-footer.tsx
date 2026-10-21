@@ -12,7 +12,8 @@ const links = [
 /** Lockup and the footer links on one line, over a ridge strip that closes the page. */
 export function SiteFooter() {
   return (
-    <footer className="relative mt-14 overflow-hidden border-t bg-surface-2">
+    // Pages whose dark stage runs to the bottom on phones (the ticket wallet) mark themselves data-flush-footer
+    <footer className="relative mt-14 overflow-hidden border-t bg-surface-2 max-sm:[main:has([data-flush-footer])+&]:mt-0">
       <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-x-6 gap-y-4 px-4 pt-6 sm:px-6 sm:pt-9">
         <Link href="/" className="flex items-center gap-2.5 rounded-lg outline-none focus-visible:ring-3 focus-visible:ring-ring/50 sm:gap-3.5">
           <Image src="/brand/bbc-logo.png" alt="" width={44} height={44} className="size-7 sm:size-11" />

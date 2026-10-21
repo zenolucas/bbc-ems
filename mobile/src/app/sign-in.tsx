@@ -1,12 +1,32 @@
 import { router } from "expo-router";
+import { Mail } from "lucide-react-native";
 import { useEffect, useRef, useState } from "react";
-import { KeyboardAvoidingView, Platform, Pressable, StyleSheet, TextInput, View, type TextInputInstance } from "react-native";
+import { KeyboardAvoidingView, Linking, Platform, Pressable, StyleSheet, TextInput, View, type TextInputInstance } from "react-native";
 import { Button, Field, Row, Screen, Text } from "@/components/ui";
 import { ApiError } from "@/lib/api";
 import { useSession } from "@/lib/session";
 import { fonts, radius, space, useTheme } from "@/theme";
 
 const CODE_LENGTH = 6;
+
+/**
+ * Inboxes we can open from the code step: the same webmail list as the site's sign-in
+ * (src/app/login/login-form.tsx). On Android, Gmail and Outlook links open their apps
+ * when installed. Anything else gets no button: React Native can't target "the mail app"
+ * on Android without a native module, and a mailto: link would open a new draft instead.
+ */
+const INBOXES: [RegExp, string][] = [
+  [/^(gmail|googlemail)\.com$/, "https://mail.google.com/mail/u/0/#inbox"],
+  [/^(outlook|hotmail|live|msn)\.[a-z.]+$/, "https://outlook.live.com/mail/0/"],
+  [/^(yahoo|ymail)\.[a-z.]+$/, "https://mail.yahoo.com/"],
+  [/^(icloud|me|mac)\.com$/, "https://www.icloud.com/mail"],
+  [/^proton(mail)?\.(me|com)$/, "https://mail.proton.me/u/0/inbox"],
+];
+
+function inboxUrl(email: string) {
+  const domain = email.trim().split("@")[1]?.toLowerCase() ?? "";
+  return INBOXES.find(([re]) => re.test(domain))?.[1] ?? null;
+}
 const RESEND_AFTER_S = 60; // better-auth allows 3 sends a minute per address
 
 export default function SignIn() {
@@ -25,6 +45,7 @@ export default function SignIn() {
     return () => clearTimeout(t);
   }, [cooldown]);
 
+  const inbox = inboxUrl(email);
   const validEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
 
   async function send() {
@@ -106,6 +127,15 @@ export default function SignIn() {
             />
             {error && <Text variant="caption" color={c.destructive}>{error}</Text>}
             <Button title="Sign in" size="lg" loading={busy} disabled={code.length !== CODE_LENGTH} onPress={() => verify()} />
+            {inbox && (
+              <Button
+                title="Open mail app"
+                variant="ghost"
+                icon={<Mail size={18} color={c.foreground} />}
+                onPress={() => Linking.openURL(inbox).catch(() => {})}
+                accessibilityHint="Opens your inbox to find the code; come back here to type it"
+              />
+            )}
             <Row style={{ justifyContent: "space-between" }}>
               <Pressable onPress={() => { setStep("email"); setError(null); }} hitSlop={12}>
                 <Text variant="label" muted>Use a different email</Text>
@@ -114,6 +144,8 @@ export default function SignIn() {
                 <Text variant="label" muted={cooldown > 0}>{cooldown > 0 ? `Resend in ${cooldown}s` : "Resend code"}</Text>
               </Pressable>
             </Row>
+            {/* The server answers "sent" even when the mail provider fails (better-auth sends in the background) */}
+            <Text variant="caption" muted>No email after a minute? Check spam or junk, then tap Resend.</Text>
           </>
         )}
       </Screen>
@@ -138,7 +170,8 @@ function CodeInput({ value, onChange, error }: { value: string; onChange: (v: st
                 { backgroundColor: c.surface1, borderColor: error ? c.destructive : active ? c.ring : c.border, borderWidth: active ? 2 : 1 },
               ]}
             >
-              <Text style={{ fontFamily: fonts.bodyBold, fontSize: 24 }}>{value[i] ?? ""}</Text>
+              {/* A fixed box: the digit may grow with the phone's text size, up to 1.4x, then shrinks to fit */}
+              <Text maxFontSizeMultiplier={1.4} numberOfLines={1} adjustsFontSizeToFit style={{ fontFamily: fonts.bodyBold, fontSize: 24 }}>{value[i] ?? ""}</Text>
             </View>
           );
         })}
@@ -160,6 +193,6 @@ function CodeInput({ value, onChange, error }: { value: string; onChange: (v: st
 }
 
 const styles = StyleSheet.create({
-  box: { width: 48, height: 58, borderRadius: radius.md, alignItems: "center", justifyContent: "center" },
+  box: { width: 48, minHeight: 58, borderRadius: radius.md, alignItems: "center", justifyContent: "center" },
   hidden: { position: "absolute", opacity: 0, width: 1, height: 1 },
 });

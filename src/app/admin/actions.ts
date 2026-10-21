@@ -6,7 +6,7 @@ import { nanoid } from "nanoid";
 import slugify from "slugify";
 import { z } from "zod";
 import { db } from "@/db/client";
-import { TICKET_STYLES, bookingItems, bookings, events, ticketTiers, tickets } from "@/db/schema";
+import { EVENT_CATEGORIES, TICKET_STYLES, bookingItems, bookings, events, ticketTiers, tickets } from "@/db/schema";
 import type { ActionResult } from "@/lib/action-result";
 import { getEventById, holdingCondition, publishChecklist } from "@/lib/events";
 import { fromLocalInput } from "@/lib/format";
@@ -39,6 +39,7 @@ const eventSchema = z.object({
   endsAt: z.string().optional().default(""),
   coverImageUrl: z.string().optional().default(""),
   ticketStyle: z.enum(TICKET_STYLES),
+  category: z.enum(EVENT_CATEGORIES).optional().default("other"),
   paymentInstructions: z.string().optional().default(""),
   gcashName: z.string().trim().optional().default(""),
   gcashNumber: z.string().trim().optional().default(""),
@@ -144,6 +145,7 @@ export async function saveEvent(_prev: EventFormState, formData: FormData): Prom
     endsAt,
     coverImageUrl: nullable(d.coverImageUrl),
     ticketStyle: d.ticketStyle,
+    category: d.category,
     paymentInstructions: nullable(d.paymentInstructions),
     gcashName: nullable(d.gcashName),
     gcashNumber: nullable(d.gcashNumber),

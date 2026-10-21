@@ -6,6 +6,7 @@ import { Pressable, ScrollView, StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Button, Card, ErrorView, Loading, Notice, Row, SignInPrompt, Text } from "@/components/ui";
 import { useCreateBooking, useEvent } from "@/lib/attendee";
+import { offerPush } from "@/lib/push";
 import { useSession } from "@/lib/session";
 import { fonts, radius, space, useTheme } from "@/theme";
 
@@ -23,7 +24,7 @@ function Stepper({ value, max, disabled, name, onChange }: { value: number; max:
       <Pressable accessibilityRole="button" accessibilityLabel={`Fewer ${name}`} disabled={!canDown} onPress={() => onChange(value - 1)} style={btn(canDown, false)} hitSlop={4}>
         <Minus size={18} color={c.foreground} />
       </Pressable>
-      <Text style={{ fontFamily: fonts.bodyBold, fontSize: 18, minWidth: 22, textAlign: "center" }} accessibilityLiveRegion="polite">{value}</Text>
+      <Text maxFontSizeMultiplier={1.6} style={{ fontFamily: fonts.bodyBold, fontSize: 18, minWidth: 22, textAlign: "center" }} accessibilityLiveRegion="polite">{value}</Text>
       <Pressable accessibilityRole="button" accessibilityLabel={`More ${name}`} disabled={!canUp} onPress={() => onChange(value + 1)} style={btn(canUp, true)} hitSlop={4}>
         <Plus size={18} color={c.primaryForeground} />
       </Pressable>
@@ -56,6 +57,8 @@ export default function BookScreen() {
     try {
       const r = await book.mutateAsync({ eventId: e.id, items: lines.filter((l) => l.v > 0).map((l) => ({ tierId: l.t.id, quantity: l.v })) });
       router.replace(`/bookings/${r.id}${r.free ? "?confirmed=1" : "?reserved=1"}`);
+      // Free tickets are confirmed now: a fair moment to offer event reminders
+      if (r.free) void offerPush("free-booking");
     } catch {
       // Shown below from book.error
     }

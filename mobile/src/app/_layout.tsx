@@ -6,6 +6,7 @@ import { useEffect } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { PushManager } from "@/components/push-manager";
 import { queryClient } from "@/lib/query";
+import "@/scanner/background-sync"; // defines the door sync background task at module scope
 import { SessionProvider, useSession } from "@/lib/session";
 import { fontFiles, fonts, useTheme } from "@/theme";
 

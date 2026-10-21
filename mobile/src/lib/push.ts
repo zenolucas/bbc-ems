@@ -4,7 +4,8 @@ import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
 import { AndroidImportance } from "expo-notifications";
 import * as SecureStore from "expo-secure-store";
-import { Platform } from "react-native";
+import Storage from "expo-sqlite/kv-store";
+import { Alert, Platform } from "react-native";
 import { api } from "./api";
 
 const TOKEN_KEY = "bbc.pushToken";
@@ -83,6 +84,55 @@ export async function enablePush({ ask }: { ask: boolean }): Promise<PushState> 
   } catch (e) {
     if (__DEV__) console.log("[push] enable failed", e);
     return "undetermined";
+  }
+}
+
+/** Moments where a notification is obviously worth having. Asking then gets far more yeses than at sign-in. */
+export type PushMoment = "receipt" | "free-booking" | "waitlist";
+
+const ASKED_KEY = "bbc:push-offered-at";
+const ASK_EVERY_MS = 7 * 24 * 3600e3;
+
+const OFFER: Record<PushMoment, { title: string; body: string }> = {
+  receipt: {
+    title: "Receipt sent",
+    body: "An organiser will check it soon. Want a notification on this phone when it's approved?",
+  },
+  "free-booking": {
+    title: "Turn on notifications?",
+    body: "Get a reminder before the event and hear right away if anything about your booking changes.",
+  },
+  waitlist: {
+    title: "Get notified when seats free up?",
+    body: "A notification reaches you faster than email, and whoever books first gets the tickets.",
+  },
+};
+
+/**
+ * Offers notifications at a moment that explains them. Already allowed: re-registers quietly.
+ * Never asked: shows our own explanation first ("Not now" / "Turn on"), and only once a week,
+ * so the one-shot system prompt is spent on someone who wants it. Returns true if it showed
+ * the explanation, so callers can skip a confirmation alert of their own.
+ */
+export async function offerPush(moment: PushMoment): Promise<boolean> {
+  try {
+    const state = await pushPermission();
+    if (state === "granted") {
+      void enablePush({ ask: false });
+      return false;
+    }
+    if (state !== "undetermined") return false;
+    const last = Number((await Storage.getItem(ASKED_KEY)) ?? 0);
+    if (Date.now() - last < ASK_EVERY_MS) return false;
+    await Storage.setItem(ASKED_KEY, String(Date.now()));
+    const { title, body } = OFFER[moment];
+    Alert.alert(title, body, [
+      { text: "Not now", style: "cancel" },
+      { text: "Turn on", onPress: () => void enablePush({ ask: true }) },
+    ]);
+    return true;
+  } catch {
+    return false;
   }
 }
 

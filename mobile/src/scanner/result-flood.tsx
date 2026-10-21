@@ -75,7 +75,7 @@ export function ResultFlood({
         <Animated.View style={[styles.badge, { backgroundColor: cfg.tint, transform: [{ scale: pop }] }]}>
           <cfg.Icon size={92} color={ink} strokeWidth={r.kind === "ok" ? 2.6 : 2.2} />
         </Animated.View>
-        <Text color={ink} style={[styles.title, { fontSize: long ? 40 : 44, lineHeight: long ? 44 : 48 }]}>{cfg.title}</Text>
+        <Text color={ink} style={[styles.title, { fontSize: long ? 40 : 44, lineHeight: long ? 44 : 48 }]} maxFontSizeMultiplier={1.3}>{cfg.title}</Text>
         {r.ticket && <Text color={ink} style={styles.holder}>{r.ticket.holder}</Text>}
         {r.ticket && (
           <Text color={ink} style={{ fontSize: 16, opacity: 0.9, textAlign: "center" }}>

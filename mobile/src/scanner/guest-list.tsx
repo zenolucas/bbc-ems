@@ -10,9 +10,10 @@ import { highlightParts, matchGuests, type LocalUsed } from "./logic";
 const c = nightTheme.c;
 const LIMIT = 200;
 
-function Highlight({ text, q, style }: { text: string; q: string; style?: object }) {
+/** Guest names wrap to two lines rather than shrink, so large system text never hides who someone is. */
+function Highlight({ text, q, style, lines = 1 }: { text: string; q: string; style?: object; lines?: number }) {
   return (
-    <Text theme={nightTheme} style={style} numberOfLines={1}>
+    <Text theme={nightTheme} style={style} numberOfLines={lines}>
       {highlightParts(text, q).map((p, i) =>
         p.hit ? (
           <Text key={i} theme={nightTheme} style={[style, { backgroundColor: c.warningSoft }]}>{p.text}</Text>
@@ -125,7 +126,7 @@ const GuestRow = memo(function GuestRow({
       ]}
     >
       <View style={{ flex: 1, minWidth: 0 }}>
-        <Highlight text={t.holder} q={q} style={[styles.name, isVoid && { textDecorationLine: "line-through" }]} />
+        <Highlight text={t.holder} q={q} lines={2} style={[styles.name, isVoid && { textDecorationLine: "line-through" }]} />
         <Text theme={nightTheme} variant="caption" muted numberOfLines={1}>
           {highlightParts(t.tier, q).map((p, i) => (p.hit ? <Text key={i} theme={nightTheme} variant="caption" muted style={{ backgroundColor: c.warningSoft }}>{p.text}</Text> : p.text))}
           {" · "}

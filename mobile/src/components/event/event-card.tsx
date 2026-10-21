@@ -47,7 +47,7 @@ export function EventCard({ e }: { e: EventSummaryDTO }) {
         </View>
         {e.availability === "sold-out" && e.status !== "cancelled" && (
           <View style={styles.stamp}>
-            <Text style={{ fontFamily: fonts.displayHeavy, color: brand.cream, fontSize: 15, letterSpacing: 2 }}>SOLD OUT</Text>
+            <Text maxFontSizeMultiplier={1.4} style={{ fontFamily: fonts.displayHeavy, color: brand.cream, fontSize: 15, letterSpacing: 2 }}>SOLD OUT</Text>
           </View>
         )}
       </Poster>

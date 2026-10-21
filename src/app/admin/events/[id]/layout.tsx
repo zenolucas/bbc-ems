@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ChevronLeft, ExternalLink, Pencil } from "lucide-react";
+import { ChevronLeft, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { EditEventButton } from "@/components/admin/edit-event-button";
 import { EventThumb } from "@/components/admin/event-thumb";
 import { NavLink } from "@/components/admin/nav-link";
 import { StatusBadge } from "@/components/event/status-badge";
@@ -46,7 +47,7 @@ export default async function EventAdminLayout({ children, params }: LayoutProps
           </div>
           <div className="flex shrink-0 gap-2">
             <Button asChild variant="outline" className="h-[38px] rounded-full px-3.5 text-[13px]"><Link href={`/events/${event.slug}`} target="_blank"><ExternalLink /> Public page</Link></Button>
-            {isAdmin && <Button asChild className="h-[38px] rounded-full px-4 text-[13px]"><Link href={`${base}/edit`}><Pencil /> Edit event</Link></Button>}
+            {isAdmin && <EditEventButton href={`${base}/edit`} />}
           </div>
         </div>
       </header>

@@ -8,6 +8,7 @@ Events, gigs and paperless QR tickets for the Baguio Base Camp community.
 - Door staff scan with their phone. The scanner works offline and syncs when signal returns.
 - Organisers give volunteers **door crew** access from `/admin/team`: scanner and check-in only, no emails, payments or event editing.
 - The organiser area has a dashboard, a review queue (`/admin/review`, keys J/K/A/R/Z), an attendees index and ⌘K search across events, bookings and people.
+- Events have a category (gig, outdoors, other) for the home page filters (All / Gigs / Outdoors / Free). Sold-out events offer a waitlist: everyone waiting is emailed and pushed at once when seats free up (checked every 15 minutes by the cron, and straight after a member cancels).
 - An Android app (iPhone later) in [`mobile/`](mobile/README.md) covers booking, offline tickets, push notifications, a native door scanner and the organiser tools. Status: [`docs/mobile/PROGRESS.md`](docs/mobile/PROGRESS.md).
 
 ## Design
@@ -89,6 +90,8 @@ The Expo app (Android first, then iOS) uses the same accounts and data as the si
 - Sign-in is a 6-digit email code (better-auth `emailOTP`), since mail apps open magic links in the browser. The sign-in response carries a `set-auth-token` header; the app sends it back as `Authorization: Bearer <token>`, and sends `Origin: bbcems://` (trusted in `src/lib/auth.ts`).
 - `/api/v1/*` is JSON for the member flows (events, bookings, payment, tickets, profile, push tokens) and door crew (`scan/events`, `scan/undo`). The routes are thin: booking side effects live in `src/lib/flows/bookings.ts`, which the web's Server Actions call too. Response types are in `packages/shared/src/api-types.ts`.
 - The existing `/api/scan/*`, `/api/upload` and `/api/tickets/[id]/png` accept the bearer token as well.
+- Organisers review receipts natively: `GET /api/v1/admin/review`, `POST /api/v1/admin/bookings/[id]/approve|reject`. Approve and reject go through `src/lib/flows/admin-bookings.ts`, which the web's Server Actions call too. Approving an approved booking does nothing (no second email); "Resend tickets" is for that.
+- Waitlist: `POST`/`DELETE /api/v1/events/[slug]/waitlist`; the logic is in `src/lib/waitlist.ts`.
 - Organiser tools open the web admin in a WebView: the app fetches a one-time token (`/api/auth/one-time-token/generate`) and loads `/app/handoff?ott=…`, which swaps it for the session cookie. A `BBCApp/` user agent hides the account menu and theme toggle.
 - Push notifications go out next to the booking emails (`src/lib/notifications.tsx`), plus reminders from the 15-minute cron (hold ending in two hours, event within a day).
 - `packages/shared` (`@bbc/shared`) holds the React-free code both apps use: ticket tokens, short codes, request schemas, API types.
@@ -98,7 +101,7 @@ The Expo app (Android first, then iOS) uses the same accounts and data as the si
 1. `npm i -g vercel && vercel link`
 2. Provision Neon Postgres, Resend and Blob from the Vercel Marketplace (`vercel integration add …`) or paste existing credentials with `vercel env add`.
 3. Add the remaining env vars above (`vercel env add`), then `vercel env pull .env.local`.
-4. Run migrations against the production database: `DATABASE_URL=… pnpm db:migrate`. (`0001_staff_role` and `0002_push` must be applied before deploying code that uses them.)
+4. Run migrations against the production database: `DATABASE_URL=… pnpm db:migrate`. (`0001_staff_role`, `0002_push` and `0003_categories_waitlist` must be applied before deploying code that uses them.)
 5. `vercel deploy --prod`. The cron in `vercel.json` expires unpaid holds every 15 minutes. If a deploy looks half-styled (new colours or utilities missing), redeploy without the build cache: Turbopack has reused a stale stylesheet from `.next/cache/turbopack` after a branch switch. Locally, `rm -rf .next/cache/turbopack` before `pnpm build`.
 6. Verify the Resend sending domain so magic links do not land in spam.
 

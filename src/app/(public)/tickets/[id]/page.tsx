@@ -10,6 +10,7 @@ import { Notice } from "@/components/ui/notice";
 import { StatusBadge } from "@/components/event/status-badge";
 import { icsHref } from "@/components/ticket/calendar";
 import { ShareTicketButton } from "@/components/ticket/share-ticket";
+import { LargeQr } from "@/components/ticket/large-qr";
 import { TicketWallet } from "@/components/ticket/ticket-wallet";
 import { env } from "@/lib/env";
 import { fmtDate, fmtDateTime, fmtTime } from "@/lib/format";
@@ -65,7 +66,7 @@ export default async function TicketPage({ params }: PageProps<"/tickets/[id]">)
 
   return (
     // Night stage in both themes: full-bleed on phones, a wallet-sized panel on desktop
-    <div className="dark -mx-4 -mt-8 -mb-8 flex min-h-[calc(100dvh-4rem)] flex-col bg-background text-foreground sm:mx-auto sm:mt-0 sm:mb-0 sm:min-h-0 sm:max-w-md sm:overflow-hidden sm:rounded-[2rem] sm:shadow-[0_24px_60px_rgba(0,0,0,0.35)]">
+    <div data-flush-footer className="dark -mx-4 -mt-8 -mb-8 flex min-h-[calc(100dvh-4rem)] flex-col bg-background text-foreground sm:mx-auto sm:mt-0 sm:mb-0 sm:min-h-0 sm:max-w-md sm:overflow-hidden sm:rounded-[2rem] sm:shadow-[0_24px_60px_rgba(0,0,0,0.35)]">
       <div className="flex h-14 shrink-0 items-center gap-1.5 px-2">
         <Link href={`/bookings/${t.bookingId}`} aria-label="Back to booking" className="grid size-11 place-items-center rounded-full hover:bg-muted">
           <ChevronLeft className="size-[22px]" />
@@ -108,6 +109,11 @@ export default async function TicketPage({ params }: PageProps<"/tickets/[id]">)
           hint={hint}
         />
       </div>
+
+      {/* Landscape styles leave the QR small on phones: give the door a big plain one too */}
+      {!used && !cancelled && t.status === "valid" && ticket.width > ticket.height && (
+        <LargeQr data={urlFor(t)} code={t.shortCode} className="mx-auto mb-4 w-full max-w-[280px] px-4 sm:hidden" />
+      )}
 
       {!used && (
         <>

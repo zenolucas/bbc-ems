@@ -64,7 +64,7 @@ export function CountdownRing({ to, from, onDone, size = 64 }: { to: string; fro
         <Circle cx={size / 2} cy={size / 2} r={r} stroke={c.surface3} strokeWidth={stroke} fill="none" />
         <Circle cx={size / 2} cy={size / 2} r={r} stroke={tone} strokeWidth={stroke} fill="none" strokeDasharray={`${circ} ${circ}`} strokeDashoffset={circ * (1 - frac)} strokeLinecap="round" />
       </Svg>
-      <Text variant="label" style={{ fontSize: 12 }}>{fmtLeft(left)}</Text>
+      <Text variant="label" maxFontSizeMultiplier={1.3} numberOfLines={1} adjustsFontSizeToFit style={{ fontSize: 12, paddingHorizontal: 6 }}>{fmtLeft(left)}</Text>
     </View>
   );
 }

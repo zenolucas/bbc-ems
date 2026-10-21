@@ -3,8 +3,9 @@ import type { BookInput, PayInput } from "@bbc/shared/schemas";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { api } from "./api";
 import { API_URL } from "./config";
-import { useSession } from "./session";
-import { refreshTickets, upsertTicket } from "./tickets-cache";
+import { queryClient } from "./query";
+import { onAfterSignOut, useSession } from "./session";
+import { cachedBookings, refreshTickets, saveBookings, upsertTicket } from "./tickets-cache";
 
 /** Uploads and posters may be stored as site-relative paths (/uploads/…) in development. */
 export function assetUrl(u: string | null | undefined) {
@@ -29,10 +30,30 @@ export function useEvent(slug: string) {
   return useQuery({ queryKey: [...keys.event(slug), status], queryFn: () => api<EventDetailDTO>(`/api/v1/events/${encodeURIComponent(slug)}`) });
 }
 
+/**
+ * Starts from the copy saved on the phone and refreshes it. When the refresh fails offline,
+ * React Query keeps that copy as `data` and `error` says why, so the wallet can say "saved".
+ */
 export function useBookings() {
   const { status } = useSession();
-  return useQuery({ queryKey: keys.bookings, queryFn: () => api<BookingDTO[]>("/api/v1/bookings"), enabled: status === "signedIn" });
+  return useQuery({
+    queryKey: keys.bookings,
+    queryFn: async () => {
+      const list = await api<BookingDTO[]>("/api/v1/bookings");
+      saveBookings(list);
+      return list;
+    },
+    enabled: status === "signedIn",
+    initialData: () => cachedBookings()?.list,
+    initialDataUpdatedAt: () => cachedBookings()?.at,
+  });
 }
+
+// The next account on this phone must never see the last one's bookings, even for a moment
+onAfterSignOut(() => {
+  queryClient.removeQueries({ queryKey: keys.bookings });
+  queryClient.removeQueries({ queryKey: ["booking"] });
+});
 
 export function useBooking(id: string) {
   return useQuery({ queryKey: keys.booking(id), queryFn: () => api<BookingDTO>(`/api/v1/bookings/${encodeURIComponent(id)}`) });
@@ -82,6 +103,16 @@ export function useRenameTicket(ticketId: string) {
       upsertTicket(t).catch(() => {});
       qc.invalidateQueries({ queryKey: keys.booking(t.bookingId) });
     },
+  });
+}
+
+/** "Notify me when tickets free up" on a sold-out event. Everyone waiting hears at once (email + push). */
+export function useWaitlist(slug: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (join: boolean) =>
+      api<{ onWaitlist: boolean }>(`/api/v1/events/${encodeURIComponent(slug)}/waitlist`, { method: join ? "POST" : "DELETE" }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: keys.event(slug) }),
   });
 }
 

@@ -45,12 +45,12 @@ export function ConnPill({ conn, tint, ink }: { conn: Connection; tint?: string;
   );
 }
 
-/** The number, then its label. */
+/** The number, then its label. Three share a row, so large system text is capped here (the numbers stay glanceable). */
 export function StatTile({ label, value, warn }: { label: string; value: number; warn?: boolean }) {
   return (
     <View style={[styles.tile, { backgroundColor: warn ? c.warningSoft : c.card }]}>
-      <Text theme={nightTheme} color={warn ? c.warningForeground : c.foreground} style={styles.tileValue}>{value}</Text>
-      <Text theme={nightTheme} color={warn ? c.warningForeground : c.mutedForeground} style={styles.tileLabel} numberOfLines={1}>{label.toUpperCase()}</Text>
+      <Text theme={nightTheme} color={warn ? c.warningForeground : c.foreground} style={styles.tileValue} maxFontSizeMultiplier={1.4}>{value}</Text>
+      <Text theme={nightTheme} color={warn ? c.warningForeground : c.mutedForeground} style={styles.tileLabel} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.8} maxFontSizeMultiplier={1.4}>{label.toUpperCase()}</Text>
     </View>
   );
 }

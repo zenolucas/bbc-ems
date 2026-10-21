@@ -13,7 +13,6 @@ import {
   NOTES_LIMIT,
   pendingTicketIds,
   queuedFor,
-  readOutcomes,
   recentFor,
   stats as countStats,
   TIMEOUT_MS,
@@ -25,10 +24,10 @@ import {
   type ScanResult,
 } from "./logic";
 import { store } from "./store";
+import { syncDeps, updateBackgroundSync } from "./background-sync";
+import { syncQueue } from "./sync";
 
 export type Flash = { id: number; text: string; tone: "success" | "warning" | "danger" };
-
-type SyncResponse = { outcomes: { clientId: string; result: "ok" | "duplicate" | "invalid" | "void"; checkedInAt: string | null; holder?: string }[] };
 
 const isAuthError = (e: unknown) => e instanceof ApiError && (e.status === 401 || e.status === 403);
 
@@ -107,34 +106,21 @@ export function useScanner(eventId: string) {
 
   /** One round trip. `stop` ends the loop (empty queue, offline, signed out). */
   const syncOnce = useCallback(async (): Promise<{ refetch: boolean; stop: boolean }> => {
-    const q = store.queue.get(eventId);
-    setQueueLen(q.length);
-    if (q.length === 0) return { refetch: false, stop: true };
-    try {
-      const { outcomes } = await api<SyncResponse>("/api/scan/sync", {
-        body: {
-          eventId,
-          deviceId: deviceRef.current,
-          checkins: q.map(({ clientId, ticketId, rawPayload, scannedAt, localResult }) => ({ clientId, ticketId, rawPayload, scannedAt, localResult })),
-        },
-        timeoutMs: TIMEOUT_MS,
-      });
-      setConn("online");
-      const { refetch, notes: fresh, done } = readOutcomes(outcomes, q);
-      // Re-read inside the transaction: scans made while the request was in flight stay queued
-      const remaining = store.queue.update(eventId, (cur) => cur.filter((x) => !done.has(x.clientId)));
-      setQueueLen(remaining.length);
-      if (fresh.length) {
-        setNotes((n) => [...fresh, ...n].slice(0, NOTES_LIMIT));
-        for (const n of fresh) flash(n, "warning", 12_000);
-        feedback("warn");
-      }
-      return { refetch, stop: remaining.length === 0 };
-    } catch (e) {
-      if (isAuthError(e)) setConn("auth");
-      else setConn("offline");
+    // Same round trip as the background task (./sync), so the two can't drift
+    const r = await syncQueue(eventId, syncDeps);
+    setQueueLen(r.remaining);
+    if (r.status === "empty") return { refetch: false, stop: true };
+    if (r.status === "auth" || r.status === "offline") {
+      setConn(r.status);
       return { refetch: false, stop: true };
     }
+    setConn("online");
+    if (r.notes.length) {
+      setNotes((n) => [...r.notes, ...n].slice(0, NOTES_LIMIT));
+      for (const n of r.notes) flash(n, "warning", 12_000);
+      feedback("warn");
+    }
+    return { refetch: r.refetch, stop: r.remaining === 0 };
   }, [eventId, flash]);
 
   /** Single-flight: a call made while syncing sets a flag and the running sync loops once more. */
@@ -157,6 +143,8 @@ export function useScanner(eventId: string) {
       syncLock.current = false;
       setSyncing(false);
     }
+    // Leaving with scans still queued hands them to the background task; an empty queue turns it off
+    void updateBackgroundSync();
     if (refetch) await refreshManifest();
   }, [syncOnce, refreshManifest]);
 
@@ -171,6 +159,9 @@ export function useScanner(eventId: string) {
     setQueueLen(store.queue.get(eventId).length);
     setLocalUsed(store.used.get(eventId));
     setRecent(store.recent.get(eventId));
+    // Conflicts a background sync found while door mode was closed
+    const stored = store.notes.get(eventId);
+    if (stored.length) setNotes(stored);
     const mu = store.muted.get();
     setMuted(mu);
     setFeedbackMuted(mu);
@@ -220,6 +211,8 @@ export function useScanner(eventId: string) {
       setRecent(store.recent.update(eventId, (cur) => [recentFor(result), ...cur]));
       setLast(result);
       feedback(toFeedback(result.kind));
+      // Register the background task right away, in case this phone never syncs before leaving
+      void updateBackgroundSync();
       void sync();
     },
     [eventId, sync],
@@ -302,7 +295,10 @@ export function useScanner(eventId: string) {
   );
 
   const dismiss = useCallback(() => setLast(null), []);
-  const clearNotes = useCallback(() => setNotes([]), []);
+  const clearNotes = useCallback(() => {
+    setNotes([]);
+    store.notes.update(eventId, () => []);
+  }, [eventId]);
 
   const toggleMute = useCallback(() => {
     const v = !muted;

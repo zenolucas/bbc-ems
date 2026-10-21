@@ -11,6 +11,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { EmptyState } from "@/components/ui/empty-state";
 import { Textarea } from "@/components/ui/textarea";
 import { StatusBadge } from "@/components/event/status-badge";
+import { REJECT_REASONS } from "@bbc/shared/admin-types";
 import { peso } from "@/lib/format";
 import { runAction } from "@/lib/run-action";
 import { cn } from "@/lib/utils";
@@ -24,12 +25,8 @@ export type ReviewRow = {
   reviewed: string | null; booked: string;
 };
 
-const REASONS = [
-  { label: "Wrong amount", short: "Wrong amount", text: (r: ReviewRow) => `The amount received doesn't match ${peso(r.totalCents)}. Please send the difference and upload the new receipt.` },
-  { label: "Unreadable receipt", short: "Unreadable", text: () => "We can't read the receipt. Please upload a clearer screenshot that shows the amount and reference number." },
-  { label: "Reference not found", short: "Ref not found", text: () => "We couldn't find this reference number in our GCash/Maya history. Please double-check it and resubmit." },
-  { label: "Duplicate", short: "Duplicate", text: () => "This receipt was already used for another booking. Please upload the receipt for this payment." },
-];
+// Same wording as the app's review queue
+const REASONS = REJECT_REASONS.map((r) => ({ ...r, text: (row: ReviewRow) => r.text(row.totalCents) }));
 
 function subscribeHash(cb: () => void) {
   window.addEventListener("hashchange", cb);

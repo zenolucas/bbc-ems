@@ -12,14 +12,26 @@ export const dynamic = "force-dynamic";
 
 const wrap = "mx-auto w-full max-w-6xl px-4 sm:px-6";
 
-/*
- * Category filter pills (All / Gigs / Outdoors / Free) from the mockup are left
- * out on purpose: events have no category yet, so they would filter nothing.
- */
-export default async function Home() {
+type Show = "all" | "gigs" | "outdoors" | "free";
+const FILTERS: { key: Show; label: string; match: (e: { category: string; tiers: { priceCents: number }[] }) => boolean }[] = [
+  { key: "all", label: "All", match: () => true },
+  { key: "gigs", label: "Gigs", match: (e) => e.category === "gig" },
+  { key: "outdoors", label: "Outdoors", match: (e) => e.category === "outdoors" },
+  { key: "free", label: "Free", match: (e) => e.tiers.length > 0 && e.tiers.every((t) => t.priceCents === 0) },
+];
+
+export default async function Home({ searchParams }: PageProps<"/">) {
   const { upcoming, past } = await listPublishedEvents();
-  const [upNext, ...rest] = upcoming;
+  const q = (await searchParams).show;
+  const show = FILTERS.find((f) => f.key === q) ?? FILTERS[0];
+  // Pills only for filters that would show something, and only when there's a choice to make
+  const pills = FILTERS.filter((f) => f.key === "all" || upcoming.some(f.match));
+  const shown = upcoming.filter(show.match);
+  // The hero always shows the very next event; the list below follows the filter
+  const heroNext = upcoming[0];
+  const [upNext, ...rest] = shown;
   const when = upNext ? relative(upNext.startsAt) : "";
+  const heroWhen = heroNext ? relative(heroNext.startsAt) : "";
   return (
     <div data-bleed>
       {/* Day copy is deep forest on the light sky; at night it turns white under the stars */}
@@ -59,15 +71,36 @@ export default async function Home() {
             </div>
           </div>
           {/* Desktop: the next event rides the ridge on the hero's right */}
-          {upNext && (
+          {heroNext && (
             <div className="hidden justify-self-end lg:block lg:w-full">
-              <UpNextCard event={upNext} when={when} variant="hero" />
+              <UpNextCard event={heroNext} when={heroWhen} variant="hero" />
             </div>
           )}
         </div>
       </section>
 
       <div id="events" className="scroll-mt-20">
+        {pills.length > 2 && (
+          <nav aria-label="Filter events" className={cn(wrap, "flex gap-2 overflow-x-auto pt-[22px] [scrollbar-width:none] lg:pt-10")}>
+            {pills.map((f) => {
+              const on = f.key === show.key;
+              return (
+                <Link
+                  key={f.key}
+                  href={f.key === "all" ? "/#events" : `/?show=${f.key}#events`}
+                  scroll={false}
+                  aria-current={on ? "page" : undefined}
+                  className={cn(
+                    "shrink-0 rounded-full border px-4 py-2 text-sm font-semibold transition-colors focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none",
+                    on ? "border-transparent bg-primary text-primary-foreground" : "bg-card text-muted-foreground hover:border-foreground/25 hover:text-foreground",
+                  )}
+                >
+                  {f.label}
+                </Link>
+              );
+            })}
+          </nav>
+        )}
         {upNext ? (
           <>
             <section aria-labelledby="up-next" className={cn(wrap, "flex flex-col gap-3 pt-[22px] lg:hidden")}>
@@ -104,6 +137,16 @@ export default async function Home() {
               </section>
             )}
           </>
+        ) : show.key !== "all" && upcoming.length > 0 ? (
+          <section aria-label="Upcoming events" className={cn(wrap, "pt-8 sm:pt-12")}>
+            <EmptyState
+              title={`No ${show.label.toLowerCase()} events coming up`}
+              className="mx-auto max-w-md"
+              action={<Button asChild variant="outline" className="h-10 rounded-full px-[18px]"><Link href="/#events" scroll={false}>See everything</Link></Button>}
+            >
+              Other things are on, though.
+            </EmptyState>
+          </section>
         ) : (
           <section aria-label="Upcoming events" className={cn(wrap, "pt-8 sm:pt-12")}>
             <EmptyState

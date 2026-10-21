@@ -29,7 +29,10 @@
         "POST_NOTIFICATIONS"
       ],
       "blockedPermissions": [
-        "android.permission.RECORD_AUDIO"
+        "android.permission.RECORD_AUDIO",
+        "android.permission.READ_CALENDAR",
+        "android.permission.WRITE_CALENDAR",
+        "android.permission.WRITE_SETTINGS"
       ]
     },
     "plugins": [
@@ -81,7 +84,16 @@
           }
         }
       ],
-      "expo-background-task"
+      "expo-background-task",
+      [
+        "expo-calendar",
+        {
+          "writeOnlyAccess": true,
+          "writeOnlyCalendarPermission": "Baguio Base Camp adds the events you book to your calendar.",
+          "calendarPermission": "Baguio Base Camp adds the events you book to your calendar.",
+          "remindersPermission": false
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true

@@ -24,3 +24,10 @@ export async function requireApiStaff(req: Request) {
   if (!isStaffRole(user.role)) throw new ApiError(403, "Door access only");
   return user;
 }
+
+/** Organisers only (door crew get 403, like requireAdmin() sends them to the scanner). */
+export async function requireApiAdmin(req: Request) {
+  const user = await requireApiUser(req);
+  if (user.role !== "admin") throw new ApiError(403, "Organisers only");
+  return user;
+}

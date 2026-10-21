@@ -42,6 +42,8 @@ export const CodePanel = forwardRef<TextInputInstance, { onSubmit: (code: string
         onFocus={() => setFocused(true)}
         onBlur={() => setFocused(false)}
         accessibilityLabel="Ticket code"
+        // 13 mono characters must fit one line; capped so large system text can't push the code off the box
+        maxFontSizeMultiplier={1.3}
         style={[styles.input, { borderColor: focused ? c.primary : c.border }]}
       />
       <View style={styles.progress} accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
@@ -58,7 +60,7 @@ export const CodePanel = forwardRef<TextInputInstance, { onSubmit: (code: string
 const styles = StyleSheet.create({
   card: { gap: space.md, borderRadius: 22, backgroundColor: c.card, paddingHorizontal: space.lg, paddingVertical: 18 },
   input: {
-    height: 60,
+    minHeight: 60,
     borderWidth: 2,
     borderRadius: radius.md,
     backgroundColor: c.background,

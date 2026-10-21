@@ -38,8 +38,8 @@ export function Poster({ url, dim, style, children }: { url: string | null; dim?
 export function DateTab({ date, large }: { date: string; large?: boolean }) {
   return (
     <View style={[styles.dateTab, large && { paddingHorizontal: 12, paddingVertical: 8 }]} accessible accessibilityLabel={fmtDate(date, "EEEE, MMMM d")}>
-      <Text style={{ fontFamily: fonts.bodyBold, fontSize: large ? 12 : 10.5, letterSpacing: 1, color: brand.pine }}>{fmtDate(date, "MMM").toUpperCase()}</Text>
-      <Text style={{ fontFamily: fonts.displayHeavy, fontSize: large ? 28 : 22, lineHeight: large ? 30 : 24, color: brand.deepForest }}>{fmtDate(date, "d")}</Text>
+      <Text maxFontSizeMultiplier={1.4} style={{ fontFamily: fonts.bodyBold, fontSize: large ? 12 : 10.5, letterSpacing: 1, color: brand.pine }}>{fmtDate(date, "MMM").toUpperCase()}</Text>
+      <Text maxFontSizeMultiplier={1.4} style={{ fontFamily: fonts.displayHeavy, fontSize: large ? 28 : 22, lineHeight: large ? 30 : 24, color: brand.deepForest }}>{fmtDate(date, "d")}</Text>
     </View>
   );
 }

@@ -3,12 +3,13 @@ import { fmtDateTime, relative } from "@bbc/shared/format";
 import { useQuery } from "@tanstack/react-query";
 import { router, useFocusEffect } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { Check, ChevronRight, CloudOff, Download, Info, ScanLine } from "lucide-react-native";
+import { Check, ChevronRight, CloudOff, CloudUpload, Download, Info, ScanLine } from "lucide-react-native";
 import { useCallback, useMemo, useState } from "react";
-import { Pressable, StyleSheet, View } from "react-native";
+import { AppState, Pressable, StyleSheet, View } from "react-native";
 import { EmptyState, Loading, Screen, SignInPrompt, Text } from "@/components/ui";
 import { api, ApiError } from "@/lib/api";
 import { useSession } from "@/lib/session";
+import { syncAllQueues, updateBackgroundSync } from "@/scanner/background-sync";
 import { store } from "@/scanner/store";
 import { PulseDot } from "@/scanner/ui";
 import { brand, fonts, nightTheme, radius, space } from "@/theme";
@@ -26,6 +27,7 @@ export default function DoorTab() {
   const { status, isStaff, isAdmin } = useSession();
   const [local, setLocal] = useState<Record<string, Local>>({});
   const [onPhone, setOnPhone] = useState<ReturnType<typeof store.events>>([]);
+  const [backgroundOn, setBackgroundOn] = useState(false);
 
   const q = useQuery({
     queryKey: ["door-events"],
@@ -41,17 +43,37 @@ export default function DoorTab() {
   const rows = q.data ?? cached?.events ?? [];
   const offline = !q.data && q.error instanceof ApiError && q.error.offline;
 
-  // Re-read what this phone holds whenever the tab comes back (after a door session)
+  const readPhone = useCallback(() => {
+    const all = store.events();
+    setOnPhone(all);
+    setLocal(Object.fromEntries(all.map((e) => [e.eventId, { listAt: e.listAt, queued: e.queued }])));
+    return all;
+  }, []);
+
+  /** Sends scans left waiting by an earlier door session, then re-reads. The background task covers the rest. */
+  const flushQueues = useCallback(async () => {
+    if (store.queuedTotal() > 0) {
+      await syncAllQueues();
+      readPhone();
+    }
+    setBackgroundOn(await updateBackgroundSync());
+  }, [readPhone]);
+
+  // Re-read what this phone holds whenever the tab comes back (after a door session), and on return to the app
   useFocusEffect(
     useCallback(() => {
       if (!isStaff) return;
-      const all = store.events();
-      setOnPhone(all);
-      setLocal(Object.fromEntries(all.map((e) => [e.eventId, { listAt: e.listAt, queued: e.queued }])));
+      readPhone();
+      void flushQueues();
       void q.refetch();
+      const sub = AppState.addEventListener("change", (s) => {
+        if (s === "active") void flushQueues();
+      });
+      return () => sub.remove();
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isStaff]),
+    }, [isStaff, readPhone, flushQueues]),
   );
+  const waiting = onPhone.reduce((n, e) => n + e.queued, 0);
 
   if (status === "signedOut") {
     return (
@@ -93,6 +115,18 @@ export default function DoorTab() {
           <CloudOff size={16} color={c.warningForeground} />
           <Text theme={nightTheme} variant="caption" muted style={{ flex: 1 }}>
             No signal.{cached ? ` Showing the list from ${relative(new Date(cached.at))}.` : ""} Events with a guest list on this phone still scan offline.
+          </Text>
+        </View>
+      )}
+
+      {waiting > 0 && (
+        <View style={[styles.banner, { borderLeftColor: c.warning }]}>
+          <CloudUpload size={16} color={c.warningForeground} />
+          <Text theme={nightTheme} variant="caption" muted style={{ flex: 1 }}>
+            <Text theme={nightTheme} variant="caption" style={{ fontFamily: fonts.bodySemi }}>{waiting} scan{waiting === 1 ? "" : "s"} waiting to sync.</Text>{" "}
+            {backgroundOn
+              ? "Waiting scans send in the background once you have signal (Android checks about every 15 minutes), or straight away when you open the event."
+              : "Open the event with signal to send them."}
           </Text>
         </View>
       )}

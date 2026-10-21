@@ -203,7 +203,8 @@ function Door({ eventId, titleParam }: { eventId: string; titleParam?: string })
                   style={[styles.segment, on && { backgroundColor: c.surface2 }]}
                 >
                   <t.Icon size={16} color={on ? c.foreground : c.mutedForeground} />
-                  <Text theme={nightTheme} variant="label" color={on ? c.foreground : c.mutedForeground} style={{ fontSize: 13 }}>{t.label}</Text>
+                  {/* Three segments share a row: shrink the label to fit rather than wrap or clip at large text sizes */}
+                  <Text theme={nightTheme} variant="label" color={on ? c.foreground : c.mutedForeground} style={{ fontSize: 13, flexShrink: 1 }} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.75} maxFontSizeMultiplier={1.5}>{t.label}</Text>
                 </Pressable>
               );
             })}

@@ -6,9 +6,11 @@ import { ChevronRight, Clock, Ticket as TicketIcon } from "lucide-react-native";
 import { useCallback } from "react";
 import { Alert, Linking, Pressable, StyleSheet, View } from "react-native";
 import { CountdownRing, CountdownText } from "@/components/countdown";
+import { AddToCalendarButton } from "@/components/event/add-to-calendar";
 import { CopyRow } from "@/components/ticket/copy-row";
 import { Button, Card, Divider, ErrorView, Loading, Notice, Pill, Row, Screen, SignInPrompt, Text } from "@/components/ui";
 import { assetUrl, statusLabel, statusTone, useBooking, useCancelBooking } from "@/lib/attendee";
+import { API_URL } from "@/lib/config";
 import { useSession } from "@/lib/session";
 import { fonts, radius, space, useTheme } from "@/theme";
 
@@ -240,6 +242,7 @@ function BookingView({ b, refreshing, onRefresh, reserved, confirmed }: { b: Boo
               <ChevronRight size={18} color={c.mutedForeground} />
             </Pressable>
           ))}
+          {!eventCancelled && <AddToCalendarButton event={b.event} link={`${API_URL}/bookings/${b.id}`} />}
         </View>
       )}
 

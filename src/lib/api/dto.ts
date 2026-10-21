@@ -100,6 +100,7 @@ export function ticketDTO(t: Ticket & { tier: Tier }, event: Event): TicketDTO {
     qrUrl: urlFor(t),
     token: tokenFor(t),
     pngPath: `/api/tickets/${t.id}/png`,
+    ticketStyle: event.ticketStyle,
     event: eventRefDTO(event),
   };
 }

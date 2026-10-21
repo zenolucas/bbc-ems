@@ -89,6 +89,8 @@ export type TicketDTO = {
   token: string;
   /** Path of the rendered PNG; add ?theme=dark for the night render. */
   pngPath: string;
+  /** The event's ticket design. "trail-pass" is landscape, so its QR is small on phones. */
+  ticketStyle: string;
   event: EventRefDTO;
 };
 

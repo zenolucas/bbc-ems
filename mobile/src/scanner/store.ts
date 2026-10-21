@@ -1,11 +1,12 @@
 import type { DoorEventDTO } from "@bbc/shared/api-types";
 import type { Manifest } from "@bbc/shared/scan-types";
 import { openDatabaseSync, type SQLiteDatabase } from "expo-sqlite";
-import { newDeviceId, RECENT_LIMIT, type LocalUsed, type QueuedCheckin, type RecentScan } from "./logic";
+import { newDeviceId, NOTES_LIMIT, RECENT_LIMIT, type LocalUsed, type QueuedCheckin, type RecentScan } from "./logic";
 
 /**
  * What the door keeps on this phone, under the web scanner's keys
- * (bbc:manifest|queue|used|recent:<eventId>, bbc:device, bbc:muted).
+ * (bbc:manifest|queue|used|recent:<eventId>, bbc:device, bbc:muted), plus
+ * bbc:notes:<eventId> for conflicts the background sync found.
  *
  * Every read-modify-write runs synchronously inside one SQLite transaction. With
  * no await between the read and the write, a scan made during a sync (or two
@@ -61,6 +62,11 @@ export const store = {
     get: (eventId: string) => read<RecentScan[]>(k(eventId, "recent")) ?? [],
     update: (eventId: string, fn: (r: RecentScan[]) => RecentScan[]) => change<RecentScan[]>(k(eventId, "recent"), [], (r) => fn(r).slice(0, RECENT_LIMIT)),
   },
+  /** Conflict notes from syncs that ran while door mode was closed (background), shown when it opens. */
+  notes: {
+    get: (eventId: string) => read<string[]>(k(eventId, "notes")) ?? [],
+    update: (eventId: string, fn: (n: string[]) => string[]) => change<string[]>(k(eventId, "notes"), [], (n) => fn(n).slice(0, NOTES_LIMIT)),
+  },
   muted: {
     get: () => read<boolean>("bbc:muted") ?? false,
     set: (v: boolean) => write("bbc:muted", v),
@@ -73,7 +79,7 @@ export const store = {
   /** Removes this event's ticket list and history from the phone (end of night). */
   clear(eventId: string) {
     conn().withTransactionSync(() => {
-      for (const n of ["manifest", "queue", "used", "recent"]) conn().runSync("DELETE FROM kv WHERE key = ?", [k(eventId, n)]);
+      for (const n of ["manifest", "queue", "used", "recent", "notes"]) conn().runSync("DELETE FROM kv WHERE key = ?", [k(eventId, n)]);
     });
   },
   deviceId() {
@@ -83,6 +89,10 @@ export const store = {
   summary(eventId: string) {
     const m = read<Manifest>(k(eventId, "manifest"));
     return { listAt: m?.version ?? null, queued: (read<QueuedCheckin[]>(k(eventId, "queue")) ?? []).length };
+  },
+  /** Total check-ins waiting to sync, across events. */
+  queuedTotal() {
+    return store.events().reduce((n, e) => n + e.queued, 0);
   },
   /** Every event this phone holds anything for, with its title, for the "on this phone" summary. */
   events(): { eventId: string; title: string; listAt: string | null; queued: number }[] {

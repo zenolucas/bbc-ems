@@ -12,18 +12,16 @@ configureForegroundHandling();
  */
 export function PushManager() {
   const { status } = useSession();
-  const previous = useRef(status);
   const navReady = !!useRootNavigationState()?.key;
   const response = Notifications.useLastNotificationResponse();
   const handled = useRef<string | null>(null);
 
-  // Ask right after someone signs in (they just chose to use the app); on later
-  // launches only re-register if they already said yes. Never prompt signed out.
+  // Never prompts here: the app offers notifications when they're worth it (a receipt sent,
+  // a free booking, joining a waitlist; see offerPush). On launch and sign-in it only
+  // re-registers a phone that already said yes.
   useEffect(() => {
-    const was = previous.current;
-    previous.current = status;
     if (status !== "signedIn") return;
-    enablePush({ ask: was === "signedOut" });
+    enablePush({ ask: false });
   }, [status]);
 
   useEffect(() => onBeforeSignOut(unregisterPush), []);

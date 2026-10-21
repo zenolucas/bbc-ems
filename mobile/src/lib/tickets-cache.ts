@@ -1,4 +1,4 @@
-import type { TicketDTO } from "@bbc/shared/api-types";
+import type { BookingDTO, TicketDTO } from "@bbc/shared/api-types";
 import { Directory, File, Paths } from "expo-file-system";
 import { openDatabaseSync } from "expo-sqlite";
 import { useEffect, useSyncExternalStore } from "react";
@@ -147,6 +147,30 @@ export async function upsertTicket(t: TicketDTO) {
   set({ tickets: list });
   await ensurePng(t, false);
   await ensurePng(t, true);
+}
+
+/**
+ * The bookings list, saved next to the tickets so the wallet's "Pay now / Fix payment /
+ * Being reviewed" cards still show with no signal. Cleared with everything else on sign-out.
+ */
+export function cachedBookings(): { list: BookingDTO[]; at: number } | null {
+  try {
+    const rows = db.getAllSync<{ key: string; value: string }>("select key, value from meta where key in ('bookings', 'bookingsAt')");
+    const list = rows.find((r) => r.key === "bookings");
+    const at = rows.find((r) => r.key === "bookingsAt");
+    return list && at ? { list: JSON.parse(list.value), at: Number(at.value) } : null;
+  } catch {
+    return null;
+  }
+}
+
+export function saveBookings(list: BookingDTO[]) {
+  try {
+    db.withTransactionSync(() => {
+      db.runSync("insert or replace into meta (key, value) values ('bookings', ?)", JSON.stringify(list));
+      db.runSync("insert or replace into meta (key, value) values ('bookingsAt', ?)", String(Date.now()));
+    });
+  } catch {}
 }
 
 export function clearTicketCache() {

@@ -1,7 +1,7 @@
 import { router, useFocusEffect, useLocalSearchParams, type Href } from "expo-router";
 import * as Linking from "expo-linking";
 import * as WebBrowser from "expo-web-browser";
-import { RotateCw, X } from "lucide-react-native";
+import { ReceiptText, RotateCw, X } from "lucide-react-native";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { BackHandler, Pressable, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -107,6 +107,10 @@ export default function Organiser() {
         goNative(scan[1] ? `/door/${scan[1]}` : "/door");
         return false;
       }
+      // The receipt review queue is native in the app: bigger receipt, approve/reject with thumbs
+      if (path === "/admin/review" || path === "/admin/review/") return goNative("/review"), false;
+      const rq = path.match(/^\/admin\/events\/([^/?#]+)\/bookings\/?$/);
+      if (rq && u.searchParams.get("show") === "review") return goNative(`/review?eventId=${rq[1]}`), false;
       if (WEB_PATHS.test(path)) return true;
       const ev = path.match(/^\/events\/([^/?#]+)\/?$/);
       if (ev) return goNative(`/events/${ev[1]}`), false;
@@ -164,7 +168,7 @@ export default function Organiser() {
   }
 
   return (
-    <Shell onClose={close} onReload={phase.kind === "ready" ? () => web.current?.reload() : undefined} progress={phase.kind === "ready" ? progress : 0}>
+    <Shell onClose={close} onReview={() => goNative("/review")} onReload={phase.kind === "ready" ? () => web.current?.reload() : undefined} progress={phase.kind === "ready" ? progress : 0}>
       {phase.kind === "connecting" && <Loading label="Opening organiser tools…" />}
       {phase.kind === "error" && (
         <EmptyState title="Couldn't open organiser tools" action={<Button title="Try again" onPress={() => { relogins.current = 0; setPhase({ kind: "connecting" }); connect(start); }} />}>
@@ -200,7 +204,7 @@ export default function Organiser() {
   );
 }
 
-function Shell({ children, onClose, onReload, progress = 0 }: { children: React.ReactNode; onClose: () => void; onReload?: () => void; progress?: number }) {
+function Shell({ children, onClose, onReload, onReview, progress = 0 }: { children: React.ReactNode; onClose: () => void; onReload?: () => void; onReview?: () => void; progress?: number }) {
   const { c } = useTheme();
   return (
     <SafeAreaView edges={["top", "bottom"]} style={{ flex: 1, backgroundColor: c.background }}>
@@ -209,6 +213,9 @@ function Shell({ children, onClose, onReload, progress = 0 }: { children: React.
           <X color={c.foreground} size={22} />
         </Pressable>
         <Text variant="heading" style={{ flex: 1, textAlign: "center" }}>Organiser tools</Text>
+        <Pressable onPress={onReview} disabled={!onReview} hitSlop={12} accessibilityRole="button" accessibilityLabel="Review receipts" style={[styles.icon, { opacity: onReview ? 1 : 0 }]}>
+          <ReceiptText color={c.foreground} size={20} />
+        </Pressable>
         <Pressable onPress={onReload} disabled={!onReload} hitSlop={12} accessibilityRole="button" accessibilityLabel="Reload" style={[styles.icon, { opacity: onReload ? 1 : 0 }]}>
           <RotateCw color={c.foreground} size={20} />
         </Pressable>

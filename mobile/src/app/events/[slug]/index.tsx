@@ -2,15 +2,16 @@ import { useNow } from "@/components/countdown";
 import type { EventDetailDTO } from "@bbc/shared/api-types";
 import { fmtDate, fmtTime, peso } from "@bbc/shared/format";
 import { router, Stack, useLocalSearchParams } from "expo-router";
-import { CalendarDays, MapPin, Share2 } from "lucide-react-native";
-import { Linking, Pressable, RefreshControl, ScrollView, Share, StyleSheet, View } from "react-native";
+import { Bell, CalendarDays, MapPin, Share2 } from "lucide-react-native";
+import { Alert, Linking, Pressable, RefreshControl, ScrollView, Share, StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { AvailabilityPill, priceLabel } from "@/components/event/event-card";
 import { EventMarkdown } from "@/components/event/markdown";
 import { DateTab, Poster } from "@/components/event/poster";
 import { Button, Card, ErrorView, Loading, Notice, Pill, Row, Text } from "@/components/ui";
-import { statusLabel, useEvent } from "@/lib/attendee";
+import { statusLabel, useEvent, useWaitlist } from "@/lib/attendee";
 import { API_URL } from "@/lib/config";
+import { offerPush } from "@/lib/push";
 import { useSession } from "@/lib/session";
 import { brand, fonts, radius, space, useTheme } from "@/theme";
 
@@ -38,6 +39,7 @@ export function bookability(e: EventDetailDTO, now: number) {
 export default function EventScreen() {
   const { slug } = useLocalSearchParams<{ slug: string }>();
   const q = useEvent(slug);
+  const waitlist = useWaitlist(slug);
   const { status } = useSession();
   const { c } = useTheme();
   const insets = useSafeAreaInsets();
@@ -48,6 +50,19 @@ export default function EventScreen() {
   const e = q.data;
   const { canBook, closedLabel, isOver } = bookability(e, now);
   const existing = e.myBooking;
+  // Sold out (not closed or over): offer the waitlist instead of a dead button
+  const waitlistable = !existing && !canBook && e.status === "published" && !isOver && e.availability === "sold-out";
+  async function toggleWaitlist() {
+    if (status !== "signedIn") return router.push("/sign-in");
+    const joining = !e.onWaitlist;
+    try {
+      await waitlist.mutateAsync(joining);
+      // Pushes reach people faster than email, and the first to book gets the seats
+      if (joining) void offerPush("waitlist");
+    } catch (err) {
+      Alert.alert("Couldn't update the waitlist", err instanceof Error ? err.message : "Try again in a moment.");
+    }
+  }
   const share = () => Share.share({ message: `${e.title} · ${API_URL}/events/${e.slug}` }).catch(() => {});
 
   return (
@@ -160,11 +175,23 @@ export default function EventScreen() {
       {/* The main action stays in reach under a long description */}
       <View style={[styles.cta, { backgroundColor: c.background, borderColor: c.border, paddingBottom: Math.max(insets.bottom, space.md) }]}>
         <View style={{ flex: 1, minWidth: 0 }}>
-          <Text variant="heading" numberOfLines={1}>{existing ? (existing.status === "approved" ? "You're going" : "Booking in progress") : priceLabel(e)}</Text>
-          <Text variant="caption" muted numberOfLines={1}>{fmtDate(e.startsAt, "EEE, MMM d")} · {fmtTime(e.startsAt)}</Text>
+          <Text variant="heading" numberOfLines={1}>{existing ? (existing.status === "approved" ? "You're going" : "Booking in progress") : waitlistable ? "Sold out" : priceLabel(e)}</Text>
+          {waitlistable ? (
+            <Text variant="caption" muted numberOfLines={2}>
+              {e.onWaitlist ? "You're on the list. We'll tell you the moment seats free up." : "Seats come back when holds lapse. Get told first."}
+            </Text>
+          ) : (
+            <Text variant="caption" muted numberOfLines={1}>{fmtDate(e.startsAt, "EEE, MMM d")} · {fmtTime(e.startsAt)}</Text>
+          )}
         </View>
         {existing ? (
           <Button title={existing.status === "approved" ? "View tickets" : "Open booking"} onPress={() => router.push(`/bookings/${existing.id}`)} />
+        ) : waitlistable ? (
+          e.onWaitlist ? (
+            <Button title="Leave the list" variant="ghost" loading={waitlist.isPending} onPress={toggleWaitlist} />
+          ) : (
+            <Button title="Notify me" icon={<Bell size={16} color={c.primaryForeground} />} loading={waitlist.isPending} onPress={toggleWaitlist} />
+          )
         ) : canBook ? (
           <Button title="Book tickets" onPress={() => (status === "signedIn" ? router.push(`/events/${e.slug}/book`) : router.push("/sign-in"))} />
         ) : (

@@ -6,6 +6,7 @@ import { ChevronDown, ChevronRight, CloudOff, Ticket as TicketIcon } from "lucid
 import { useCallback, useMemo, useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import { Button, EmptyState, Notice, Pill, Row, Screen, SignInPrompt, Text } from "@/components/ui";
+import { ApiError } from "@/lib/api";
 import { statusLabel, useBookings } from "@/lib/attendee";
 import { useSession } from "@/lib/session";
 import { useTickets } from "@/lib/tickets-cache";
@@ -65,6 +66,7 @@ function Wallet() {
     return { upcoming: all.filter((g) => !g.past), past: all.filter((g) => g.past).reverse() };
   }, [tickets, now]);
 
+  const bookingsOffline = bookings.error instanceof ApiError && bookings.error.offline;
   // Bookings that still need the member: unpaid holds, rejected receipts, receipts in review
   const attention = (bookings.data ?? []).filter((b) => b.event.status !== "cancelled" && (b.status === "pending_payment" || b.status === "rejected" || b.status === "under_review"));
 
@@ -75,17 +77,17 @@ function Wallet() {
         <Text variant="display">Your passes</Text>
       </View>
 
-      {offline && (
+      {(offline || bookingsOffline) && (
         <Row style={[styles.banner, { backgroundColor: c.warningSoft }]}>
           <CloudOff size={16} color={c.warningForeground} />
           <Text variant="caption" color={c.warningForeground} style={{ flex: 1 }}>
-            Offline · showing saved tickets{syncedAt ? ` from ${relative(new Date(syncedAt))}` : ""}
+            Offline · showing what&apos;s saved on this phone{syncedAt ? ` from ${relative(new Date(syncedAt))}` : ""}
           </Text>
         </Row>
       )}
       {error && !offline && <Notice tone="danger" title="Couldn't refresh your tickets">{error}</Notice>}
 
-      {attention.map((b) => <AttentionRow key={b.id} b={b} />)}
+      {attention.map((b) => <AttentionRow key={b.id} b={b} saved={bookingsOffline} />)}
 
       {groups.upcoming.length === 0 && attention.length === 0 ? (
         syncing && syncedAt == null ? (
@@ -114,7 +116,7 @@ function Wallet() {
   );
 }
 
-function AttentionRow({ b }: { b: BookingDTO }) {
+function AttentionRow({ b, saved }: { b: BookingDTO; saved: boolean }) {
   const label = b.status === "pending_payment" ? "Pay now" : b.status === "rejected" ? "Fix payment" : "Details";
   const tone = b.status === "under_review" ? "info" : b.status === "rejected" ? "danger" : "warning";
   return (
@@ -122,7 +124,7 @@ function AttentionRow({ b }: { b: BookingDTO }) {
       <Notice tone={tone} title={b.event.title}>
         <Row style={{ justifyContent: "space-between" }}>
           <Text variant="caption" muted style={{ flex: 1 }}>
-            {statusLabel[b.status]} · {peso(b.totalCents)}
+            {saved ? "Saved · " : ""}{statusLabel[b.status]} · {peso(b.totalCents)}
             {b.expiresAt && b.status !== "under_review" ? ` · hold ends ${fmtDate(b.expiresAt, "MMM d")}, ${fmtTime(b.expiresAt)}` : ""}
           </Text>
           <Text variant="label">{label} ›</Text>

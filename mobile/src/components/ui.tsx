@@ -139,7 +139,8 @@ export function Pill({ label, tone = "neutral" }: { label: string; tone?: Tone }
   const fg = { neutral: c.mutedForeground, success: c.successForeground, warning: c.warningForeground, danger: c.destructive, info: c.infoForeground }[tone];
   return (
     <View style={[styles.pill, { backgroundColor: bg }]}>
-      <RNText style={[variants.label, { color: fg, fontSize: 12 }]}>{label}</RNText>
+      {/* Chrome, not reading text: grows with the phone's text size up to 1.4x so rows don't burst */}
+      <RNText maxFontSizeMultiplier={1.4} numberOfLines={1} style={[variants.label, { color: fg, fontSize: 12 }]}>{label}</RNText>
     </View>
   );
 }
