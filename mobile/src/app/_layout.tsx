@@ -4,11 +4,15 @@ import { SplashScreen, Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import { PushManager } from "@/components/push-manager";
 import { queryClient } from "@/lib/query";
 import { SessionProvider, useSession } from "@/lib/session";
 import { fontFiles, fonts, useTheme } from "@/theme";
 
 SplashScreen.preventAutoHideAsync().catch(() => {});
+
+// A screen opened from a notification or link gets the tabs underneath it, so Back has somewhere to go
+export const unstable_settings = { anchor: "(tabs)" };
 
 export default function RootLayout() {
   const [loaded, error] = useFonts(fontFiles);
@@ -46,7 +50,10 @@ function RootStack() {
       >
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="sign-in" options={{ presentation: "modal", title: "Sign in" }} />
+        {/* Draws its own header (close, reload, progress) */}
+        <Stack.Screen name="organiser" options={{ headerShown: false, presentation: "fullScreenModal" }} />
       </Stack>
+      <PushManager />
     </>
   );
 }

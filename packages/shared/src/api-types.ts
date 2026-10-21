@@ -60,6 +60,10 @@ export type EventDetailDTO = EventSummaryDTO & {
   venueAddress: string | null;
   mapUrl: string | null;
   tiers: TierDTO[];
+  /** How long a paid booking is held while the member pays. */
+  holdHours: number;
+  /** Whether the organiser has added GCash/Maya details yet. */
+  hasPaymentDetails: boolean;
   /** The signed-in member's live booking for this event, if any. */
   myBooking: { id: string; status: BookingStatus } | null;
 };

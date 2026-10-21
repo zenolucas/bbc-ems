@@ -79,6 +79,8 @@ export function eventDetailDTO(
     venueAddress: e.venueAddress,
     mapUrl: e.mapUrl,
     tiers,
+    holdHours: e.bookingHoldHours,
+    hasPaymentDetails: Boolean(e.gcashNumber || e.gcashQrUrl),
     myBooking: myBooking ? { id: myBooking.id, status: effectiveStatus(myBooking) } : null,
   };
 }

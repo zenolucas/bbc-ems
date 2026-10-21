@@ -61,7 +61,9 @@ export async function api<T = unknown>(path: string, opts: Options = {}): Promis
       body: opts.form ?? (opts.body !== undefined ? JSON.stringify(opts.body) : undefined),
       signal: ctrl.signal,
     });
-  } catch {
+  } catch (e) {
+    // Also catches bad request bodies, which would otherwise look like a lost signal while developing
+    if (__DEV__) console.warn("[api]", path, e);
     throw new ApiError(0, "No connection. Check your signal and try again.");
   } finally {
     clearTimeout(timer);

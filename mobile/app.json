@@ -17,7 +17,7 @@
     "android": {
       "package": "ph.baguiobasecamp.app",
       "adaptiveIcon": {
-        "backgroundColor": "#0E1C20",
+        "backgroundColor": "#F6F4EC",
         "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
@@ -57,23 +57,39 @@
         "expo-image-picker",
         {
           "photosPermission": "Pick a screenshot of your GCash or Maya receipt.",
-          "cameraPermission": false,
           "microphonePermission": false
         }
       ],
       [
         "expo-notifications",
         {
-          "color": "#1B5E3B"
+          "icon": "./assets/notification-icon.png",
+          "color": "#1B5E3B",
+          "defaultChannel": "default"
         }
       ],
-      "expo-asset"
+      "expo-asset",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/splash-icon.png",
+          "imageWidth": 200,
+          "backgroundColor": "#F6F4EC",
+          "dark": {
+            "image": "./assets/splash-icon.png",
+            "backgroundColor": "#0E1C20"
+          }
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
     },
     "extra": {
       "router": {}
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
     }
   }
 }

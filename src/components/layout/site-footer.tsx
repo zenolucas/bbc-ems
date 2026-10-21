@@ -6,9 +6,10 @@ const links = [
   { href: "/", label: "Events" },
   { href: "/me", label: "My tickets" },
   { href: "/about", label: "About" },
+  { href: "/privacy", label: "Privacy" },
 ];
 
-/** Lockup and three links on one line, over a ridge strip that closes the page. */
+/** Lockup and the footer links on one line, over a ridge strip that closes the page. */
 export function SiteFooter() {
   return (
     <footer className="relative mt-14 overflow-hidden border-t bg-surface-2">
@@ -30,7 +31,14 @@ export function SiteFooter() {
       </div>
       <div className="relative mt-2 h-20 sm:mt-0 sm:h-24">
         <Skyline variant="auto" size="strip" className="absolute inset-0" />
-        <p className="absolute bottom-3 left-0 right-0 mx-auto max-w-6xl px-4 text-xs text-foreground sm:px-6">Baguio City · 1,500 m above sea level · bring a jacket</p>
+        <p className="absolute bottom-3 left-0 right-0 mx-auto max-w-6xl px-4 text-xs text-foreground sm:px-6">
+          Baguio City · 1,500 m above sea level · bring a jacket
+          {/* The nav above is hidden on phones; the app stores link here, so keep it reachable */}
+          <span className="sm:hidden">
+            {" · "}
+            <Link href="/privacy" className="font-semibold underline-offset-2 hover:underline">Privacy</Link>
+          </span>
+        </p>
       </div>
     </footer>
   );

@@ -1,4 +1,3 @@
-import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { safeNext } from "@/lib/session";
 
@@ -14,11 +13,18 @@ export async function GET(req: Request) {
   const next = safeNext(url.searchParams.get("next"), "/admin");
   try {
     const { headers } = await auth.api.verifyOneTimeToken({ body: { token }, headers: req.headers, returnHeaders: true });
-    const res = NextResponse.redirect(new URL(next, url));
+    const res = redirect(next);
     for (const c of headers.getSetCookie()) res.headers.append("set-cookie", c);
-    res.headers.set("cache-control", "no-store");
     return res;
   } catch {
-    return NextResponse.redirect(new URL(`/login?next=${encodeURIComponent(next)}`, url));
+    return redirect(`/login?next=${encodeURIComponent(next)}`);
   }
+}
+
+/**
+ * Relative on purpose: in dev Next builds req.url from its own host (localhost), which
+ * for an Android emulator or a phone on the LAN is the device itself, not this server.
+ */
+function redirect(location: string) {
+  return new Response(null, { status: 307, headers: { location, "cache-control": "no-store" } });
 }
