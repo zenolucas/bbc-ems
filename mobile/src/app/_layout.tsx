@@ -4,6 +4,7 @@ import { SplashScreen, Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import { DemoBanner } from "@/components/demo/demo-banner";
 import { PushManager } from "@/components/push-manager";
 import { queryClient } from "@/lib/query";
 import "@/scanner/background-sync"; // defines the door sync background task at module scope
@@ -39,21 +40,23 @@ function RootStack() {
   return (
     <>
       <StatusBar style={dark ? "light" : "dark"} />
-      <Stack
-        screenOptions={{
-          headerStyle: { backgroundColor: c.background },
-          headerTintColor: c.foreground,
-          headerTitleStyle: { fontFamily: fonts.displaySemi },
-          headerShadowVisible: false,
-          contentStyle: { backgroundColor: c.background },
-          headerBackButtonDisplayMode: "minimal",
-        }}
-      >
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="sign-in" options={{ presentation: "modal", title: "Sign in" }} />
-        {/* Draws its own header (close, reload, progress) */}
-        <Stack.Screen name="organiser" options={{ headerShown: false, presentation: "fullScreenModal" }} />
-      </Stack>
+      <DemoBanner>
+        <Stack
+          screenOptions={{
+            headerStyle: { backgroundColor: c.background },
+            headerTintColor: c.foreground,
+            headerTitleStyle: { fontFamily: fonts.displaySemi },
+            headerShadowVisible: false,
+            contentStyle: { backgroundColor: c.background },
+            headerBackButtonDisplayMode: "minimal",
+          }}
+        >
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="sign-in" options={{ presentation: "modal", title: "Sign in" }} />
+          {/* Draws its own header (close, reload, progress) */}
+          <Stack.Screen name="organiser" options={{ headerShown: false, presentation: "fullScreenModal" }} />
+        </Stack>
+      </DemoBanner>
       <PushManager />
     </>
   );

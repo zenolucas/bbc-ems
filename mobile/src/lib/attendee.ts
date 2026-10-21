@@ -90,7 +90,8 @@ export function useCancelBooking(id: string) {
 export function useSubmitPayment(id: string) {
   const invalidate = useInvalidateBookings();
   return useMutation({
-    mutationFn: (input: PayInput) => api(`/api/v1/bookings/${encodeURIComponent(id)}/payment`, { body: input }),
+    // autoApproved: the demo site's auto-approve switch confirmed it on the spot
+    mutationFn: (input: PayInput) => api<{ ok: boolean; autoApproved?: boolean }>(`/api/v1/bookings/${encodeURIComponent(id)}/payment`, { body: input }),
     onSuccess: () => invalidate(id),
   });
 }

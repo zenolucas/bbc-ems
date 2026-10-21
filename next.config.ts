@@ -9,7 +9,10 @@ const nextConfig: NextConfig = {
   allowedDevOrigins: ["10.0.2.2"],
   // Shared with the mobile app; published as TypeScript source.
   transpilePackages: ["@bbc/shared"],
-  /* config options here */
+  // The demo deployment (DEMO_MODE=1) stays out of search engines, files included
+  async headers() {
+    return process.env.DEMO_MODE === "1" ? [{ source: "/:path*", headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }] }] : [];
+  },
   turbopack: {
     rules: {
       "*.css": {

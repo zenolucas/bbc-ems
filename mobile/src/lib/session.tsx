@@ -1,9 +1,11 @@
 import type { MeDTO } from "@bbc/shared/api-types";
+import type { DemoPersonaKey, DemoSignInDTO } from "@bbc/shared/demo";
 import * as SecureStore from "expo-secure-store";
 import Storage from "expo-sqlite/kv-store";
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { AppState } from "react-native";
 import { api, ApiError, setApiToken, setUnauthorizedHandler } from "./api";
+import { queryClient } from "./query";
 
 const TOKEN_KEY = "bbc.session";
 const ME_KEY = "bbc:me";
@@ -17,6 +19,8 @@ type SessionValue = {
   isAdmin: boolean;
   sendCode: (email: string) => Promise<void>;
   verifyCode: (email: string, otp: string) => Promise<MeDTO>;
+  /** Demo site only: sign in (or switch) as Mara, Jun or Bea with no email. */
+  signInAsPersona: (persona: DemoPersonaKey) => Promise<MeDTO>;
   signOut: () => Promise<void>;
   refreshMe: () => Promise<void>;
   /** Optimistic local update after PATCH /me. */
@@ -131,6 +135,27 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
     [setMe],
   );
 
+  const signInAsPersona = useCallback(
+    async (persona: DemoPersonaKey) => {
+      const switching = status === "signedIn";
+      // Like signing out first: this phone's push token leaves the old persona while its token still works
+      if (switching) await runHooks(beforeSignOut);
+      // Sends the old token, so the server ends that session too
+      const r = await api<DemoSignInDTO>("/api/v1/demo/sign-in", { body: { persona } });
+      if (!r.token) throw new ApiError(500, "Signed in, but the server sent no session. Try again.");
+      // The next persona must never see the last one's tickets or bookings
+      if (switching) await runHooks(afterSignOut);
+      setApiToken(r.token);
+      await SecureStore.setItemAsync(TOKEN_KEY, r.token);
+      setMe(r.me);
+      setStatus("signedIn");
+      // Everything fetched so far was for the previous persona (event banners, the config's "current")
+      queryClient.invalidateQueries();
+      return r.me;
+    },
+    [status, setMe],
+  );
+
   const value = useMemo<SessionValue>(
     () => ({
       status,
@@ -139,11 +164,12 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
       isAdmin: me?.role === "admin",
       sendCode,
       verifyCode,
+      signInAsPersona,
       signOut,
       refreshMe,
       setMe,
     }),
-    [status, me, sendCode, verifyCode, signOut, refreshMe, setMe],
+    [status, me, sendCode, verifyCode, signInAsPersona, signOut, refreshMe, setMe],
   );
   return <SessionContext.Provider value={value}>{children}</SessionContext.Provider>;
 }

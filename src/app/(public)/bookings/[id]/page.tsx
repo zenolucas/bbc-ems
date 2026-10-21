@@ -15,6 +15,8 @@ import { effectiveStatus, getBookingForUser } from "@/lib/bookings";
 import { env } from "@/lib/env";
 import { tierAvailability } from "@/lib/events";
 import { fmtDate, fmtTime, peso, relative } from "@/lib/format";
+import { ExpireHoldButton } from "@/components/demo/expire-hold-button";
+import { getDemoState } from "@/lib/demo/flag";
 import { requireUser } from "@/lib/session";
 import { cn } from "@/lib/utils";
 import { CancelButton } from "./cancel-button";
@@ -37,7 +39,7 @@ export default async function BookingPage({ params, searchParams }: PageProps<"/
   const { id } = await params;
   const { confirmed, reserved } = await searchParams;
   const user = await requireUser(`/bookings/${id}`);
-  const b = await getBookingForUser(id, user.id, user.role === "admin");
+  const [b, demo] = await Promise.all([getBookingForUser(id, user.id, user.role === "admin"), getDemoState()]);
   if (!b) notFound();
   const ev = b.event;
   const status = effectiveStatus(b);
@@ -223,7 +225,7 @@ export default async function BookingPage({ params, searchParams }: PageProps<"/
       )}
 
       {awaitingPayment && (
-        <PaymentForm bookingId={b.id} defaultRef={b.paymentRef ?? ""} defaultProof={status === "rejected" ? null : b.paymentProofUrl} resubmit={status === "rejected"} />
+        <PaymentForm bookingId={b.id} defaultRef={b.paymentRef ?? ""} defaultProof={status === "rejected" ? null : b.paymentProofUrl} resubmit={status === "rejected"} demo={demo.enabled && isOwner} />
       )}
 
       {status === "under_review" && !eventCancelled && (
@@ -284,6 +286,8 @@ export default async function BookingPage({ params, searchParams }: PageProps<"/
           )}
         </section>
       )}
+
+      {demo.enabled && awaitingPayment && <ExpireHoldButton bookingId={b.id} />}
 
       {isOwner && !eventCancelled && (status === "pending_payment" || status === "under_review" || status === "rejected") && (
         <div className="flex justify-center pt-4">

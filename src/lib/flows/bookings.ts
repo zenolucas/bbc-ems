@@ -1,6 +1,9 @@
 import "server-only";
+import { isDemoReceipt } from "@bbc/shared/demo";
 import type { BookInput, PayInput } from "@bbc/shared/schemas";
-import { cancelBooking, createBooking, getBookingForUser, renameTicket, submitPayment } from "@/lib/bookings";
+import { approveBooking, BookingError, cancelBooking, createBooking, getBookingForUser, renameTicket, submitPayment } from "@/lib/bookings";
+import { getDemoState } from "@/lib/demo/flag";
+import { PERSONAS } from "@/lib/demo/personas";
 import { notifyApproved, notifyBookingCancelled, notifyLater, notifyPaymentSubmitted, notifyReserved } from "@/lib/notifications";
 import { notifyWaitlist } from "@/lib/waitlist";
 
@@ -20,9 +23,20 @@ export async function bookFlow(userId: string, input: BookInput) {
   return result;
 }
 
+/** `autoApproved`: demo mode's auto-approve switch confirmed it on the spot, tickets and all. */
 export async function submitPaymentFlow(userId: string, bookingId: string, input: PayInput) {
+  const demo = await getDemoState();
+  // The bundled sample receipts are a demo shortcut; anywhere else a real screenshot is required
+  if (isDemoReceipt(input.paymentProofUrl) && !demo.enabled) throw new BookingError("Upload a screenshot of your receipt");
   await submitPayment(userId, bookingId, input);
   notifyLater("payment submitted", () => notifyPaymentSubmitted(bookingId));
+  if (demo.enabled && demo.autoApprove) {
+    // Synchronous so the page the member lands on already says confirmed
+    const { changed } = await approveBooking(PERSONAS.organiser.id, bookingId);
+    if (changed) notifyLater("approved (demo auto-approve)", () => notifyApproved(bookingId));
+    return { autoApproved: true };
+  }
+  return { autoApproved: false };
 }
 
 export async function cancelBookingFlow(userId: string, bookingId: string) {

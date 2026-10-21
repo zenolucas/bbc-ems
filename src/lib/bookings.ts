@@ -86,9 +86,9 @@ export async function createBooking(userId: string, req: BookingRequest) {
   });
 }
 
-type Tx = Parameters<Parameters<typeof db.transaction>[0]>[0];
+export type Tx = Parameters<Parameters<typeof db.transaction>[0]>[0];
 
-async function issueTicketsTx(tx: Tx, bookingId: string) {
+export async function issueTicketsTx(tx: Tx, bookingId: string) {
   const booking = await tx.query.bookings.findFirst({
     where: eq(bookings.id, bookingId),
     with: { items: true, user: true },

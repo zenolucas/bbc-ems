@@ -1,3 +1,4 @@
+import { demoPaymentRef, demoReceipt } from "@bbc/shared/demo";
 import { peso } from "@bbc/shared/format";
 import { paySchema } from "@bbc/shared/schemas";
 import { Image } from "expo-image";
@@ -5,13 +6,14 @@ import { File as FSFile } from "expo-file-system";
 import * as ImageManipulator from "expo-image-manipulator";
 import * as ImagePicker from "expo-image-picker";
 import { router, Stack, useLocalSearchParams } from "expo-router";
-import { ImagePlus } from "lucide-react-native";
+import { FlaskConical, ImagePlus } from "lucide-react-native";
 import { useState } from "react";
 import { Alert, KeyboardAvoidingView, Linking, Platform, Pressable, StyleSheet, View } from "react-native";
 import { Button, ErrorView, Field, Loading, Notice, Screen, Text } from "@/components/ui";
 import { api, ApiError } from "@/lib/api";
-import { useBooking, useSubmitPayment } from "@/lib/attendee";
+import { assetUrl, useBooking, useSubmitPayment } from "@/lib/attendee";
 import { offerPush } from "@/lib/push";
+import { useDemo } from "@/lib/server-config";
 import { radius, space, useTheme } from "@/theme";
 
 const MAX_WIDTH = 1600;
@@ -33,6 +35,9 @@ export default function PayScreen() {
   const submit = useSubmitPayment(id);
   const { c } = useTheme();
   const [image, setImage] = useState<Picked | null>(null);
+  // Demo: one of the bundled sample receipts (a server path), sent without an upload
+  const [sample, setSample] = useState<string | null>(null);
+  const demo = useDemo();
   const [ref, setRef] = useState("");
   const [busy, setBusy] = useState<"pick" | "upload" | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -55,6 +60,7 @@ export default function PayScreen() {
     }
     const res = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ["images"], quality: 1, allowsMultipleSelection: false });
     if (res.canceled || !res.assets?.[0]) return;
+    setSample(null);
     setBusy("pick");
     try {
       setImage(await shrink(res.assets[0]));
@@ -65,22 +71,33 @@ export default function PayScreen() {
     }
   }
 
+  function pickSample() {
+    setError(null);
+    setImage(null);
+    setSample(demoReceipt());
+    setRef(demoPaymentRef());
+  }
+
   async function send() {
     setError(null);
-    if (!image) return setError("Add the receipt screenshot to continue.");
+    if (!image && !sample) return setError("Add the receipt screenshot to continue.");
     const refCheck = paySchema.shape.paymentRef.safeParse(ref);
     if (!refCheck.success) return setError(refCheck.error.issues[0].message);
     setBusy("upload");
     try {
-      const form = new FormData();
-      form.append("folder", "payments");
-      // An expo-file-system File, not React Native's { uri, name, type }: Expo's fetch (the global
-      // fetch since SDK 52+) rejects uri parts, and File gives it the bytes and image/jpeg from the .jpg name
-      form.append("file", new FSFile(image.uri) as unknown as Blob);
-      const { url } = await api<{ url: string }>("/api/upload", { form, timeoutMs: 60_000 });
-      await submit.mutateAsync({ paymentRef: refCheck.data, paymentProofUrl: url });
+      let url = sample;
+      if (!url && image) {
+        const form = new FormData();
+        form.append("folder", "payments");
+        // An expo-file-system File, not React Native's { uri, name, type }: Expo's fetch (the global
+        // fetch since SDK 52+) rejects uri parts, and File gives it the bytes and image/jpeg from the .jpg name
+        form.append("file", new FSFile(image.uri) as unknown as Blob);
+        ({ url } = await api<{ url: string }>("/api/upload", { form, timeoutMs: 60_000 }));
+      }
+      const r = await submit.mutateAsync({ paymentRef: refCheck.data, paymentProofUrl: url! });
       // The best moment to offer notifications; offerPush's own alert says "Receipt sent" too
-      if (!(await offerPush("receipt"))) Alert.alert("Receipt sent", "We'll let you know once it's confirmed.");
+      if (r.autoApproved) Alert.alert("Auto-approved (demo)", "Your tickets are ready.");
+      else if (!(await offerPush("receipt"))) Alert.alert("Receipt sent", "We'll let you know once it's confirmed.");
       // Opened straight from a notification or link there is nothing behind this screen
       if (router.canGoBack()) router.back();
       else router.replace(`/bookings/${b.id}`);
@@ -109,10 +126,12 @@ export default function PayScreen() {
                 onPress={pick}
                 disabled={!!busy}
                 accessibilityRole="button"
-                accessibilityLabel={image ? "Change receipt screenshot" : resubmit ? "Upload the new screenshot" : "Upload receipt screenshot"}
+                accessibilityLabel={image || sample ? "Change receipt screenshot" : resubmit ? "Upload the new screenshot" : "Upload receipt screenshot"}
                 style={[styles.drop, { borderColor: c.border, backgroundColor: c.surface1 }]}
               >
-                {image ? (
+                {sample ? (
+                  <Image source={assetUrl(sample)} style={{ width: "100%", aspectRatio: 9 / 16, maxHeight: 420, borderRadius: radius.sm }} contentFit="contain" />
+                ) : image ? (
                   <Image source={image.uri} style={{ width: "100%", aspectRatio: Math.max(0.4, image.width / image.height), maxHeight: 420, borderRadius: radius.sm }} contentFit="contain" />
                 ) : busy === "pick" ? (
                   <Loading />
@@ -124,7 +143,16 @@ export default function PayScreen() {
                   </View>
                 )}
               </Pressable>
-              {image && <Button title="Choose a different image" variant="ghost" onPress={pick} disabled={!!busy} />}
+              {(image || sample) && <Button title="Choose a different image" variant="ghost" onPress={pick} disabled={!!busy} />}
+              {demo && (
+                <Button
+                  title={sample ? "Use another sample receipt" : "Use a sample receipt (demo)"}
+                  variant="secondary"
+                  icon={<FlaskConical size={18} color={c.foreground} />}
+                  onPress={pickSample}
+                  disabled={!!busy}
+                />
+              )}
             </View>
 
             <Field
@@ -142,10 +170,10 @@ export default function PayScreen() {
               size="lg"
               title={busy === "upload" ? "Sending…" : resubmit ? "Resubmit for review" : "Submit for review"}
               loading={busy === "upload"}
-              disabled={!image || busy !== null}
+              disabled={(!image && !sample) || busy !== null}
               onPress={send}
             />
-            {!image && <Text variant="caption" muted style={{ textAlign: "center" }}>Add the receipt screenshot to continue.</Text>}
+            {!image && !sample && <Text variant="caption" muted style={{ textAlign: "center" }}>Add the receipt screenshot to continue.</Text>}
           </>
         )}
       </Screen>

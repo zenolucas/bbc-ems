@@ -5,7 +5,7 @@ import { CalendarDays, CornerDownLeft, Loader2, Plus, Receipt, Search, UserRound
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import { StatusBadge } from "@/components/event/status-badge";
 import { cn } from "@/lib/utils";
-import { type AdminEventRef, NAV } from "./nav";
+import { type AdminEventRef, navFor } from "./nav";
 
 type Hit = { id: string; group: string; label: string; detail?: string; href: string; icon: LucideIcon; status?: string };
 type Remote = { bookings: { id: string; eventId: string; eventTitle: string; name: string; email: string; status: string; amount: string }[]; people: { id: string; name: string; email: string; detail: string; href: string }[] };
@@ -18,7 +18,7 @@ const EMPTY: Remote = { bookings: [], people: [] };
  * /admin/search once there are two characters to go on. Arrow keys move, Enter
  * opens, Escape closes.
  */
-export function CommandPalette({ open, onOpenChange, events }: { open: boolean; onOpenChange: (open: boolean) => void; events: AdminEventRef[] }) {
+export function CommandPalette({ open, onOpenChange, events, demoSite = false }: { open: boolean; onOpenChange: (open: boolean) => void; events: AdminEventRef[]; demoSite?: boolean }) {
   const router = useRouter();
   const [q, setQ] = useState("");
   const [remote, setRemote] = useState<{ q: string; data: Remote } | null>(null);
@@ -45,7 +45,7 @@ export function CommandPalette({ open, onOpenChange, events }: { open: boolean; 
     const match = (s: string) => !term || s.toLowerCase().includes(term);
     const actions: Hit[] = [
       { id: "new", group: "Actions", label: "New event", detail: "Saved as a hidden draft", href: "/admin/events/new", icon: Plus },
-      ...NAV.map((n) => ({ id: `go-${n.key}`, group: "Actions", label: `Go to ${n.label.toLowerCase()}`, href: n.href, icon: n.icon })),
+      ...navFor({ role: "admin", demoSite }).map((n) => ({ id: `go-${n.key}`, group: "Actions", label: `Go to ${n.label.toLowerCase()}`, href: n.href, icon: n.icon })),
     ].filter((h) => match(h.label));
     const ev: Hit[] = events
       .filter((e) => match(e.title))
@@ -58,7 +58,7 @@ export function CommandPalette({ open, onOpenChange, events }: { open: boolean; 
     const ppl: Hit[] = wantsRemote ? data.people.map((p) => ({ id: `pp-${p.id}`, group: "People", label: p.name || p.email, detail: p.detail, href: p.href, icon: UserRound })) : [];
     // Actions lead when the box is empty; once you type, the things you're looking for do
     return term ? [...ev, ...bk, ...ppl, ...actions] : [...actions.slice(0, 1), ...ev, ...actions.slice(1)];
-  }, [events, remote, term, wantsRemote]);
+  }, [demoSite, events, remote, term, wantsRemote]);
 
   const current = Math.min(active, Math.max(0, hits.length - 1));
 

@@ -1,5 +1,6 @@
 import "server-only";
 import { Resend } from "resend";
+import { routeToOutbox, writeOutbox } from "./demo/outbox";
 import { env } from "./env";
 
 export type Attachment = { filename: string; content: Buffer; contentType?: string };
@@ -14,9 +15,20 @@ export type SendEmailInput = {
 
 /**
  * Sends through Resend when RESEND_API_KEY is set, otherwise logs to the
- * console so local development works without an email provider.
+ * console so local development works without an email provider. On the demo
+ * deployment it goes to the demo outbox instead (see src/lib/demo/outbox.ts).
  */
 export async function sendEmail(input: SendEmailInput) {
+  if (await routeToOutbox(input.to)) {
+    return writeOutbox({
+      kind: "email",
+      toAddress: input.to,
+      subject: input.subject,
+      html: input.html,
+      text: input.text,
+      meta: input.attachments?.length ? { attachments: input.attachments.map((a) => a.filename) } : null,
+    });
+  }
   if (!env.resendApiKey) {
     console.log("\n[email:dev] ─────────────────────────────────────────");
     console.log(`[email:dev] to: ${input.to}`);

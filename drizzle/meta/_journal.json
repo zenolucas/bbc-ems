@@ -29,6 +29,13 @@
       "when": 1792571039795,
       "tag": "0003_categories_waitlist",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1792621684041,
+      "tag": "0004_demo_mode",
+      "breakpoints": true
     }
   ]
 }

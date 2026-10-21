@@ -6,6 +6,8 @@ import * as WebBrowser from "expo-web-browser";
 import { Bell, ChevronRight, LayoutDashboard, ReceiptText, ScanLine, Shield } from "lucide-react-native";
 import { useCallback, useState } from "react";
 import { Alert, Pressable, View } from "react-native";
+import { DemoTools } from "@/components/demo/demo-tools";
+import { PersonaButtons } from "@/components/demo/persona-buttons";
 import { Button, Card, Divider, Field, Notice, Pill, Row, Screen, SignInPrompt, Text } from "@/components/ui";
 import { api } from "@/lib/api";
 import { API_URL, APP_VERSION } from "@/lib/config";
@@ -20,8 +22,9 @@ export default function Profile() {
   const { status, me } = useSession();
   if (status !== "signedIn" || !me) {
     return (
-      <Screen scroll={false}>
+      <Screen>
         <SignInPrompt title="Your Base Camp account">Sign in to book events, keep your tickets on this phone and get booking updates.</SignInPrompt>
+        <PersonaButtons />
       </Screen>
     );
   }
@@ -117,6 +120,8 @@ function SignedIn({ me }: { me: MeDTO }) {
         />
         <Button title={saved ? "Saved" : "Save name"} variant={dirty ? "primary" : "secondary"} disabled={!dirty} loading={saving} onPress={save} />
       </Card>
+
+      <DemoTools />
 
       {isAdmin && (
         <LinkRow

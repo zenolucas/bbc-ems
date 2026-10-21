@@ -1,5 +1,6 @@
 "use client";
-import { Loader2 } from "lucide-react";
+import { demoPaymentRef, demoReceipt } from "@bbc/shared/demo";
+import { FlaskConical, Loader2 } from "lucide-react";
 import { useActionState, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { ImageUpload } from "@/components/admin/image-upload";
@@ -9,14 +10,23 @@ import { Label } from "@/components/ui/label";
 import { type ActionState, submitPaymentAction } from "@/app/bookings-actions";
 
 /** Step 2 of paying: the reference number and the receipt screenshot. A resubmit after a rejection is the page's one sun action. */
-export function PaymentForm({ bookingId, defaultRef, defaultProof, resubmit }: { bookingId: string; defaultRef: string; defaultProof?: string | null; resubmit?: boolean }) {
+/** `demo`: offers a bundled sample receipt instead of a real screenshot (demo site only). */
+export function PaymentForm({ bookingId, defaultRef, defaultProof, resubmit, demo = false }: { bookingId: string; defaultRef: string; defaultProof?: string | null; resubmit?: boolean; demo?: boolean }) {
   const [state, action, pending] = useActionState<ActionState, FormData>(submitPaymentAction, null);
   const [uploading, setUploading] = useState(false);
   const [proof, setProof] = useState(defaultProof ?? "");
+  // The ref input and the upload are uncontrolled; a sample remounts them with new defaults
+  const [sample, setSample] = useState<{ n: number; ref: string } | null>(null);
 
   useEffect(() => {
-    if (state?.ok) toast.success("Receipt sent. We'll email you once it's confirmed.");
+    if (state?.autoApproved) toast.success("Auto-approved (demo). Your tickets are ready.");
+    else if (state?.ok) toast.success("Receipt sent. We'll email you once it's confirmed.");
   }, [state]);
+
+  function pickSample() {
+    setProof(demoReceipt());
+    setSample((s) => ({ n: (s?.n ?? 0) + 1, ref: demoPaymentRef() }));
+  }
 
   return (
     <section className="rounded-[20px] border bg-card p-4" aria-labelledby="receipt-heading">
@@ -29,11 +39,12 @@ export function PaymentForm({ bookingId, defaultRef, defaultProof, resubmit }: {
         <div className="space-y-1.5">
           <Label htmlFor="paymentRef" className="text-[13px] font-semibold">{resubmit ? "New reference number" : "Reference number"}</Label>
           <Input
+            key={sample?.n}
             id="paymentRef"
             name="paymentRef"
             required
             minLength={4}
-            defaultValue={defaultRef}
+            defaultValue={sample?.ref ?? defaultRef}
             placeholder="e.g. 1234 567 890123"
             autoComplete="off"
             spellCheck={false}
@@ -45,6 +56,7 @@ export function PaymentForm({ bookingId, defaultRef, defaultProof, resubmit }: {
         <div className="space-y-1.5">
           <Label htmlFor="receipt-upload" className="text-[13px] font-semibold">{resubmit ? "New receipt screenshot" : "Receipt screenshot"}</Label>
           <ImageUpload
+            key={sample?.n}
             id="receipt-upload"
             name="paymentProofUrl"
             folder="payments"
@@ -52,11 +64,16 @@ export function PaymentForm({ bookingId, defaultRef, defaultProof, resubmit }: {
             // Empty: a wide dashed dropzone. Filled: a tall preview of the screenshot.
             aspect={proof ? "aspect-[3/4] max-w-[220px] rounded-[14px] border-2" : "h-[118px] rounded-[14px] border-2 bg-surface-2 [&_svg]:size-[26px] [&_svg]:text-primary"}
             fit="contain"
-            defaultValue={defaultProof}
+            defaultValue={sample ? proof : defaultProof}
             onBusyChange={setUploading}
             onChange={setProof}
           />
         </div>
+        {demo && (
+          <Button type="button" variant="outline" className="w-full rounded-full border-dashed" onClick={pickSample}>
+            <FlaskConical aria-hidden /> {sample ? "Use another sample receipt" : "Use a sample receipt (demo)"}
+          </Button>
+        )}
         {state?.error && <p role="alert" className="text-sm text-destructive">{state.error}</p>}
         <Button type="submit" size="lg" variant={resubmit ? "sun" : "default"} className="h-[50px] w-full text-[15px] md:h-[50px]" disabled={pending || uploading || !proof}>
           {(pending || uploading) && <Loader2 className="size-4 animate-spin" />}

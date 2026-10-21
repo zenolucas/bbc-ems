@@ -4,6 +4,8 @@ import { Expo, type ExpoPushMessage } from "expo-server-sdk";
 import { nanoid } from "nanoid";
 import { db } from "@/db/client";
 import { notificationLog, pushTokens } from "@/db/schema";
+import { isDemoDeployment } from "./demo/flag";
+import { writeOutbox } from "./demo/outbox";
 import { env } from "./env";
 
 let client: Expo | null = null;
@@ -35,6 +37,8 @@ export async function unregisterPushToken(userId: string, token: string) {
  */
 export async function sendPush(userId: string, p: PushPayload) {
   try {
+    // The demo outbox shows every push, including to people with no app installed; real devices still get it
+    if (await isDemoDeployment()) await writeOutbox({ kind: "push", userId, subject: p.title, text: p.body, url: p.url });
     const rows = await db.select({ token: pushTokens.token }).from(pushTokens).where(eq(pushTokens.userId, userId));
     if (rows.length === 0) return;
     const messages: ExpoPushMessage[] = rows.map((r) => ({

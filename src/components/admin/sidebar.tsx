@@ -18,7 +18,7 @@ import { type AdminUser, type NavItem, initials, navFor } from "./nav";
 
 /** The organiser rail: logo + role chip, the work, then the tools, then you. */
 export function Sidebar({ user, active, reviewCount, className }: { user: AdminUser; active: NavItem["key"] | null; reviewCount: number; className?: string }) {
-  const items = navFor(user.role);
+  const items = navFor(user);
   const main = items.filter((n) => !n.secondary);
   const tools = items.filter((n) => n.secondary);
   return (

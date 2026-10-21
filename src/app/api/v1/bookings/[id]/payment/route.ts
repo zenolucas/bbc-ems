@@ -8,8 +8,8 @@ import { submitPaymentFlow } from "@/lib/flows/bookings";
 export const POST = handle(async (req: Request, { params }: RouteContext<"/api/v1/bookings/[id]/payment">) => {
   const user = await requireApiUser(req);
   const { id } = await params;
-  await submitPaymentFlow(user.id, id, await body(req, paySchema));
+  const { autoApproved } = await submitPaymentFlow(user.id, id, await body(req, paySchema));
   revalidatePath(`/bookings/${id}`);
   revalidatePath("/admin", "layout");
-  return { ok: true };
+  return { ok: true, autoApproved };
 });

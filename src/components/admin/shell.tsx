@@ -26,6 +26,7 @@ const PAGES: Record<string, string> = {
   "/admin/scan": "Door scanner",
   "/admin/team": "Team",
   "/admin/ticket-lab": "Ticket lab",
+  "/admin/demo": "Demo tools",
 };
 
 /** Breadcrumb from the path alone; event titles come from the layout's list. */
@@ -141,7 +142,7 @@ export function AdminShell({ user, reviewCount, events, embed = false, children 
       </div>
 
       {tabs && <AdminTabBar user={user} active={active} reviewCount={reviewCount} />}
-      {isAdmin && <CommandPalette open={palette} onOpenChange={setPalette} events={events} />}
+      {isAdmin && <CommandPalette open={palette} onOpenChange={setPalette} events={events} demoSite={user.demoSite} />}
     </div>
   );
 }

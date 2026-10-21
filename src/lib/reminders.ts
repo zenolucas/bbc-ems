@@ -1,6 +1,7 @@
 import "server-only";
 import { and, eq, exists, gt, inArray, lt } from "drizzle-orm";
 import { db } from "@/db/client";
+import { isDemoDeployment } from "./demo/flag";
 import { bookings, events, pushTokens } from "@/db/schema";
 import { fmtDateTime, fmtTime, peso } from "./format";
 import { sendPushOnce } from "./push";
@@ -16,12 +17,14 @@ const hasApp = exists(db.select({ x: pushTokens.id }).from(pushTokens).where(eq(
  */
 export async function sendReminders(now = new Date()) {
   let sent = 0;
+  // The demo outbox captures pushes for everyone, so reminders show even for web-only personas
+  const reachable = (await isDemoDeployment()) ? undefined : hasApp;
 
   const lapsing = await db
     .select({ id: bookings.id, userId: bookings.userId, expiresAt: bookings.expiresAt, totalCents: bookings.totalCents, title: events.title })
     .from(bookings)
     .innerJoin(events, eq(events.id, bookings.eventId))
-    .where(and(inArray(bookings.status, ["pending_payment", "rejected"]), gt(bookings.expiresAt, now), lt(bookings.expiresAt, new Date(now.getTime() + 2 * HOUR)), hasApp));
+    .where(and(inArray(bookings.status, ["pending_payment", "rejected"]), gt(bookings.expiresAt, now), lt(bookings.expiresAt, new Date(now.getTime() + 2 * HOUR)), reachable));
   for (const b of lapsing) {
     const ok = await sendPushOnce(b.userId, "hold-expiring", b.id, {
       title: `Your hold ends at ${fmtTime(b.expiresAt!)}`,
@@ -35,7 +38,7 @@ export async function sendReminders(now = new Date()) {
     .select({ id: bookings.id, userId: bookings.userId, startsAt: events.startsAt, title: events.title, venue: events.venueName })
     .from(bookings)
     .innerJoin(events, eq(events.id, bookings.eventId))
-    .where(and(eq(bookings.status, "approved"), eq(events.status, "published"), gt(events.startsAt, now), lt(events.startsAt, new Date(now.getTime() + 24 * HOUR)), hasApp));
+    .where(and(eq(bookings.status, "approved"), eq(events.status, "published"), gt(events.startsAt, now), lt(events.startsAt, new Date(now.getTime() + 24 * HOUR)), reachable));
   for (const b of soon) {
     const ok = await sendPushOnce(b.userId, "event-soon", b.id, {
       title: b.startsAt.getTime() - now.getTime() < 6 * HOUR ? `${b.title} starts at ${fmtTime(b.startsAt)}` : `Coming up: ${b.title}`,

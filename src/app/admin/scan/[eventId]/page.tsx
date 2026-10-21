@@ -1,6 +1,7 @@
 import type { Viewport } from "next";
 import { notFound } from "next/navigation";
 import { Scanner } from "@/components/scanner/scanner";
+import { getDemoState } from "@/lib/demo/flag";
 import { getEventById } from "@/lib/events";
 import { requireStaff } from "@/lib/session";
 
@@ -12,7 +13,7 @@ export const viewport: Viewport = { themeColor: "#0e1c20" };
 export default async function ScanEventPage({ params }: PageProps<"/admin/scan/[eventId]">) {
   const { eventId } = await params;
   const user = await requireStaff();
-  const event = await getEventById(eventId);
+  const [event, demo] = await Promise.all([getEventById(eventId), getDemoState()]);
   if (!event) notFound();
-  return <Scanner eventId={event.id} title={event.title} backHref={user.role === "admin" ? `/admin/events/${event.id}` : "/admin/scan"} />;
+  return <Scanner eventId={event.id} title={event.title} backHref={user.role === "admin" ? `/admin/events/${event.id}` : "/admin/scan"} demo={demo.enabled} />;
 }

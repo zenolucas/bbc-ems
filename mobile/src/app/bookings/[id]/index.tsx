@@ -6,6 +6,7 @@ import { ChevronRight, Clock, Ticket as TicketIcon } from "lucide-react-native";
 import { useCallback } from "react";
 import { Alert, Linking, Pressable, StyleSheet, View } from "react-native";
 import { CountdownRing, CountdownText } from "@/components/countdown";
+import { ExpireHold } from "@/components/demo/expire-hold";
 import { AddToCalendarButton } from "@/components/event/add-to-calendar";
 import { CopyRow } from "@/components/ticket/copy-row";
 import { Button, Card, Divider, ErrorView, Loading, Notice, Pill, Row, Screen, SignInPrompt, Text } from "@/components/ui";
@@ -186,6 +187,7 @@ function BookingView({ b, refreshing, onRefresh, reserved, confirmed }: { b: Boo
           />
         </Card>
       )}
+      {awaitingPayment && <ExpireHold bookingId={b.id} />}
 
       {status === "under_review" && !eventCancelled && (
         <>

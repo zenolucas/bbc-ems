@@ -1,11 +1,12 @@
-import { CalendarDays, ClipboardCheck, LayoutDashboard, Palette, ScanLine, Shield, UsersRound, type LucideIcon } from "lucide-react";
+import { CalendarDays, ClipboardCheck, FlaskConical, LayoutDashboard, Palette, ScanLine, Shield, UsersRound, type LucideIcon } from "lucide-react";
 
 export type AdminRole = "admin" | "staff";
-export type AdminUser = { name: string; email: string; role: AdminRole };
+/** `demoSite`: this is the demo deployment, which adds the Demo tools page. */
+export type AdminUser = { name: string; email: string; role: AdminRole; demoSite?: boolean };
 export type AdminEventRef = { id: string; title: string; status: string; startsAt: string };
 
 export type NavItem = {
-  key: "dashboard" | "events" | "review" | "attendees" | "scan" | "team" | "lab";
+  key: "dashboard" | "events" | "review" | "attendees" | "scan" | "team" | "lab" | "demo";
   href: string;
   label: string;
   short: string;
@@ -14,6 +15,8 @@ export type NavItem = {
   secondary?: boolean;
   /** Door crew see this one too. */
   staff?: boolean;
+  /** Only on the demo deployment. */
+  demo?: boolean;
 };
 
 export const NAV: NavItem[] = [
@@ -24,10 +27,12 @@ export const NAV: NavItem[] = [
   { key: "scan", href: "/admin/scan", label: "Door scanner", short: "Scanner", icon: ScanLine, staff: true },
   { key: "team", href: "/admin/team", label: "Team", short: "Team", icon: Shield, secondary: true },
   { key: "lab", href: "/admin/ticket-lab", label: "Ticket lab", short: "Ticket lab", icon: Palette, secondary: true },
+  { key: "demo", href: "/admin/demo", label: "Demo tools", short: "Demo", icon: FlaskConical, secondary: true, demo: true },
 ];
 
-export function navFor(role: AdminRole) {
-  return NAV.filter((n) => role === "admin" || n.staff);
+/** The rail items for this person, on this deployment. */
+export function navFor(user: Pick<AdminUser, "role" | "demoSite">) {
+  return NAV.filter((n) => (user.role === "admin" || n.staff) && (!n.demo || user.demoSite));
 }
 
 /**
@@ -42,6 +47,7 @@ export function activeKey(path: string): NavItem["key"] | null {
   if (path.startsWith("/admin/scan")) return "scan";
   if (path.startsWith("/admin/team")) return "team";
   if (path.startsWith("/admin/ticket-lab")) return "lab";
+  if (path.startsWith("/admin/demo")) return "demo";
   return null;
 }
 
