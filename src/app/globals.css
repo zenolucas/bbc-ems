@@ -344,6 +344,14 @@
   }
 }
 
+/* Theme switch reveal (see theme-toggle.tsx): the new snapshot is clipped by a
+   growing circle from JS, so the default cross-fade is switched off. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   ::before,

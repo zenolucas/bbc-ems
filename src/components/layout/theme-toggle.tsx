@@ -1,10 +1,53 @@
 "use client";
-import { useSyncExternalStore } from "react";
+import { useSyncExternalStore, type MouseEvent } from "react";
+import { flushSync } from "react-dom";
 import { useTheme } from "next-themes";
 import { Moon, Sun } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const noop = () => () => {};
+
+/**
+ * Switches the theme with a circular reveal: the new theme grows out of the
+ * toggle until it covers the screen. Uses the View Transitions API; browsers
+ * without it, and reduced-motion users, get the instant swap.
+ */
+function useThemeSwitch() {
+  const { resolvedTheme, setTheme } = useTheme();
+  return (event: MouseEvent<HTMLButtonElement>) => {
+    const next = resolvedTheme === "dark" ? "light" : "dark";
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (!document.startViewTransition || reduced) {
+      setTheme(next);
+      return;
+    }
+    // Percentages of the snapshot, not px: under fractional scaling (Wayland at
+    // 1.5x) Chromium can resolve px on the view-transition layer in device
+    // pixels, which pulls the circle two-thirds of the way toward the corner.
+    // A circle's % radius is relative to hypot(w, h) / √2.
+    const rect = event.currentTarget.getBoundingClientRect();
+    const w = innerWidth;
+    const h = innerHeight;
+    const x = rect.left + rect.width / 2;
+    const y = rect.top + rect.height / 2;
+    const at = `at ${(x / w) * 100}% ${(y / h) * 100}%`;
+    const radius = (Math.hypot(Math.max(x, w - x), Math.max(y, h - y)) / (Math.hypot(w, h) / Math.SQRT2)) * 100;
+    const transition = document.startViewTransition(() => {
+      // Paint the class now; next-themes applies it in an effect, too late for the snapshot.
+      const root = document.documentElement;
+      root.classList.toggle("dark", next === "dark");
+      root.classList.toggle("light", next === "light");
+      root.style.colorScheme = next;
+      flushSync(() => setTheme(next));
+    });
+    transition.ready.then(() => {
+      document.documentElement.animate(
+        { clipPath: [`circle(0% ${at})`, `circle(${radius}% ${at})`] },
+        { duration: 600, easing: "cubic-bezier(0.4, 0, 0.2, 1)", pseudoElement: "::view-transition-new(root)" },
+      );
+    });
+  };
+}
 
 /**
  * Day/night switch: a little sky with a ridge, the sun on the left by day and a
@@ -16,7 +59,8 @@ const noop = () => () => {};
  * the sun by day and the moon by night, same switch semantics.
  */
 export function ThemeToggle({ className, variant = "switch" }: { className?: string; variant?: "switch" | "icon" }) {
-  const { resolvedTheme, setTheme } = useTheme();
+  const { resolvedTheme } = useTheme();
+  const switchTheme = useThemeSwitch();
   const hydrated = useSyncExternalStore(noop, () => true, () => false);
   if (variant === "icon") {
     return (
@@ -25,7 +69,7 @@ export function ThemeToggle({ className, variant = "switch" }: { className?: str
         role="switch"
         aria-label="Night mode"
         aria-checked={hydrated ? resolvedTheme === "dark" : undefined}
-        onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
+        onClick={switchTheme}
         className={cn(
           "grid size-10 shrink-0 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-surface-2 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50 dark:text-star",
           className,
@@ -42,7 +86,7 @@ export function ThemeToggle({ className, variant = "switch" }: { className?: str
       role="switch"
       aria-label="Night mode"
       aria-checked={hydrated ? resolvedTheme === "dark" : undefined}
-      onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
+      onClick={switchTheme}
       className={cn(
         "relative h-[34px] w-16 shrink-0 overflow-hidden rounded-full border border-border bg-[linear-gradient(180deg,#3cc5e8,#cdeefa)] transition-colors focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50 dark:bg-[linear-gradient(180deg,#0b161a,#1f4a5c)]",
         className,
