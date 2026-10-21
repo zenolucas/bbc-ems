@@ -9,6 +9,9 @@ export type Role = "member" | "staff" | "admin";
 export type BookingStatus = "pending_payment" | "under_review" | "approved" | "rejected" | "expired" | "cancelled";
 export type TicketStatus = "valid" | "used" | "void";
 export type Availability = "sold-out" | "few-left" | "available" | "not-on-sale";
+/** Home page filters: All / Gigs / Outdoors / Free ("Free" comes from priceFromCents === 0). */
+export type EventCategory = "gig" | "outdoors" | "other";
+export const EVENT_CATEGORY_LABELS: Record<EventCategory, string> = { gig: "Gigs", outdoors: "Outdoors", other: "Other" };
 
 export type ApiError = { error: string };
 
@@ -26,6 +29,7 @@ export type EventRefDTO = {
 
 export type EventSummaryDTO = EventRefDTO & {
   tagline: string | null;
+  category: EventCategory;
   status: "draft" | "published" | "cancelled" | "ended";
   /** Lowest paid price, or 0 when every tier is free; null with no tiers. */
   priceFromCents: number | null;
@@ -66,6 +70,8 @@ export type EventDetailDTO = EventSummaryDTO & {
   hasPaymentDetails: boolean;
   /** The signed-in member's live booking for this event, if any. */
   myBooking: { id: string; status: BookingStatus } | null;
+  /** Signed in and waiting to hear when seats free up (only offered while sold out). */
+  onWaitlist: boolean;
 };
 
 export type EventsDTO = { upcoming: EventSummaryDTO[]; past: EventSummaryDTO[] };

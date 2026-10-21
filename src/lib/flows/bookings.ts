@@ -1,7 +1,8 @@
 import "server-only";
 import type { BookInput, PayInput } from "@bbc/shared/schemas";
-import { cancelBooking, createBooking, renameTicket, submitPayment } from "@/lib/bookings";
+import { cancelBooking, createBooking, getBookingForUser, renameTicket, submitPayment } from "@/lib/bookings";
 import { notifyApproved, notifyBookingCancelled, notifyLater, notifyPaymentSubmitted, notifyReserved } from "@/lib/notifications";
+import { notifyWaitlist } from "@/lib/waitlist";
 
 /**
  * Member booking steps with their side effects (emails, pushes). The web's
@@ -27,6 +28,9 @@ export async function submitPaymentFlow(userId: string, bookingId: string, input
 export async function cancelBookingFlow(userId: string, bookingId: string) {
   await cancelBooking(userId, bookingId);
   notifyLater("cancelled by member", () => notifyBookingCancelled(bookingId, { byOrganiser: false }));
+  // Those seats are free now: tell the waitlist straight away rather than at the next cron
+  const b = await getBookingForUser(bookingId, userId);
+  if (b) notifyLater("waitlist", () => notifyWaitlist(b.eventId));
 }
 
 export async function renameTicketFlow(userId: string, ticketId: string, name: string) {

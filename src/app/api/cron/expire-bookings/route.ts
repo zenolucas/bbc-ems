@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { expireOverdueBookings } from "@/lib/bookings";
 import { env } from "@/lib/env";
 import { sendReminders } from "@/lib/reminders";
+import { notifyAllWaitlists } from "@/lib/waitlist";
 
 export async function GET(req: Request) {
   const auth = req.headers.get("authorization");
@@ -14,5 +15,7 @@ export async function GET(req: Request) {
     console.error("[cron] reminders", e);
     return 0;
   });
-  return NextResponse.json({ ok: true, expired, reminded });
+  // After expiring: lapsed holds are the most common way seats free up
+  const waitlisted = await notifyAllWaitlists();
+  return NextResponse.json({ ok: true, expired, reminded, waitlisted });
 }

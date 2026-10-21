@@ -21,6 +21,7 @@ export const bookingStatus = pgEnum("booking_status", [
   "expired",
   "cancelled",
 ]);
+export const eventCategory = pgEnum("event_category", ["gig", "outdoors", "other"]);
 export const ticketStatus = pgEnum("ticket_status", ["valid", "used", "void"]);
 export const checkinResult = pgEnum("checkin_result", ["ok", "duplicate", "invalid", "void"]);
 export const ticketStyle = pgEnum("ticket_style", [
@@ -104,6 +105,8 @@ export const events = pgTable(
     coverImageUrl: text("cover_image_url"),
     status: eventStatus("status").notNull().default("draft"),
     ticketStyle: ticketStyle("ticket_style").notNull().default("summit"),
+    /** Drives the home page filters (All / Gigs / Outdoors / Free); "Free" comes from the tiers. */
+    category: eventCategory("category").notNull().default("other"),
     paymentInstructions: text("payment_instructions"),
     gcashName: text("gcash_name"),
     gcashNumber: text("gcash_number"),
@@ -262,6 +265,26 @@ export const pushTokens = pgTable(
   (t) => [index("push_tokens_user_idx").on(t.userId)],
 );
 
+/**
+ * "Notify me" on sold-out events. The cron tells everyone waiting when seats free up
+ * (first come, first served) and stamps notified_at; joining again clears it.
+ */
+export const waitlist = pgTable(
+  "waitlist",
+  {
+    id: text("id").primaryKey(),
+    eventId: text("event_id")
+      .notNull()
+      .references(() => events.id, { onDelete: "cascade" }),
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    notifiedAt: timestamp("notified_at", { withTimezone: true }),
+  },
+  (t) => [uniqueIndex("waitlist_event_user_idx").on(t.eventId, t.userId)],
+);
+
 /** Reminders already sent, so the 15-minute cron sends each one once. */
 export const notificationLog = pgTable(
   "notification_log",
@@ -325,3 +348,4 @@ export type RoleGrant = typeof roleGrants.$inferSelect;
 export type UserRole = (typeof userRole.enumValues)[number];
 export type TicketStyle = (typeof ticketStyle.enumValues)[number];
 export const TICKET_STYLES = ticketStyle.enumValues;
+export const EVENT_CATEGORIES = eventCategory.enumValues;

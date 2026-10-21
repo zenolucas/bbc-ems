@@ -39,6 +39,7 @@ export function eventSummaryDTO(
   return {
     ...eventRefDTO(e),
     tagline: e.tagline,
+    category: e.category,
     status: e.status,
     priceFromCents: priceFrom(e.tiers),
     availability: e.availability ?? null,
@@ -65,6 +66,7 @@ export function eventDetailDTO(
   e: Event & { tiers: Tier[] },
   avail: (t: Tier) => { remaining: number },
   myBooking: Pick<Booking, "id" | "status" | "expiresAt"> | null,
+  onWaitlist = false,
 ): EventDetailDTO {
   const now = new Date();
   const tiers = e.tiers.map((t) => tierDTO(t, avail(t).remaining, now));
@@ -82,6 +84,7 @@ export function eventDetailDTO(
     holdHours: e.bookingHoldHours,
     hasPaymentDetails: Boolean(e.gcashNumber || e.gcashQrUrl),
     myBooking: myBooking ? { id: myBooking.id, status: effectiveStatus(myBooking) } : null,
+    onWaitlist,
   };
 }
 
