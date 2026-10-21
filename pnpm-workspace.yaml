@@ -1,4 +1,9 @@
+# Flat node_modules: the Expo app needs one copy of each expo-* package, and their
+# peer cycles make pnpm's isolated layout install several (see docs.expo.dev/guides/monorepos).
+nodeLinker: hoisted
+
 packages:
+  - mobile
   - packages/*
 
 allowBuilds:
