@@ -8,6 +8,7 @@ Events, gigs and paperless QR tickets for the Baguio Base Camp community.
 - Door staff scan with their phone. The scanner works offline and syncs when signal returns.
 - Organisers give volunteers **door crew** access from `/admin/team`: scanner and check-in only, no emails, payments or event editing.
 - The organiser area has a dashboard, a review queue (`/admin/review`, keys J/K/A/R/Z), an attendees index and ⌘K search across events, bookings and people.
+- An Android app (iPhone later) in [`mobile/`](mobile/README.md) covers booking, offline tickets, push notifications, a native door scanner and the organiser tools. Status: [`docs/mobile/PROGRESS.md`](docs/mobile/PROGRESS.md).
 
 ## Design
 
@@ -17,7 +18,9 @@ Email header art is PNG (Gmail and Outlook drop inline SVG), built from `src/ema
 
 ## Stack
 
-Next.js 16 (App Router) · Tailwind v4 + shadcn/ui · Drizzle ORM + Postgres (Neon in prod) · Better Auth (magic link) · Resend · Vercel Blob · resvg + bwip-js for ticket PNGs · @zxing/browser for camera scanning.
+Next.js 16 (App Router) · Tailwind v4 + shadcn/ui · Drizzle ORM + Postgres (Neon in prod) · Better Auth (magic link on the web, email code + bearer token in the app) · Resend · Vercel Blob · resvg + bwip-js for ticket PNGs · @zxing/browser for camera scanning · Expo SDK 58 for the app.
+
+A pnpm workspace: the site at the root, the app in `mobile/`, shared code in `packages/shared` (`@bbc/shared`). Installs are hoisted (`nodeLinker: hoisted` in `pnpm-workspace.yaml`) because Expo needs a single copy of each `expo-*` package.
 
 ## Local development
 
@@ -30,7 +33,7 @@ pnpm db:seed                    # three sample events
 pnpm dev                        # http://localhost:3100
 ```
 
-Without `RESEND_API_KEY`, emails (including the magic link) are printed to the dev server console. Without `BLOB_READ_WRITE_TOKEN`, uploads land in `public/uploads/`.
+Without `RESEND_API_KEY`, emails (including the magic link and the app's sign-in code) are printed to the dev server console. To run the app against this server, see [`mobile/README.md`](mobile/README.md). Without `BLOB_READ_WRITE_TOKEN`, uploads land in `public/uploads/`.
 
 ### Environment variables
 
