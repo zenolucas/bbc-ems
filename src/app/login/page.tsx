@@ -8,6 +8,7 @@ import { DEMO_PERSONAS, PERSONA_LABELS } from "@bbc/shared/demo";
 import { PersonaPicker } from "@/components/demo/persona-picker";
 import { Notice } from "@/components/ui/notice";
 import { getDemoState } from "@/lib/demo/flag";
+import { discordLoginEnabled } from "@/lib/env";
 import { getEventBySlug } from "@/lib/events";
 import { getCurrentUser, safeNext } from "@/lib/session";
 import { LoginForm } from "./login-form";
@@ -79,6 +80,7 @@ export default async function LoginPage({ searchParams }: PageProps<"/login">) {
         <div className="flex flex-1 flex-col lg:w-full lg:max-w-[440px] lg:flex-none">
           <LoginForm
             next={nextPath}
+            discord={discordLoginEnabled && !intent.organiser}
             intro={
               <div className="flex flex-col gap-1.5 lg:gap-2">
                 <h1 className="text-2xl leading-[1.08] font-extrabold lg:text-[30px] lg:leading-[1.05]">{intent.heading}</h1>
@@ -86,7 +88,11 @@ export default async function LoginPage({ searchParams }: PageProps<"/login">) {
                 {demo.enabled && <PersonaPicker next={nextPath} personas={DEMO_PERSONAS.map((key) => ({ key, ...PERSONA_LABELS[key] }))} />}
                 {errorCode && (
                   <Notice tone="destructive" className="mt-2" title={errorCode === "INVALID_TOKEN" ? "That link has expired or was already used" : "We couldn't sign you in"}>
-                    Request a fresh link below. Links work once and last 15 minutes.
+                    {errorCode === "discord_email_unverified"
+                      ? "Your Discord account's email isn't verified yet. Verify it in Discord's settings, or use your email below."
+                      : errorCode === "access_denied"
+                        ? "Discord sign-in was cancelled. Try again, or use your email below."
+                        : "Request a fresh link below. Links work once and last 15 minutes."}
                   </Notice>
                 )}
               </div>

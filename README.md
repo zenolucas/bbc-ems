@@ -50,6 +50,10 @@ Without `RESEND_API_KEY`, emails (including the magic link and the app's sign-in
 | `TICKET_SIGNING_PRIVATE_KEY`, `TICKET_SIGNING_PUBLIC_KEY` | ECDSA P-256 JWKs, base64url-encoded. Generate once and never rotate casually: old tickets stop verifying. |
 | `EXPO_ACCESS_TOKEN` | Optional. Expo push access token, if "enhanced push security" is on for the Expo project |
 | `REVIEW_ACCOUNT_EMAIL`, `REVIEW_OTP` | Optional. One app-store review account that signs in with a fixed 6-digit code and is never emailed. Leave empty except while an app is in review. |
+| `DISCORD_ENABLED` | Feature flag for the whole Discord integration: `1` turns it on. Off by default; with it off the other `DISCORD_*` variables are ignored. |
+| `DISCORD_CLIENT_ID`, `DISCORD_CLIENT_SECRET` | Optional. Discord application for "Continue with Discord" and account linking. See [Discord](#discord). |
+| `DISCORD_BOT_TOKEN`, `DISCORD_GUILD_ID` | Optional. The bot that posts events and manages roles, and the server it works in. |
+| `DISCORD_INVITE_URL` | Optional. Public invite link shown on the site ("Join our Discord"). |
 | `DEMO_MODE` | Demo deployment only (`1`). Never set it on production; see [Demo deployment](#demo-deployment). |
 
 Generate signing keys:
@@ -76,6 +80,7 @@ console.log("TICKET_SIGNING_PUBLIC_KEY=" + b64(publicKey.export({ format: "jwk" 
 | `pnpm smoke:api` | The mobile app's API over HTTP: email-code sign-in, bearer tokens, the `/api/v1` booking flow, receipt upload, tickets, push tokens, door access, the WebView handoff. Run the dev server with `RESEND_API_KEY=` (codes print to its log) and pass the log: `DEV_LOG=dev.log pnpm smoke:api`. |
 | `pnpm demo:seed --init --yes` / `--reset` / `switch on\|off` | Marks an empty database as the demo one and seeds it, wipes it back to the demo story, or flips the demo switch. Reads `.env.local`, then `.env.demo` over it. |
 | `pnpm smoke:demo` | Demo mode over HTTP against a demo server: personas, sample receipts, auto-approve, expire hold + cron + waitlist, scan samples, the outbox, reset and the switch. `--expect-off` against any other server checks every demo route is shut. |
+| `pnpm smoke:discord` | Discord announcements, scheduled events, roles, chats, reminders and archiving against a fake Discord and the local DB; cleans up after itself. `--serve` runs only the fake. |
 | `pnpm e2e:scanner <cookies.txt or magic-link URL> <eventId>` | Drives the scanner in Chromium against the dev server (or `E2E_BASE`): online, duplicates, offline queue, resync, conflicts, cached reload. Picks unused tickets from the DB. Offline reload only works against a production build (`next start`). |
 
 ## How ticketing works
@@ -127,6 +132,26 @@ Set it up:
 5. App: set `EXPO_PUBLIC_API_URL` in `mobile/eas.json`'s `demo` profile and `npx eas-cli@latest build -p android --profile demo`. It installs as "BBC Demo" next to the real app.
 
 Locally: create a second database (`docker exec bbc-ems-db psql -U bbc -d bbc_ems -c "create database bbc_ems_demo"`), put `DEMO_MODE=1` and its `DATABASE_URL` in `.env.demo`, migrate and `pnpm demo:seed --init --yes`, then run the site with `set -a; . ./.env.demo; set +a; pnpm dev`.
+
+## Discord
+
+Baguio Base Camp started as a Discord server, so the site can work with it. It ships **switched off**: nothing below happens, and `/admin/discord` doesn't exist, until `DISCORD_ENABLED=1` is set on the deployment. Everything is optional even then; email and push stay the main channel.
+
+- **Announcements**: publishing an event posts it to the events channel (poster, date in each viewer's time zone, venue, price, spots left, Get tickets and Map buttons) and creates a native Discord event people can mark Interested. The post is edited in place as seats sell, when it sells out, starts, ends or is cancelled, and deleted if the event is unpublished. A "tomorrow" reminder goes out the day before for events with seats.
+- **Sign in / link**: "Continue with Discord" on `/login` and "Link Discord" on `/me/profile` (the app opens the website for it). Linking adds the member to the server. A Discord account whose email isn't verified can't create an account.
+- **Roles**: Organisers and door crew get their server roles from `/admin/team`; anyone with a confirmed booking gets Campers; each event gets a ticket holders' role, deleted three days after it ends. Roles the site didn't hand out are never touched, and unlinking takes back the ones it did.
+- **Ticket holders' chat** (per event, a switch on the event's page): a private channel for that event's role and the crew, moved to an archive category after the event.
+
+How it runs: plain REST calls as the bot (no gateway process), after the response so nothing waits on Discord, never failing a booking. The 15-minute cron catches up on anything that failed, updates seat counts, starts and ends the Discord events, posts reminders and archives old events. What was created for each event is in `discord_event_sync`; the channel and role picks are in `app_settings` (key `discord`), set on `/admin/discord`.
+
+Set it up:
+
+1. In the [Discord Developer Portal](https://discord.com/developers/applications), on your application, add the OAuth2 redirect `<NEXT_PUBLIC_APP_URL>/api/auth/callback/discord` (one per deployment, including `http://localhost:3100/...`).
+2. Set `DISCORD_ENABLED=1`, `DISCORD_CLIENT_ID`, `DISCORD_CLIENT_SECRET`, `DISCORD_BOT_TOKEN`, `DISCORD_GUILD_ID` and `DISCORD_INVITE_URL`. Use a private test server for local and demo sites; on the demo site, posts also land in the outbox.
+3. Invite the bot with the link on `/admin/discord` (it asks for exactly the permissions used), then in Server Settings → Roles drag the bot's role above every role it should hand out.
+4. On `/admin/discord`, pick the events channel, roles and chat categories, send a test post, and press Resync to announce the upcoming events.
+
+`pnpm smoke:discord` runs the whole flow against a fake Discord and the local database (no token needed); `pnpm smoke:discord --serve` starts only the fake, on :3199, to click through the UI with `DISCORD_ENABLED=1 DISCORD_API_BASE=http://127.0.0.1:3199`.
 
 ## Deploying to Vercel
 

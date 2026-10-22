@@ -21,6 +21,10 @@ const sections: { id: string; title: string; body: React.ReactNode }[] = [
         <li><strong>Check-ins at the door:</strong> when a ticket was scanned, which door crew account and device scanned it, and what the scanner read.</li>
         <li><strong>Signing in:</strong> a session record with your device&apos;s IP address and browser or app details, so you stay signed in.</li>
         <li><strong>The app:</strong> if you allow notifications, a push token and a device identifier so we can send booking updates to your phone.</li>
+        <li>
+          <strong>Discord, if you link it or sign in with it:</strong> your Discord user ID, and the email, display name and avatar Discord shares with us. We use your Discord
+          username and avatar only to show you which account is linked.
+        </li>
       </ul>
     ),
   },
@@ -43,6 +47,10 @@ const sections: { id: string; title: string; body: React.ReactNode }[] = [
         <li>To hold your tickets, confirm payments, and let the door crew check you in.</li>
         <li>To email you sign-in links and codes, booking updates and your tickets.</li>
         <li>To send app notifications you turned on: a booking confirmed or needing a fix, a hold about to end, an event coming up.</li>
+        <li>
+          If you linked Discord: to add you to the Baguio Base Camp server and give you roles there, like a role for each event you have tickets to. We never post as you, read
+          your messages or see your other servers. Unlinking removes the roles we gave you.
+        </li>
       </ul>
     ),
   },
@@ -54,8 +62,12 @@ const sections: { id: string; title: string; body: React.ReactNode }[] = [
         <li><strong>Organisers</strong> see bookings, receipts, reference numbers, names and emails, to confirm payments and run events.</li>
         <li><strong>Door crew</strong> see the guest list for the event they&apos;re working: names, ticket codes and ticket types. It&apos;s downloaded to their phone so scanning works without signal.</li>
         <li>
-          <strong>Service providers</strong> that run the site for us: Vercel (hosting and file storage for uploads), Neon (database), Resend (email) and Expo (delivering app
-          notifications through Google and Apple).
+          <strong>Service providers</strong> that run the site for us: Vercel (hosting and file storage for uploads), Neon (database), Resend (email), Expo (delivering app
+          notifications through Google and Apple) and, if you link it, Discord.
+        </li>
+        <li>
+          <strong>Other members of the Discord server</strong> can see the event roles you hold there, as with any Discord role. Nothing about your bookings beyond that is
+          posted.
         </li>
         <li>
           Receipt screenshots and event images are stored under long, random links. Anyone with the exact link can open the image, so don&apos;t share it; we never publish

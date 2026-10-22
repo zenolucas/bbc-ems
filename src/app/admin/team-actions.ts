@@ -5,6 +5,7 @@ import { z } from "zod";
 import { db } from "@/db/client";
 import { roleGrants, sessions, users, type UserRole } from "@/db/schema";
 import type { ActionResult } from "@/lib/action-result";
+import { syncMemberRolesLater } from "@/lib/discord/sync";
 import { requireAdmin } from "@/lib/session";
 
 const roleSchema = z.enum(["member", "staff", "admin"]);
@@ -22,6 +23,8 @@ async function applyRole(userId: string, role: UserRole, current: UserRole) {
   // Losing access should bite now, not when the 5-minute session cache expires
   const rank = { member: 0, staff: 1, admin: 2 } as const;
   if (rank[role] < rank[current]) await db.delete(sessions).where(eq(sessions.userId, userId));
+  // Organiser / door crew roles on the Discord server follow
+  syncMemberRolesLater(userId);
 }
 
 /** Gives an email door or admin access. Works whether or not they've signed up yet. */

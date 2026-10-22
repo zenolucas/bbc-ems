@@ -1,12 +1,13 @@
-import { CalendarDays, ClipboardCheck, FlaskConical, LayoutDashboard, Palette, ScanLine, Shield, UsersRound, type LucideIcon } from "lucide-react";
+import { CalendarDays, ClipboardCheck, FlaskConical, LayoutDashboard, MessagesSquare, Palette, ScanLine, Shield, UsersRound, type LucideIcon } from "lucide-react";
 
 export type AdminRole = "admin" | "staff";
 /** `demoSite`: this is the demo deployment, which adds the Demo tools page. */
-export type AdminUser = { name: string; email: string; role: AdminRole; demoSite?: boolean };
+/** `discord`: the Discord integration is switched on (DISCORD_ENABLED), which adds its page. */
+export type AdminUser = { name: string; email: string; role: AdminRole; demoSite?: boolean; discord?: boolean };
 export type AdminEventRef = { id: string; title: string; status: string; startsAt: string };
 
 export type NavItem = {
-  key: "dashboard" | "events" | "review" | "attendees" | "scan" | "team" | "lab" | "demo";
+  key: "dashboard" | "events" | "review" | "attendees" | "scan" | "team" | "discord" | "lab" | "demo";
   href: string;
   label: string;
   short: string;
@@ -17,6 +18,8 @@ export type NavItem = {
   staff?: boolean;
   /** Only on the demo deployment. */
   demo?: boolean;
+  /** Only with the Discord integration switched on. */
+  discord?: boolean;
 };
 
 export const NAV: NavItem[] = [
@@ -26,13 +29,14 @@ export const NAV: NavItem[] = [
   { key: "attendees", href: "/admin/attendees", label: "Attendees", short: "Attendees", icon: UsersRound },
   { key: "scan", href: "/admin/scan", label: "Door scanner", short: "Scanner", icon: ScanLine, staff: true },
   { key: "team", href: "/admin/team", label: "Team", short: "Team", icon: Shield, secondary: true },
+  { key: "discord", href: "/admin/discord", label: "Discord", short: "Discord", icon: MessagesSquare, secondary: true, discord: true },
   { key: "lab", href: "/admin/ticket-lab", label: "Ticket lab", short: "Ticket lab", icon: Palette, secondary: true },
   { key: "demo", href: "/admin/demo", label: "Demo tools", short: "Demo", icon: FlaskConical, secondary: true, demo: true },
 ];
 
 /** The rail items for this person, on this deployment. */
-export function navFor(user: Pick<AdminUser, "role" | "demoSite">) {
-  return NAV.filter((n) => (user.role === "admin" || n.staff) && (!n.demo || user.demoSite));
+export function navFor(user: Pick<AdminUser, "role" | "demoSite" | "discord">) {
+  return NAV.filter((n) => (user.role === "admin" || n.staff) && (!n.demo || user.demoSite) && (!n.discord || user.discord));
 }
 
 /**
@@ -46,6 +50,7 @@ export function activeKey(path: string): NavItem["key"] | null {
   if (path.startsWith("/admin/attendees")) return "attendees";
   if (path.startsWith("/admin/scan")) return "scan";
   if (path.startsWith("/admin/team")) return "team";
+  if (path.startsWith("/admin/discord")) return "discord";
   if (path.startsWith("/admin/ticket-lab")) return "lab";
   if (path.startsWith("/admin/demo")) return "demo";
   return null;

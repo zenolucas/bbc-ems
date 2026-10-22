@@ -14,6 +14,7 @@ import { eventEndsAt, eventStats, getEventById, publishChecklist, tierAvailabili
 import { peso, relative } from "@/lib/format";
 import { requireAdmin } from "@/lib/session";
 import { cn } from "@/lib/utils";
+import { DiscordEventCard } from "./discord-card";
 import { EventStatusControls } from "./status-controls";
 
 const STYLE_NAMES: Record<string, string> = { summit: "Summit", "night-sky": "Night Sky", "trail-pass": "Trail Pass", "ridge-line": "Ridge Line", "campfire-stamp": "Campfire Stamp" };
@@ -108,6 +109,7 @@ export default async function AdminEventPage({ params }: PageProps<"/admin/event
             counts={{ live: counts.live, approved: counts.approved, tickets: stats.issued, paidOrSubmitted: counts.paidOrSubmitted }}
             heldSeats={held}
           />
+          <DiscordEventCard event={event} />
         </div>
 
         <section aria-labelledby="tiers" className="flex flex-col rounded-[18px] border bg-card p-4">

@@ -5,6 +5,7 @@ import { db } from "@/db/client";
 import { bookings, tickets } from "@/db/schema";
 import type { ActionResult } from "@/lib/action-result";
 import { BookingError, voidTicket } from "@/lib/bookings";
+import { syncMemberRolesLater } from "@/lib/discord/sync";
 import { approveBookingFlow, rejectBookingFlow } from "@/lib/flows/admin-bookings";
 import { notifyApproved, notifyBookingCancelled, notifyLater, trySend } from "@/lib/notifications";
 import { requireAdmin } from "@/lib/session";
@@ -61,6 +62,8 @@ export async function adminCancelBookingAction(bookingId: string, eventId: strin
     await tx.update(tickets).set({ status: "void" }).where(and(eq(tickets.bookingId, bookingId), inArray(tickets.status, ["valid"])));
   });
   notifyLater("cancelled by organiser", () => notifyBookingCancelled(bookingId, { byOrganiser: true, reason }));
+  // A confirmed booking took an event role (and maybe Camper) with it
+  if (b.status === "approved") syncMemberRolesLater(b.userId);
   revalidateEventAdmin(eventId);
   revalidatePath(`/bookings/${bookingId}`);
   return { ok: true };

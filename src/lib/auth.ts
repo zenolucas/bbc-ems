@@ -6,7 +6,8 @@ import { nextCookies } from "better-auth/next-js";
 import { bearer, emailOTP, magicLink, oneTimeToken } from "better-auth/plugins";
 import { db } from "@/db/client";
 import * as schema from "@/db/schema";
-import { env, isAdminEmail } from "./env";
+import { discordLoginEnabled, env, isAdminEmail } from "./env";
+import { onDiscordAccountLinked } from "./discord/link";
 import { sendEmail } from "./email";
 import { renderMagicLinkEmail } from "@/emails/magic-link";
 import { renderOtpEmail } from "@/emails/otp";
@@ -46,6 +47,34 @@ export const auth = betterAuth({
     additionalFields: {
       role: { type: "string", defaultValue: "member", input: false },
     },
+    // Discord lets people sign up with an email they never confirmed. Making an account from one
+    // would let someone claim another person's address before they ever sign in, so refuse it.
+    validateUserInfo: ({ user, source }) => {
+      if (source.action === "create-user" && source.oauth?.providerId === "discord" && !user.emailVerified) {
+        return { error: "discord_email_unverified", errorDescription: "Verify your email in Discord first, or sign in with your email here." };
+      }
+    },
+  },
+  // "Continue with Discord" on the sign-in page and "Link Discord" on the profile page.
+  // Email stays the way in for everyone; Discord is optional.
+  socialProviders: discordLoginEnabled
+    ? {
+        discord: {
+          clientId: env.discordClientId!,
+          clientSecret: env.discordClientSecret!,
+          // guilds.join lets the bot add them to the server once they link
+          scope: ["guilds.join"],
+        },
+      }
+    : {},
+  account: {
+    accountLinking: {
+      enabled: true,
+      // Linking from the profile page while signed in: their Discord email can be anything
+      allowDifferentEmails: true,
+      // Everyone can still sign in by email, so unlinking Discord never locks anyone out
+      allowUnlinkingAll: true,
+    },
   },
   databaseHooks: {
     user: {
@@ -67,6 +96,11 @@ export const auth = betterAuth({
           await db.delete(schema.roleGrants).where(eq(schema.roleGrants.email, user.email.toLowerCase()));
         },
       },
+    },
+    account: {
+      // Linking (or signing in with) Discord: join the server and pick up their roles
+      create: { after: async (account) => onDiscordAccountLinked(account) },
+      update: { after: async (account) => onDiscordAccountLinked(account) },
     },
   },
   session: {

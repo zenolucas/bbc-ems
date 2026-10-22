@@ -15,7 +15,14 @@ export const EVENT_CATEGORY_LABELS: Record<EventCategory, string> = { gig: "Gigs
 
 export type ApiError = { error: string };
 
-export type MeDTO = { id: string; email: string; name: string; role: Role };
+export type MeDTO = {
+  id: string;
+  email: string;
+  name: string;
+  role: Role;
+  /** Only from GET /api/v1/me, and only when the site offers Discord linking. */
+  discord?: { linked: boolean };
+};
 
 export type EventRefDTO = {
   id: string;

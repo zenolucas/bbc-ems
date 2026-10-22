@@ -2,9 +2,14 @@ import { profileSchema } from "@bbc/shared/schemas";
 import { auth } from "@/lib/auth";
 import { requireApiUser } from "@/lib/api/auth";
 import { meDTO } from "@/lib/api/dto";
+import { getDiscordAccount } from "@/lib/discord/members";
+import { discordLoginEnabled } from "@/lib/env";
 import { body, handle } from "@/lib/api/respond";
 
-export const GET = handle(async (req: Request) => meDTO(await requireApiUser(req)));
+export const GET = handle(async (req: Request) => {
+  const user = await requireApiUser(req);
+  return { ...meDTO(user), ...(discordLoginEnabled ? { discord: { linked: Boolean(await getDiscordAccount(user.id)) } } : {}) };
+});
 
 /** Name on tickets. Same better-auth call the web profile form makes. */
 export const PATCH = handle(async (req: Request) => {

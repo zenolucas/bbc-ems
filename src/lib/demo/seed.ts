@@ -58,7 +58,7 @@ export async function resetDemo() {
     await tx.execute(sql`select pg_advisory_xact_lock(hashtext('bbc-demo-reset'))`);
     // TRUNCATE skips the per-row FK checks that make deleting tiers under bookings fail
     await tx.execute(
-      sql`truncate table checkins, tickets, booking_items, bookings, waitlist, ticket_tiers, events, notification_log, role_grants, demo_outbox, verifications`,
+      sql`truncate table checkins, tickets, booking_items, bookings, waitlist, ticket_tiers, discord_event_sync, events, notification_log, role_grants, demo_outbox, verifications`,
     );
     await tx.delete(users).where(notInArray(users.id, PERSONA_IDS));
     await upsertPersonas(tx);

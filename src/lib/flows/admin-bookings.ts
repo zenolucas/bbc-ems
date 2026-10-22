@@ -1,5 +1,6 @@
 import "server-only";
 import { approveBooking, rejectBooking } from "@/lib/bookings";
+import { syncMemberRolesLater } from "@/lib/discord/sync";
 import { notifyApproved, notifyLater, notifyRejected, trySend } from "@/lib/notifications";
 
 /**
@@ -10,9 +11,10 @@ import { notifyApproved, notifyLater, notifyRejected, trySend } from "@/lib/noti
 
 /** Approves and sends the tickets, waiting for the email so the organiser knows whether it went out. */
 export async function approveBookingFlow(adminId: string, bookingId: string) {
-  const { changed } = await approveBooking(adminId, bookingId);
+  const { changed, userId } = await approveBooking(adminId, bookingId);
   // Approving twice must not email the tickets twice; "Resend tickets" is the way to send them again
   if (!changed) return { emailSent: true, alreadyApproved: true };
+  syncMemberRolesLater(userId);
   const emailSent = await trySend("approved", notifyApproved(bookingId));
   return { emailSent, alreadyApproved: false };
 }
