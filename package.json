@@ -17,7 +17,9 @@
     "smoke:scan": "tsx scripts/scan-check.ts",
     "smoke:tickets": "tsx --conditions=react-server scripts/ticket-smoke.ts",
     "smoke:api": "tsx scripts/api-smoke.ts",
-    "e2e:scanner": "tsx --env-file=.env.local scripts/e2e-scanner.ts"
+    "e2e:scanner": "tsx --env-file=.env.local scripts/e2e-scanner.ts",
+    "demo:seed": "tsx --conditions=react-server --env-file=.env.local --env-file-if-exists=.env.demo scripts/demo-seed.ts",
+    "smoke:demo": "tsx --env-file=.env.local --env-file-if-exists=.env.demo scripts/demo-smoke.ts"
   },
   "dependencies": {
     "@bbc/shared": "workspace:*",

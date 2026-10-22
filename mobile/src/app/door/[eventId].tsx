@@ -6,6 +6,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ActivityIndicator, Alert, KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, View, type TextInputInstance } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { fmtTime } from "@bbc/shared/format";
+import { DoorDemoTools } from "@/components/demo/scan-samples";
 import { Button, EmptyState, Loading, Screen, Text } from "@/components/ui";
 import { useSession } from "@/lib/session";
 import { CameraPanel } from "@/scanner/camera-panel";
@@ -213,6 +214,8 @@ function Door({ eventId, titleParam }: { eventId: string; titleParam?: string })
           {tab === "scan" && <CameraPanel onText={(t) => void s.handleText(t)} paused={!!last} />}
           {tab === "code" && <CodePanel ref={codeRef} onSubmit={s.handleCode} />}
           {tab === "list" && <GuestList manifest={s.manifest} localUsed={s.localUsed} onCheckin={s.handleCode} />}
+
+          <DoorDemoTools eventId={eventId} onText={(t) => void s.handleText(t, { force: true })} onCode={(code) => void s.handleCode(code)} />
 
           {s.recent.length > 0 && (
             <View style={styles.recent}>

@@ -18,6 +18,8 @@ Expo SDK 58 (React Native 0.88, React 19.3), expo-router, React Query. It talks 
    The emulator reaches your computer's `localhost` as `10.0.2.2`, which is the default `EXPO_PUBLIC_API_URL`. For a real phone on the same Wi-Fi, set `EXPO_PUBLIC_API_URL=http://<your-LAN-IP>:3100`.
 3. Sign in with any email; the 6-digit code appears in the dev server's output (`[email:dev] subject: 123456 is your Baguio Base Camp code`).
 
+Against a local demo server (root README, "Demo deployment") the app shows a yellow demo strip and one-tap personas on sign-in and Profile, so no codes are needed. `APP_VARIANT=demo` (the `demo` EAS profile) builds "BBC Demo" with its own package id, alongside the real app.
+
 Push notifications need a physical phone and an EAS project (see Release); emulators and Expo Go don't get push tokens. The scanner camera works best on a real phone.
 
 Checks: `pnpm --filter mobile typecheck`, `pnpm --filter mobile lint`, `pnpm --filter mobile doctor`, and `CI=1 npx expo export --platform android` (from `mobile/`) to confirm the bundle builds.

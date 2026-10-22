@@ -16,6 +16,25 @@ export class ApiError extends Error {
 let token: string | null = null;
 let onUnauthorized: (() => void) | null = null;
 
+/**
+ * Demo: pretend the door has no signal. Scanner calls (/api/scan/*) fail as if offline,
+ * so check-ins queue on the phone and sync when it's switched back off. Not persisted.
+ */
+let simulatedOffline = false;
+const offlineListeners = new Set<(v: boolean) => void>();
+
+export function isSimulatedOffline() {
+  return simulatedOffline;
+}
+export function setSimulatedOffline(v: boolean) {
+  simulatedOffline = v;
+  offlineListeners.forEach((fn) => fn(v));
+}
+export function subscribeSimulatedOffline(fn: (v: boolean) => void) {
+  offlineListeners.add(fn);
+  return () => void offlineListeners.delete(fn);
+}
+
 export function setApiToken(t: string | null) {
   token = t;
 }
@@ -49,6 +68,7 @@ export function baseHeaders(): Record<string, string> {
 }
 
 export async function api<T = unknown>(path: string, opts: Options = {}): Promise<T> {
+  if (simulatedOffline && path.startsWith("/api/scan/")) throw new ApiError(0, "No connection (simulated for the demo).");
   const headers: Record<string, string> = baseHeaders();
   if (opts.body !== undefined) headers["Content-Type"] = "application/json";
   const ctrl = new AbortController();

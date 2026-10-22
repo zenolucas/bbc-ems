@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { Camera as CameraIcon, ChevronLeft, Keyboard, ListChecks, LogIn, RefreshCw, ScanLine, Volume2, VolumeX } from "lucide-react";
 import { undoCheckinAction } from "@/app/admin/attendee-actions";
+import { ScanSamples } from "@/components/demo/scan-samples";
 import { Button } from "@/components/ui/button";
 import { Notice } from "@/components/ui/notice";
 import { Segmented } from "@/components/ui/segmented";
@@ -32,7 +33,8 @@ const iconBtn = "grid size-11 shrink-0 place-items-center rounded-full outline-n
  * whole viewport (the admin shell renders nothing around this route), so it
  * brings its own back link and safe-area insets.
  */
-export function Scanner({ eventId, title, backHref }: { eventId: string; title: string; backHref: string }) {
+/** `demo`: adds the sample-ticket panel (demo site only). */
+export function Scanner({ eventId, title, backHref, demo = false }: { eventId: string; title: string; backHref: string; demo?: boolean }) {
   const s = useScanner(eventId);
   const [tab, setTab] = useState<Tab>("scan");
   const [camOn, setCamOn] = useState(false);
@@ -199,6 +201,7 @@ export function Scanner({ eventId, title, backHref }: { eventId: string; title: 
           </div>
 
           <div className="flex min-w-0 flex-col gap-2.5 [grid-area:side] lg:self-start">
+            {demo && <ScanSamples eventId={eventId} onText={(t) => { primeAudio(); void s.handleText(t, { force: true }); }} onCode={(c) => { primeAudio(); void s.handleCode(c); }} />}
             {s.recent.length > 0 && (
               <section aria-labelledby="recent-heading" className="rounded-2xl bg-card px-3.5 py-2.5">
                 <h2 id="recent-heading" className="mb-1 font-sans text-xs font-bold tracking-normal text-muted-foreground">Recent on this phone</h2>

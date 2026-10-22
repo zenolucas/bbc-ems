@@ -7,7 +7,7 @@ import { bookFlow, cancelBookingFlow, renameTicketFlow, submitPaymentFlow } from
 import { requireUser } from "@/lib/session";
 import type { ActionResult } from "@/lib/action-result";
 
-export type ActionState = { error?: string; ok?: boolean } | null;
+export type ActionState = { error?: string; ok?: boolean; autoApproved?: boolean } | null;
 
 export async function bookAction(_prev: ActionState, formData: FormData): Promise<ActionState> {
   const eventId = String(formData.get("eventId") ?? "");
@@ -35,8 +35,9 @@ export async function submitPaymentAction(_prev: ActionState, formData: FormData
   const parsed = paySchema.safeParse(Object.fromEntries(formData));
   if (!bookingId) return { error: "Booking not found" };
   if (!parsed.success) return { error: parsed.error.issues[0].message };
+  let autoApproved = false;
   try {
-    await submitPaymentFlow(user.id, bookingId, parsed.data);
+    ({ autoApproved } = await submitPaymentFlow(user.id, bookingId, parsed.data));
   } catch (e) {
     if (e instanceof BookingError) return { error: e.message };
     throw e;
@@ -44,7 +45,7 @@ export async function submitPaymentAction(_prev: ActionState, formData: FormData
   revalidatePath(`/bookings/${bookingId}`);
   revalidatePath("/me");
   revalidatePath("/admin", "layout");
-  return { ok: true };
+  return { ok: true, autoApproved };
 }
 
 export async function cancelBookingAction(bookingId: string): Promise<ActionResult> {

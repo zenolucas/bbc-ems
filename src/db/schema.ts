@@ -3,6 +3,7 @@ import {
   boolean,
   index,
   integer,
+  jsonb,
   pgEnum,
   pgTable,
   text,
@@ -298,6 +299,34 @@ export const notificationLog = pgTable(
     sentAt: timestamp("sent_at", { withTimezone: true }).notNull().defaultNow(),
   },
   (t) => [uniqueIndex("notification_log_once_idx").on(t.kind, t.refId, t.userId)],
+);
+
+/**
+ * Runtime switches. Only the demo deployment writes here today: `demo.database` marks a
+ * database as demo-only (written by `pnpm demo:seed --init`), the rest are the admin toggles.
+ */
+export const appSettings = pgTable("app_settings", {
+  key: text("key").primaryKey(),
+  value: jsonb("value").notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+/** Demo deployment only: emails and pushes are captured here instead of (or as well as) being sent. */
+export const demoOutbox = pgTable(
+  "demo_outbox",
+  {
+    id: text("id").primaryKey(),
+    kind: text("kind").$type<"email" | "push">().notNull(),
+    toAddress: text("to_address"),
+    userId: text("user_id"),
+    subject: text("subject"),
+    html: text("html"),
+    text: text("text"),
+    url: text("url"),
+    meta: jsonb("meta").$type<Record<string, unknown>>(),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [index("demo_outbox_created_idx").on(t.createdAt)],
 );
 
 // ---------- relations ----------

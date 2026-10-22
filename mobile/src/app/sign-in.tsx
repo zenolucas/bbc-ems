@@ -2,8 +2,10 @@ import { router } from "expo-router";
 import { Mail } from "lucide-react-native";
 import { useEffect, useRef, useState } from "react";
 import { KeyboardAvoidingView, Linking, Platform, Pressable, StyleSheet, TextInput, View, type TextInputInstance } from "react-native";
+import { PersonaButtons } from "@/components/demo/persona-buttons";
 import { Button, Field, Row, Screen, Text } from "@/components/ui";
 import { ApiError } from "@/lib/api";
+import { useDemo } from "@/lib/server-config";
 import { useSession } from "@/lib/session";
 import { fonts, radius, space, useTheme } from "@/theme";
 
@@ -31,6 +33,8 @@ const RESEND_AFTER_S = 60; // better-auth allows 3 sends a minute per address
 
 export default function SignIn() {
   const { sendCode, verifyCode } = useSession();
+  // On the demo site the persona buttons are the quick way in; don't cover them with the keyboard
+  const demo = useDemo();
   const { c } = useTheme();
   const [step, setStep] = useState<"email" | "code">("email");
   const [email, setEmail] = useState("");
@@ -103,10 +107,11 @@ export default function SignIn() {
               textContentType="emailAddress"
               returnKeyType="send"
               onSubmitEditing={send}
-              autoFocus
+              autoFocus={!demo}
               error={error}
             />
             <Button title="Email me a code" size="lg" loading={busy} disabled={!validEmail} onPress={send} />
+            <PersonaButtons onDone={() => (router.canGoBack() ? router.back() : router.replace("/"))} />
           </>
         ) : (
           <>

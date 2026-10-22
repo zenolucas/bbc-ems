@@ -50,6 +50,7 @@ Without `RESEND_API_KEY`, emails (including the magic link and the app's sign-in
 | `TICKET_SIGNING_PRIVATE_KEY`, `TICKET_SIGNING_PUBLIC_KEY` | ECDSA P-256 JWKs, base64url-encoded. Generate once and never rotate casually: old tickets stop verifying. |
 | `EXPO_ACCESS_TOKEN` | Optional. Expo push access token, if "enhanced push security" is on for the Expo project |
 | `REVIEW_ACCOUNT_EMAIL`, `REVIEW_OTP` | Optional. One app-store review account that signs in with a fixed 6-digit code and is never emailed. Leave empty except while an app is in review. |
+| `DEMO_MODE` | Demo deployment only (`1`). Never set it on production; see [Demo deployment](#demo-deployment). |
 
 Generate signing keys:
 
@@ -73,6 +74,8 @@ console.log("TICKET_SIGNING_PUBLIC_KEY=" + b64(publicKey.export({ format: "jwk" 
 | `pnpm smoke:scan <png…>` | Decodes ticket PNGs to confirm they scan |
 | `pnpm smoke:tickets` | Renders all ten ticket variants to `.smoke/tickets/` and decodes them the way the door scanner does (no inversion). Run after any change to the ticket renderers. |
 | `pnpm smoke:api` | The mobile app's API over HTTP: email-code sign-in, bearer tokens, the `/api/v1` booking flow, receipt upload, tickets, push tokens, door access, the WebView handoff. Run the dev server with `RESEND_API_KEY=` (codes print to its log) and pass the log: `DEV_LOG=dev.log pnpm smoke:api`. |
+| `pnpm demo:seed --init --yes` / `--reset` / `switch on\|off` | Marks an empty database as the demo one and seeds it, wipes it back to the demo story, or flips the demo switch. Reads `.env.local`, then `.env.demo` over it. |
+| `pnpm smoke:demo` | Demo mode over HTTP against a demo server: personas, sample receipts, auto-approve, expire hold + cron + waitlist, scan samples, the outbox, reset and the switch. `--expect-off` against any other server checks every demo route is shut. |
 | `pnpm e2e:scanner <cookies.txt or magic-link URL> <eventId>` | Drives the scanner in Chromium against the dev server (or `E2E_BASE`): online, duplicates, offline queue, resync, conflicts, cached reload. Picks unused tickets from the DB. Offline reload only works against a production build (`next start`). |
 
 ## How ticketing works
@@ -96,12 +99,41 @@ The Expo app (Android first, then iOS) uses the same accounts and data as the si
 - Push notifications go out next to the booking emails (`src/lib/notifications.tsx`), plus reminders from the 15-minute cron (hold ending in two hours, event within a day).
 - `packages/shared` (`@bbc/shared`) holds the React-free code both apps use: ticket tokens, short codes, request schemas, API types.
 
+## Demo deployment
+
+A separate deployment for testing end to end and showing the app off, without sign-in emails, real payments or a second phone at the door. On it:
+
+- **One-tap personas**: Mara Santos (member), Jun Reyes (door crew) and Bea Cruz (organiser), on `/login`, in the yellow demo strip at the top of every page, and in the app's sign-in and Profile. No email, no name step; switching ends the previous session.
+- **Sample receipts**: "Use a sample receipt" on the payment step (web and app). **Auto-approve** (off by default, so the review queue can be shown) confirms bookings the moment the receipt is sent.
+- **Time**: "Expire hold now" on unpaid bookings, and "Run cron" (expire holds, reminders, waitlists) on `/admin/demo`.
+- **Door**: a "scan a sample" panel on the scanner (valid, already in, another event, edited QR, unknown code) and, in the app, "Pretend there's no signal" to show check-ins queueing and syncing.
+- **Outbox**: every email and push lands on `/admin/demo` instead of an inbox (`@demo.invalid` addresses can't receive mail anyway).
+- **Reset**: `/admin/demo` puts the data back to the starting story: an event happening now, a paid gig with three receipts to review, a free hike, a sold-out show with a waitlist and a hold about to lapse, a draft and a past event.
+
+Three locks keep this off production; all must be open:
+
+1. `DEMO_MODE=1` on the deployment.
+2. The database carries a demo marker, written only by `pnpm demo:seed --init`, which refuses any database with accounts outside `@demo.invalid` or any booking. `DEMO_MODE` pointed at the production database does nothing.
+3. The switch on `/admin/demo` (live, no redeploy). With it off the site behaves like the real one, still emailing only to the outbox.
+
+Anyone who opens the demo site can become the organiser, so keep nothing real on it, give it its own keys and storage, and turn on Vercel Deployment Protection if it shouldn't be public.
+
+Set it up:
+
+1. A second Vercel project from this repo, with its own Neon database and Blob store, and its own ticket signing keys. No `RESEND_API_KEY` (everything goes to the outbox). `DEMO_MODE=1`, and the other variables as usual. The 15-minute cron in `vercel.json` needs a Pro plan; on Hobby, override it for this project.
+2. `DATABASE_URL=<demo db> pnpm db:migrate`, then `DATABASE_URL=<demo db> DEMO_MODE=1 pnpm demo:seed --init --yes`.
+3. Seeding from your laptop signs the tickets with your local key. If it differs from the deployment's, `/admin/demo` says so: press Reset there once to re-sign them with the deployment's key.
+4. If the switch gets turned off and nobody is signed in as Bea any more: `pnpm demo:seed switch on` against the demo database.
+5. App: set `EXPO_PUBLIC_API_URL` in `mobile/eas.json`'s `demo` profile and `npx eas-cli@latest build -p android --profile demo`. It installs as "BBC Demo" next to the real app.
+
+Locally: create a second database (`docker exec bbc-ems-db psql -U bbc -d bbc_ems -c "create database bbc_ems_demo"`), put `DEMO_MODE=1` and its `DATABASE_URL` in `.env.demo`, migrate and `pnpm demo:seed --init --yes`, then run the site with `set -a; . ./.env.demo; set +a; pnpm dev`.
+
 ## Deploying to Vercel
 
 1. `npm i -g vercel && vercel link`
 2. Provision Neon Postgres, Resend and Blob from the Vercel Marketplace (`vercel integration add …`) or paste existing credentials with `vercel env add`.
 3. Add the remaining env vars above (`vercel env add`), then `vercel env pull .env.local`.
-4. Run migrations against the production database: `DATABASE_URL=… pnpm db:migrate`. (`0001_staff_role`, `0002_push` and `0003_categories_waitlist` must be applied before deploying code that uses them.)
+4. Run migrations against the production database: `DATABASE_URL=… pnpm db:migrate`. (`0001_staff_role`, `0002_push`, `0003_categories_waitlist` and `0004_demo_mode` must be applied before deploying code that uses them.)
 5. `vercel deploy --prod`. The cron in `vercel.json` expires unpaid holds every 15 minutes. If a deploy looks half-styled (new colours or utilities missing), redeploy without the build cache: Turbopack has reused a stale stylesheet from `.next/cache/turbopack` after a branch switch. Locally, `rm -rf .next/cache/turbopack` before `pnpm build`.
 6. Verify the Resend sending domain so magic links do not land in spam.
 

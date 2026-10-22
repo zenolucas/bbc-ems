@@ -3,7 +3,7 @@ import type { Manifest } from "@bbc/shared/scan-types";
 import type { Verifier } from "@bbc/shared/token";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { AppState } from "react-native";
-import { api, ApiError } from "@/lib/api";
+import { api, ApiError, isSimulatedOffline, subscribeSimulatedOffline } from "@/lib/api";
 import { nobleVerifier } from "@/lib/verify";
 import { feedback, primeAudio, releaseAudio, setMuted as setFeedbackMuted } from "./feedback";
 import {
@@ -167,19 +167,27 @@ export function useScanner(eventId: string) {
     setFeedbackMuted(mu);
     setReady(true);
 
-    NetInfo.fetch().then((s) => {
-      if (cancelled) return;
-      onlineRef.current = s.isConnected !== false;
-      if (!onlineRef.current) return setConn("offline");
-      void refreshManifest().then(() => sync());
-    });
-    const unsubNet = NetInfo.addEventListener((s) => {
-      const online = s.isConnected !== false;
+    // The demo's "force offline" switch counts as no signal, on top of the real one
+    let netOnline = true;
+    const onConnectivity = () => {
+      const online = netOnline && !isSimulatedOffline();
       const was = onlineRef.current;
       onlineRef.current = online;
       if (!online) setConn("offline");
       else if (!was) void refreshManifest().then(() => sync());
+    };
+    NetInfo.fetch().then((s) => {
+      if (cancelled) return;
+      netOnline = s.isConnected !== false;
+      onlineRef.current = netOnline && !isSimulatedOffline();
+      if (!onlineRef.current) return setConn("offline");
+      void refreshManifest().then(() => sync());
     });
+    const unsubNet = NetInfo.addEventListener((s) => {
+      netOnline = s.isConnected !== false;
+      onConnectivity();
+    });
+    const unsubSim = subscribeSimulatedOffline(onConnectivity);
     // Back from the lock screen or another app: catch up
     const appSub = AppState.addEventListener("change", (state) => {
       if (state === "active" && onlineRef.current) void sync().then(() => refreshManifest());
@@ -191,6 +199,7 @@ export function useScanner(eventId: string) {
     return () => {
       cancelled = true;
       unsubNet();
+      unsubSim();
       appSub.remove();
       clearInterval(iv);
       clearInterval(tick);

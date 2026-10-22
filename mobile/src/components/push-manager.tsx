@@ -11,7 +11,7 @@ configureForegroundHandling();
  * is tapped. Renders nothing; mounted once next to the root stack.
  */
 export function PushManager() {
-  const { status } = useSession();
+  const { status, me } = useSession();
   const navReady = !!useRootNavigationState()?.key;
   const response = Notifications.useLastNotificationResponse();
   const handled = useRef<string | null>(null);
@@ -19,10 +19,11 @@ export function PushManager() {
   // Never prompts here: the app offers notifications when they're worth it (a receipt sent,
   // a free booking, joining a waitlist; see offerPush). On launch and sign-in it only
   // re-registers a phone that already said yes.
+  // Keyed on the account too: switching demo persona moves the token without signing out
   useEffect(() => {
     if (status !== "signedIn") return;
     enablePush({ ask: false });
-  }, [status]);
+  }, [status, me?.id]);
 
   useEffect(() => onBeforeSignOut(unregisterPush), []);
 

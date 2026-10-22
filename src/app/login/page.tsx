@@ -4,7 +4,10 @@ import { redirect } from "next/navigation";
 import { ChevronLeft, Info } from "lucide-react";
 import { Logo } from "@/components/brand/logo";
 import { Skyline } from "@/components/brand/skyline";
+import { DEMO_PERSONAS, PERSONA_LABELS } from "@bbc/shared/demo";
+import { PersonaPicker } from "@/components/demo/persona-picker";
 import { Notice } from "@/components/ui/notice";
+import { getDemoState } from "@/lib/demo/flag";
 import { getEventBySlug } from "@/lib/events";
 import { getCurrentUser, safeNext } from "@/lib/session";
 import { LoginForm } from "./login-form";
@@ -34,7 +37,7 @@ export default async function LoginPage({ searchParams }: PageProps<"/login">) {
   const nextPath = safeNext(next);
   const user = await getCurrentUser();
   if (user) redirect(nextPath);
-  const intent = await intentFor(nextPath);
+  const [intent, demo] = await Promise.all([intentFor(nextPath), getDemoState()]);
   const errorCode = typeof error === "string" ? error : undefined;
   return (
     <main className="flex flex-1 flex-col lg:grid lg:min-h-dvh lg:grid-cols-2">
@@ -80,6 +83,7 @@ export default async function LoginPage({ searchParams }: PageProps<"/login">) {
               <div className="flex flex-col gap-1.5 lg:gap-2">
                 <h1 className="text-2xl leading-[1.08] font-extrabold lg:text-[30px] lg:leading-[1.05]">{intent.heading}</h1>
                 <p className="text-sm leading-[1.45] text-muted-foreground lg:text-[15px] lg:leading-normal">{intent.sub}</p>
+                {demo.enabled && <PersonaPicker next={nextPath} personas={DEMO_PERSONAS.map((key) => ({ key, ...PERSONA_LABELS[key] }))} />}
                 {errorCode && (
                   <Notice tone="destructive" className="mt-2" title={errorCode === "INVALID_TOKEN" ? "That link has expired or was already used" : "We couldn't sign you in"}>
                     Request a fresh link below. Links work once and last 15 minutes.

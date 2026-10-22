@@ -5,7 +5,7 @@ import { ExternalLink, Menu } from "lucide-react";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { ThemeToggle } from "@/components/layout/theme-toggle";
 import { cn } from "@/lib/utils";
-import { type AdminUser, NAV, type NavItem } from "./nav";
+import { type AdminUser, type NavItem, navFor } from "./nav";
 
 const TABS: NavItem["key"][] = ["dashboard", "events", "review", "scan"];
 
@@ -16,8 +16,9 @@ const TABS: NavItem["key"][] = ["dashboard", "events", "review", "scan"];
  */
 export function AdminTabBar({ user, active, reviewCount }: { user: AdminUser; active: NavItem["key"] | null; reviewCount: number }) {
   const [more, setMore] = useState(false);
-  const tabs = NAV.filter((n) => TABS.includes(n.key));
-  const rest = NAV.filter((n) => !TABS.includes(n.key));
+  const items = navFor(user);
+  const tabs = items.filter((n) => TABS.includes(n.key));
+  const rest = items.filter((n) => !TABS.includes(n.key));
   const moreActive = rest.some((n) => n.key === active);
   return (
     <>
