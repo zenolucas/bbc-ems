@@ -133,7 +133,7 @@ export async function approveBooking(adminId: string, bookingId: string) {
     const b = await tx.query.bookings.findFirst({ where: eq(bookings.id, bookingId), with: { event: true, items: true } });
     if (!b) throw new BookingError("Booking not found");
     // Already approved (a double tap, two organisers at once): nothing to do, and nothing to email
-    if (b.status === "approved") return { changed: false };
+    if (b.status === "approved") return { changed: false, userId: b.userId };
     // Rejected is allowed so a mistaken rejection can be undone.
     if (!["under_review", "pending_payment", "rejected"].includes(b.status)) throw new BookingError(`Can't approve a booking that is ${b.status.replace("_", " ")}`);
     if (b.event.status === "cancelled") throw new BookingError("This event was cancelled");
@@ -158,7 +158,7 @@ export async function approveBooking(adminId: string, bookingId: string) {
     }
     await tx.update(bookings).set({ status: "approved", reviewedBy: adminId, reviewedAt: new Date(), reviewNote: null, updatedAt: new Date() }).where(eq(bookings.id, bookingId));
     await issueTicketsTx(tx, bookingId);
-    return { changed: true };
+    return { changed: true, userId: b.userId };
   });
 }
 

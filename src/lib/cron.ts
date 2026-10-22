@@ -1,5 +1,6 @@
 import "server-only";
 import { expireOverdueBookings } from "./bookings";
+import { runDiscordCron } from "./discord/sync";
 import { sendReminders } from "./reminders";
 import { notifyAllWaitlists } from "./waitlist";
 
@@ -13,5 +14,10 @@ export async function runCronJobs() {
   });
   // After expiring: lapsed holds are the most common way seats free up
   const waitlisted = await notifyAllWaitlists();
-  return { expired, reminded, waitlisted };
+  // Last: seat counts on the #events posts reflect the expiries above
+  const discord = await runDiscordCron().catch((e) => {
+    console.error("[cron] discord", e);
+    return null;
+  });
+  return { expired, reminded, waitlisted, discord };
 }

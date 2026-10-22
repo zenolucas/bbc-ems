@@ -18,7 +18,7 @@ const EMPTY: Remote = { bookings: [], people: [] };
  * /admin/search once there are two characters to go on. Arrow keys move, Enter
  * opens, Escape closes.
  */
-export function CommandPalette({ open, onOpenChange, events, demoSite = false }: { open: boolean; onOpenChange: (open: boolean) => void; events: AdminEventRef[]; demoSite?: boolean }) {
+export function CommandPalette({ open, onOpenChange, events, demoSite = false, discord = false }: { open: boolean; onOpenChange: (open: boolean) => void; events: AdminEventRef[]; demoSite?: boolean; discord?: boolean }) {
   const router = useRouter();
   const [q, setQ] = useState("");
   const [remote, setRemote] = useState<{ q: string; data: Remote } | null>(null);
@@ -45,7 +45,7 @@ export function CommandPalette({ open, onOpenChange, events, demoSite = false }:
     const match = (s: string) => !term || s.toLowerCase().includes(term);
     const actions: Hit[] = [
       { id: "new", group: "Actions", label: "New event", detail: "Saved as a hidden draft", href: "/admin/events/new", icon: Plus },
-      ...navFor({ role: "admin", demoSite }).map((n) => ({ id: `go-${n.key}`, group: "Actions", label: `Go to ${n.label.toLowerCase()}`, href: n.href, icon: n.icon })),
+      ...navFor({ role: "admin", demoSite, discord }).map((n) => ({ id: `go-${n.key}`, group: "Actions", label: `Go to ${n.label.toLowerCase()}`, href: n.href, icon: n.icon })),
     ].filter((h) => match(h.label));
     const ev: Hit[] = events
       .filter((e) => match(e.title))
@@ -58,7 +58,7 @@ export function CommandPalette({ open, onOpenChange, events, demoSite = false }:
     const ppl: Hit[] = wantsRemote ? data.people.map((p) => ({ id: `pp-${p.id}`, group: "People", label: p.name || p.email, detail: p.detail, href: p.href, icon: UserRound })) : [];
     // Actions lead when the box is empty; once you type, the things you're looking for do
     return term ? [...ev, ...bk, ...ppl, ...actions] : [...actions.slice(0, 1), ...ev, ...actions.slice(1)];
-  }, [demoSite, events, remote, term, wantsRemote]);
+  }, [demoSite, discord, events, remote, term, wantsRemote]);
 
   const current = Math.min(active, Math.max(0, hits.length - 1));
 

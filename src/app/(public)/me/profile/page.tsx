@@ -1,3 +1,6 @@
+import { Suspense } from "react";
+import { DiscordAccountCard } from "@/components/discord/discord-account-card";
+import { FlashToast } from "@/components/ui/flash-toast";
 import { requireUser, safeNext } from "@/lib/session";
 import { ProfileForm } from "./profile-form";
 
@@ -5,7 +8,7 @@ export const metadata = { title: "Profile" };
 
 export default async function ProfilePage({ searchParams }: PageProps<"/me/profile">) {
   const user = await requireUser("/me/profile");
-  const { welcome, next } = await searchParams;
+  const { welcome, next, error } = await searchParams;
   const nextPath = safeNext(next, "/me");
   const continuing = nextPath !== "/me" && nextPath !== "/";
   return (
@@ -20,6 +23,12 @@ export default async function ProfilePage({ searchParams }: PageProps<"/me/profi
         </p>
       </div>
       <ProfileForm name={user.name} email={user.email} next={nextPath} submitLabel={welcome && continuing ? "Save and continue" : "Save"} />
+      {!welcome && (
+        <>
+          <Suspense><FlashToast messages={{ discord: "Discord linked" }} /></Suspense>
+          <DiscordAccountCard userId={user.id} back="/me/profile" error={typeof error === "string" ? error : undefined} />
+        </>
+      )}
     </div>
   );
 }

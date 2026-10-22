@@ -29,7 +29,7 @@ export default async function DemoPage() {
     <div className="max-w-3xl space-y-[18px]">
       <PageHeader
         title={<span className="flex items-center gap-2.5"><FlaskConical className="size-6 text-muted-foreground" aria-hidden /> Demo tools</span>}
-        sub={`This is the demo site: its email and pushes land in the outbox below, never in an inbox.${marker ? ` Demo database since ${relative(new Date(marker.createdAt))}.` : ""}`}
+        sub={`This is the demo site: its email, pushes and Discord posts land in the outbox below, never in an inbox.${marker ? ` Demo database since ${relative(new Date(marker.createdAt))}.` : ""}`}
       />
 
       {keyMismatch && (

@@ -302,8 +302,9 @@ export const notificationLog = pgTable(
 );
 
 /**
- * Runtime switches. Only the demo deployment writes here today: `demo.database` marks a
- * database as demo-only (written by `pnpm demo:seed --init`), the rest are the admin toggles.
+ * Runtime switches. `demo.database` marks a database as demo-only (written by
+ * `pnpm demo:seed --init`), `demo.*` are the demo toggles, `discord` holds the channel
+ * and role picks from /admin/discord.
  */
 export const appSettings = pgTable("app_settings", {
   key: text("key").primaryKey(),
@@ -311,12 +312,12 @@ export const appSettings = pgTable("app_settings", {
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
-/** Demo deployment only: emails and pushes are captured here instead of (or as well as) being sent. */
+/** Demo deployment only: emails, pushes and Discord posts are captured here instead of (or as well as) being sent. */
 export const demoOutbox = pgTable(
   "demo_outbox",
   {
     id: text("id").primaryKey(),
-    kind: text("kind").$type<"email" | "push">().notNull(),
+    kind: text("kind").$type<"email" | "push" | "discord">().notNull(),
     toAddress: text("to_address"),
     userId: text("user_id"),
     subject: text("subject"),
@@ -328,6 +329,32 @@ export const demoOutbox = pgTable(
   },
   (t) => [index("demo_outbox_created_idx").on(t.createdAt)],
 );
+
+/**
+ * What the EMS has created in Discord for an event, so every sync edits instead of
+ * reposting: the #events announcement, the native scheduled event, and the
+ * ticket holders' role and (optional) private chat.
+ */
+export const discordEventSync = pgTable("discord_event_sync", {
+  eventId: text("event_id")
+    .primaryKey()
+    .references(() => events.id, { onDelete: "cascade" }),
+  messageId: text("message_id"),
+  messageChannelId: text("message_channel_id"),
+  scheduledEventId: text("scheduled_event_id"),
+  roleId: text("role_id"),
+  channelId: text("channel_id"),
+  /** Organiser's choice on the event form: a private chat for ticket holders. */
+  wantsChannel: boolean("wants_channel").notNull().default(false),
+  /** Hash of what was last posted; the cron skips events whose post wouldn't change. */
+  lastStateHash: text("last_state_hash"),
+  scheduledStateHash: text("scheduled_state_hash"),
+  /** The "tomorrow" post in the events channel went out. */
+  remindedAt: timestamp("reminded_at", { withTimezone: true }),
+  /** Role deleted and chat moved to the archive, a few days after the event. */
+  archivedAt: timestamp("archived_at", { withTimezone: true }),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+});
 
 // ---------- relations ----------
 export const usersRelations = relations(users, ({ many }) => ({

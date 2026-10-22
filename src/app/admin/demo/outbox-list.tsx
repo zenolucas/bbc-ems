@@ -1,12 +1,12 @@
 "use client";
-import { Bell, ChevronDown, Mail, Paperclip } from "lucide-react";
+import { Bell, ChevronDown, Mail, MessagesSquare, Paperclip } from "lucide-react";
 import { useState } from "react";
 import { EmptyState } from "@/components/ui/empty-state";
 import { cn } from "@/lib/utils";
 
 export type OutboxItem = {
   id: string;
-  kind: "email" | "push";
+  kind: "email" | "push" | "discord";
   to: string | null;
   subject: string | null;
   html: string | null;
@@ -16,7 +16,7 @@ export type OutboxItem = {
   at: string;
 };
 
-/** Every email and push the demo site "sent", newest first. Emails open in a sandboxed frame. */
+/** Every email, push and Discord post the demo site "sent", newest first. Emails open in a sandboxed frame. */
 export function OutboxList({ rows }: { rows: OutboxItem[] }) {
   const [open, setOpen] = useState<string | null>(null);
   if (rows.length === 0) {
@@ -26,7 +26,7 @@ export function OutboxList({ rows }: { rows: OutboxItem[] }) {
     <ul>
       {rows.map((r) => {
         const isOpen = open === r.id;
-        const Icon = r.kind === "email" ? Mail : Bell;
+        const Icon = r.kind === "email" ? Mail : r.kind === "discord" ? MessagesSquare : Bell;
         return (
           <li key={r.id} className="border-t">
             <button
@@ -35,13 +35,13 @@ export function OutboxList({ rows }: { rows: OutboxItem[] }) {
               aria-expanded={isOpen}
               className="flex w-full items-center gap-3 px-4 py-3 text-left transition-colors hover:bg-surface-2/60"
             >
-              <span className={cn("grid size-9 shrink-0 place-items-center rounded-full", r.kind === "email" ? "bg-info-soft text-info-foreground" : "bg-success-soft text-success-foreground")} aria-hidden>
+              <span className={cn("grid size-9 shrink-0 place-items-center rounded-full", r.kind === "email" ? "bg-info-soft text-info-foreground" : r.kind === "discord" ? "bg-accent text-accent-foreground" : "bg-success-soft text-success-foreground")} aria-hidden>
                 <Icon className="size-4" />
               </span>
               <span className="min-w-0 flex-1">
                 <span className="block truncate text-sm font-semibold">{r.subject || "(no subject)"}</span>
                 <span className="block truncate text-xs text-muted-foreground">
-                  {r.kind === "email" ? `To ${r.to}` : `Push · ${r.text}`} · {r.at}
+                  {r.kind === "email" ? `To ${r.to}` : r.kind === "discord" ? "Discord" : `Push · ${r.text}`} · {r.at}
                   {r.attachments.length > 0 && <> · <Paperclip className="inline size-3" aria-label="attachments" /> {r.attachments.length}</>}
                 </span>
               </span>
@@ -54,7 +54,7 @@ export function OutboxList({ rows }: { rows: OutboxItem[] }) {
                 ) : (
                   <div className="rounded-xl border bg-surface-2 p-3 text-sm">
                     <div className="font-semibold">{r.subject}</div>
-                    <div className="text-muted-foreground">{r.text}</div>
+                    <div className="whitespace-pre-line text-muted-foreground">{r.text}</div>
                     {r.url && <div className="mt-1 font-mono text-xs text-muted-foreground">opens {r.url}</div>}
                   </div>
                 )}

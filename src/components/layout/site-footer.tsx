@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Skyline } from "@/components/brand/skyline";
+import { env } from "@/lib/env";
 
 const links = [
   { href: "/", label: "Events" },
@@ -28,6 +29,11 @@ export function SiteFooter() {
               {l.label}
             </Link>
           ))}
+          {env.discordInviteUrl && (
+            <a href={env.discordInviteUrl} target="_blank" rel="noreferrer" className="rounded transition-colors outline-none hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50">
+              Discord
+            </a>
+          )}
         </nav>
       </div>
       <div className="relative mt-2 h-20 sm:mt-0 sm:h-24">
@@ -38,6 +44,12 @@ export function SiteFooter() {
           <span className="sm:hidden">
             {" · "}
             <Link href="/privacy" className="font-semibold underline-offset-2 hover:underline">Privacy</Link>
+            {env.discordInviteUrl && (
+              <>
+                {" · "}
+                <a href={env.discordInviteUrl} target="_blank" rel="noreferrer" className="font-semibold underline-offset-2 hover:underline">Discord</a>
+              </>
+            )}
           </span>
         </p>
       </div>

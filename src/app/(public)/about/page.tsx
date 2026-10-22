@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { TrailSteps } from "@/components/ui/trail-steps";
+import { env } from "@/lib/env";
 
 export const metadata = { title: "About" };
 
@@ -26,7 +27,8 @@ export default function AboutPage() {
         <p className="bbc-eyebrow text-primary">About</p>
         <h1 className="text-[32px] leading-none font-extrabold sm:text-[40px]">About Baguio Base Camp</h1>
         <p className="text-[15px] leading-relaxed text-muted-foreground sm:text-base">
-          Baguio Base Camp is a community of friends in Baguio City that started as a Discord server. This site is where we post our events and gigs and where you can book paperless tickets.
+          Baguio Base Camp is a community of friends in Baguio City that started as a{" "}
+          {env.discordInviteUrl ? <a href={env.discordInviteUrl} target="_blank" rel="noreferrer" className="font-semibold text-accent-foreground underline-offset-2 hover:underline">Discord server</a> : "Discord server"}. This site is where we post our events and gigs and where you can book paperless tickets.
         </p>
       </header>
 

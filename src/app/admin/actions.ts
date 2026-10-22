@@ -8,6 +8,7 @@ import { z } from "zod";
 import { db } from "@/db/client";
 import { EVENT_CATEGORIES, TICKET_STYLES, bookingItems, bookings, events, ticketTiers, tickets } from "@/db/schema";
 import type { ActionResult } from "@/lib/action-result";
+import { syncDiscordEventLater } from "@/lib/discord/sync";
 import { getEventById, holdingCondition, publishChecklist } from "@/lib/events";
 import { fromLocalInput } from "@/lib/format";
 import { notifyEventCancelled, notifyLater } from "@/lib/notifications";
@@ -176,6 +177,8 @@ export async function saveEvent(_prev: EventFormState, formData: FormData): Prom
     if (removed.length) await tx.delete(ticketTiers).where(inArray(ticketTiers.id, removed.map((t) => t.id)));
   });
 
+  // Title, date, venue or tier edits show up in the Discord post and event straight away
+  if (existingEvent?.status === "published") syncDiscordEventLater(id);
   revalidateEvent(id, slug, existingEvent?.slug);
   redirect(`/admin/events/${id}?${d.id ? "saved" : "created"}=1`);
 }
@@ -201,6 +204,8 @@ export async function setEventStatus(id: string, status: Status): Promise<Action
     if (missing.length) return { error: `Before publishing: ${missing.map((m) => m.label.toLowerCase()).join("; ")}` };
   }
   await db.update(events).set({ status, updatedAt: new Date() }).where(eq(events.id, id));
+  // Publishing announces it on Discord; unpublishing takes the post down; ending marks it over
+  syncDiscordEventLater(id);
   revalidateEvent(id, ev.slug);
   return { ok: true };
 }
@@ -227,6 +232,7 @@ export async function cancelEvent(id: string, message: string): Promise<ActionRe
   });
   const note = message.trim() || null;
   for (const bookingId of affected) notifyLater("event cancelled", () => notifyEventCancelled(bookingId, note));
+  syncDiscordEventLater(id);
   revalidateEvent(id, ev.slug);
   return { ok: true, notified: affected.length };
 }

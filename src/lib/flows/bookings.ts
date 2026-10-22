@@ -4,6 +4,7 @@ import type { BookInput, PayInput } from "@bbc/shared/schemas";
 import { approveBooking, BookingError, cancelBooking, createBooking, getBookingForUser, renameTicket, submitPayment } from "@/lib/bookings";
 import { getDemoState } from "@/lib/demo/flag";
 import { PERSONAS } from "@/lib/demo/personas";
+import { syncMemberRolesLater } from "@/lib/discord/sync";
 import { notifyApproved, notifyBookingCancelled, notifyLater, notifyPaymentSubmitted, notifyReserved } from "@/lib/notifications";
 import { notifyWaitlist } from "@/lib/waitlist";
 
@@ -18,8 +19,10 @@ export async function bookFlow(userId: string, input: BookInput) {
   // Free: tickets are issued now, so send them. Paid: send the hold + payment details,
   // so a member who closes the tab still has the link and the deadline.
   const bookingId = result.id;
-  if (result.free) notifyLater("approved (free)", () => notifyApproved(bookingId));
-  else notifyLater("reserved", () => notifyReserved(bookingId));
+  if (result.free) {
+    notifyLater("approved (free)", () => notifyApproved(bookingId));
+    syncMemberRolesLater(userId);
+  } else notifyLater("reserved", () => notifyReserved(bookingId));
   return result;
 }
 
@@ -33,7 +36,10 @@ export async function submitPaymentFlow(userId: string, bookingId: string, input
   if (demo.enabled && demo.autoApprove) {
     // Synchronous so the page the member lands on already says confirmed
     const { changed } = await approveBooking(PERSONAS.organiser.id, bookingId);
-    if (changed) notifyLater("approved (demo auto-approve)", () => notifyApproved(bookingId));
+    if (changed) {
+      notifyLater("approved (demo auto-approve)", () => notifyApproved(bookingId));
+      syncMemberRolesLater(userId);
+    }
     return { autoApproved: true };
   }
   return { autoApproved: false };

@@ -142,7 +142,7 @@ export function AdminShell({ user, reviewCount, events, embed = false, children 
       </div>
 
       {tabs && <AdminTabBar user={user} active={active} reviewCount={reviewCount} />}
-      {isAdmin && <CommandPalette open={palette} onOpenChange={setPalette} events={events} demoSite={user.demoSite} />}
+      {isAdmin && <CommandPalette open={palette} onOpenChange={setPalette} events={events} demoSite={user.demoSite} discord={user.discord} />}
     </div>
   );
 }

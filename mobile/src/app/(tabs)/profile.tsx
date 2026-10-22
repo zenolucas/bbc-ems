@@ -3,7 +3,7 @@ import { profileSchema } from "@bbc/shared/schemas";
 import * as Linking from "expo-linking";
 import { router, useFocusEffect, useLocalSearchParams, type Href } from "expo-router";
 import * as WebBrowser from "expo-web-browser";
-import { Bell, ChevronRight, LayoutDashboard, ReceiptText, ScanLine, Shield } from "lucide-react-native";
+import { Bell, ChevronRight, LayoutDashboard, MessagesSquare, ReceiptText, ScanLine, Shield } from "lucide-react-native";
 import { useCallback, useState } from "react";
 import { Alert, Pressable, View } from "react-native";
 import { DemoTools } from "@/components/demo/demo-tools";
@@ -71,6 +71,17 @@ function SignedIn({ me }: { me: MeDTO }) {
       setError(e instanceof Error ? e.message : "Couldn't save");
     } finally {
       setSaving(false);
+    }
+  }
+
+  /** Linking happens on the website (Discord's sign-in runs in the browser); the app hands over its session. */
+  async function openDiscord() {
+    try {
+      const { token } = await api<{ token: string }>("/api/auth/one-time-token/generate");
+      await WebBrowser.openBrowserAsync(`${API_URL}/app/handoff?ott=${encodeURIComponent(token)}&next=${encodeURIComponent("/me/profile")}`);
+      setMe(await api<MeDTO>("/api/v1/me"));
+    } catch {
+      Alert.alert("Couldn't open the website", "Check your connection and try again.");
     }
   }
 
@@ -158,6 +169,15 @@ function SignedIn({ me }: { me: MeDTO }) {
           <Button title={push === "denied" ? "Open settings" : "Turn on notifications"} variant="secondary" onPress={turnOnNotifications} />
         )}
       </Card>
+
+      {me.discord && (
+        <LinkRow
+          icon={<MessagesSquare color={c.primary} size={22} />}
+          title="Discord"
+          subtitle={me.discord.linked ? "Linked. Manage it on the website" : "Link it to join the server and get event roles"}
+          onPress={() => void openDiscord()}
+        />
+      )}
 
       <Card padded={false}>
         <LinkRow

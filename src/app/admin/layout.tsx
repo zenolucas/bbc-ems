@@ -4,6 +4,7 @@ import { db } from "@/db/client";
 import { events } from "@/db/schema";
 import { AdminShell } from "@/components/admin/shell";
 import { getDemoState } from "@/lib/demo/flag";
+import { discordEnabled } from "@/lib/env";
 import { pendingReviewByEvent } from "@/lib/events";
 import { requireStaff } from "@/lib/session";
 
@@ -22,7 +23,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   return (
     <AdminShell
       embed={embed}
-      user={{ name: user.name, email: user.email, role: user.role === "admin" ? "admin" : "staff", demoSite: demo.site }}
+      user={{ name: user.name, email: user.email, role: user.role === "admin" ? "admin" : "staff", demoSite: demo.site, discord: discordEnabled }}
       reviewCount={reviewCount}
       events={list.map((e) => ({ id: e.id, title: e.title, status: e.status, startsAt: e.startsAt.toISOString() }))}
     >

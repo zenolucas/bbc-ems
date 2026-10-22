@@ -29,7 +29,7 @@ export async function writeOutbox(row: OutboxRow) {
   return { id: `outbox:${id}` };
 }
 
-export async function listOutbox(opts: { limit?: number; kind?: "email" | "push" } = {}) {
+export async function listOutbox(opts: { limit?: number; kind?: "email" | "push" | "discord" } = {}) {
   return db
     .select()
     .from(demoOutbox)

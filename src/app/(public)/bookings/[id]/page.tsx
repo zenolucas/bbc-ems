@@ -12,11 +12,15 @@ import { StatusBadge } from "@/components/event/status-badge";
 import { icsHref } from "@/components/ticket/calendar";
 import { ShareTicketButton } from "@/components/ticket/share-ticket";
 import { effectiveStatus, getBookingForUser } from "@/lib/bookings";
-import { env } from "@/lib/env";
-import { tierAvailability } from "@/lib/events";
+import { discordLoginEnabled, env } from "@/lib/env";
+import { eventEndsAt, tierAvailability } from "@/lib/events";
 import { fmtDate, fmtTime, peso, relative } from "@/lib/format";
 import { ExpireHoldButton } from "@/components/demo/expire-hold-button";
 import { getDemoState } from "@/lib/demo/flag";
+import { discordBotEnabled } from "@/lib/discord/client";
+import { getDiscordAccount } from "@/lib/discord/members";
+import { LinkDiscordButton } from "@/components/discord/discord-link";
+import { DiscordIcon } from "@/components/brand/discord-icon";
 import { requireUser } from "@/lib/session";
 import { cn } from "@/lib/utils";
 import { CancelButton } from "./cancel-button";
@@ -39,7 +43,11 @@ export default async function BookingPage({ params, searchParams }: PageProps<"/
   const { id } = await params;
   const { confirmed, reserved } = await searchParams;
   const user = await requireUser(`/bookings/${id}`);
-  const [b, demo] = await Promise.all([getBookingForUser(id, user.id, user.role === "admin"), getDemoState()]);
+  const [b, demo, discordAccount] = await Promise.all([
+    getBookingForUser(id, user.id, user.role === "admin"),
+    getDemoState(),
+    discordLoginEnabled && discordBotEnabled ? getDiscordAccount(user.id) : null,
+  ]);
   if (!b) notFound();
   const ev = b.event;
   const status = effectiveStatus(b);
@@ -217,7 +225,8 @@ export default async function BookingPage({ params, searchParams }: PageProps<"/
             </div>
           ) : (
             <Notice tone="warn" title="Payment details aren't up yet">
-              The organiser hasn&apos;t added GCash/Maya details. Your hold is safe; check back soon or message them on Discord.
+              The organiser hasn&apos;t added GCash/Maya details. Your hold is safe; check back soon or message them on{" "}
+              {env.discordInviteUrl ? <a href={env.discordInviteUrl} target="_blank" rel="noreferrer" className="font-semibold underline">Discord</a> : "Discord"}.
             </Notice>
           )}
           {ev.paymentInstructions && <p className="rounded-[10px] bg-surface-2 px-3 py-2.5 text-xs whitespace-pre-line text-muted-foreground">{ev.paymentInstructions}</p>}
@@ -285,6 +294,16 @@ export default async function BookingPage({ params, searchParams }: PageProps<"/
             </div>
           )}
         </section>
+      )}
+
+      {isOwner && b.status === "approved" && !eventCancelled && discordLoginEnabled && discordBotEnabled && !discordAccount && eventEndsAt(ev) > new Date() && (
+        <div className="flex flex-col gap-3 rounded-[20px] border bg-card p-4 sm:flex-row sm:items-center">
+          <DiscordIcon className="size-7 shrink-0 text-[#5865F2]" />
+          <p className="min-w-0 flex-1 text-[13px] leading-relaxed text-muted-foreground">
+            <span className="font-semibold text-foreground">On Discord?</span> Link it to get the {ev.title} role and meet the others going.
+          </p>
+          <LinkDiscordButton back={`/bookings/${b.id}`} className="h-10 shrink-0 rounded-full px-4 text-[13px] font-semibold md:h-10" />
+        </div>
       )}
 
       {demo.enabled && awaitingPayment && <ExpireHoldButton bookingId={b.id} />}

@@ -4,6 +4,7 @@ import { Loader2, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { DiscordSignInButton } from "@/components/discord/discord-link";
 import { authClient } from "@/lib/auth-client";
 
 const RESEND_COOLDOWN = 30;
@@ -27,7 +28,7 @@ function inboxUrl(email: string) {
  * `footnote` come from the server; `after` sits below the card until the link is
  * sent. Once sent, the card turns into the envelope and the resend controls.
  */
-export function LoginForm({ next, intro, footnote, after }: { next: string; intro: React.ReactNode; footnote?: React.ReactNode; after?: React.ReactNode }) {
+export function LoginForm({ next, intro, footnote, after, discord }: { next: string; intro: React.ReactNode; footnote?: React.ReactNode; after?: React.ReactNode; discord?: boolean }) {
   const [email, setEmail] = useState("");
   const [state, setState] = useState<"idle" | "sending" | "sent" | "error">("idle");
   const [error, setError] = useState<string | null>(null);
@@ -131,6 +132,14 @@ export function LoginForm({ next, intro, footnote, after }: { next: string; intr
                 Email me a sign-in link
               </Button>
             </form>
+            {discord && (
+              <>
+                <div className="flex items-center gap-3 text-xs text-muted-foreground" aria-hidden>
+                  <span className="h-px flex-1 bg-border" />or<span className="h-px flex-1 bg-border" />
+                </div>
+                <DiscordSignInButton next={next} />
+              </>
+            )}
             {/* desktop has no card, so the door-crew note moves up between the form and the footnote */}
             {after && <div className="hidden lg:block">{after}</div>}
             {footnote && <div className="text-center text-xs leading-normal text-muted-foreground lg:text-left">{footnote}</div>}

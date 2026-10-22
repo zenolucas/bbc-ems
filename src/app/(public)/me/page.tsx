@@ -8,6 +8,8 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { StatusBadge, bookingStatusCopy } from "@/components/event/status-badge";
 import { TicketCard } from "@/components/ticket/ticket-card";
 import { effectiveStatus, listUserBookings } from "@/lib/bookings";
+import { getDiscordAccount } from "@/lib/discord/members";
+import { discordLoginEnabled } from "@/lib/env";
 import { fmtDate, fmtLeft, fmtTime, peso } from "@/lib/format";
 import { requireUser } from "@/lib/session";
 import { cn } from "@/lib/utils";
@@ -21,7 +23,7 @@ const firstName = (n: string) => n.split(" ")[0] || n;
 
 export default async function MePage() {
   const user = await requireUser("/me");
-  const all = await listUserBookings(user.id);
+  const [all, discord] = await Promise.all([listUserBookings(user.id), discordLoginEnabled ? getDiscordAccount(user.id) : null]);
   const { today, upcoming, past, now } = splitBookings(all);
   const needsAction = [...today, ...upcoming].filter((b) => ["pending_payment", "rejected"].includes(effectiveStatus(b)));
   const passes = today.filter(hasLiveTickets);
@@ -34,6 +36,7 @@ export default async function MePage() {
         <h1 className="text-[30px] leading-none font-extrabold tracking-tight">Your passes</h1>
         <p className="truncate text-[13px] text-muted-foreground">
           {user.email} · <Link href="/me/profile" className="font-semibold text-accent-foreground hover:underline">Name on tickets</Link>
+          {discordLoginEnabled && !discord && <> · <Link href="/me/profile#discord-h" className="font-semibold text-accent-foreground hover:underline">Link Discord</Link></>}
         </p>
       </div>
 
